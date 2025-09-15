@@ -1,5 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* In your global CSS file (e.g., styles.css or global.css) */
+.custom-user-button .clerk-user-button {
+  width: 3rem !important; /* Adjust the width */
+  height: 3rem !important; /* Adjust the height */
+  font-size: 1.25rem !important; /* Adjust the text size */
+}
+
+/* If the above doesn't work, try targeting inner elements as well */
+.custom-user-button .clerk-user-button img {
+  width: 3rem !important; /* Set image size */
+  height: 3rem !important; /* Set image size */
+}
 
 @custom-variant dark (&:is(.dark *));
 
