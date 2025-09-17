@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import GlobalApi from '../../../../service/GlobalApi';
-import { data } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 
 
@@ -21,7 +21,8 @@ function AddResume() {
     const [openDailog, setOpenDailog] = useState(false);
     const [resumeTitle,setResumeTitle] =useState();
     const {user} = useUser();
-    const [loading,setLoading] = useState(false)
+    const [loading,setLoading] = useState(false);
+    const navigation= useNavigate()
     const onCreate=()=>{
         setLoading(true)
         const uuid = uuidv4()
@@ -35,9 +36,11 @@ function AddResume() {
         }
         GlobalApi.CreateNewResume(data)
         .then(resp=> {
-            console.log(resp);
+            console.log(resp.data.data.documentId);
             if(resp){
                 setLoading(false)
+                navigation("/dashboard/resume/"+resp.data.data.documentId+"/edit")
+
             }
         
         }

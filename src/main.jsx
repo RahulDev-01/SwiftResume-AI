@@ -7,6 +7,7 @@ import SignIn from './auth/SignIn.jsx'
 import { Home } from './Pages/Home.jsx'
 import Dashboard from './Pages/dashboard/Dashboard.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
+import Resume from './Pages/dashboard/resume/[resumeId]/Resume.jsx'
 
 
 const router = createBrowserRouter([
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path :'/dashboard',
         element : <Dashboard />
+      },
+      {
+        path:'/dashboard/resume/:resumeId/edit',
+        element:<Resume />
       }
     ]
   },
