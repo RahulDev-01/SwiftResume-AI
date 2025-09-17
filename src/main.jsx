@@ -5,7 +5,7 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './auth/SignIn.jsx'
 import { Home } from './Pages/Home.jsx'
-import Dashboard from './Pages/Dashboard.jsx'
+import Dashboard from './Pages/dashboard/Dashboard.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 
 
