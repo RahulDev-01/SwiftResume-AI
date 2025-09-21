@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ResumeIfoContext } from '../../../../context/ResumeInfoContext'
+import { ResumeInfoContext } from '../../../../context/ResumeInfoContext'
 import PersonalDetailPreview from './preview/PersonalDetailPreview'
 import SummaryPreview from './preview/SummaryPreview'
 import ExperiencePreview from './preview/ExperiencePreview'
@@ -8,7 +8,7 @@ import SkillPreview from './preview/SkillPreview'
 
 function ResumePreview() {
 
-    const {resumeInfo, setResumeInfo} = useContext(ResumeIfoContext)
+    const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext)
   return (
     <div className='shadow-lg h-full p-14 border-t-[20px]' style={{borderColor:resumeInfo?.themeColor}}>
         {/* Personal DEtail  */}

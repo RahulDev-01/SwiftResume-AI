@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const ResumeIfoContext = createContext(null);
+export const ResumeInfoContext = createContext(null);
