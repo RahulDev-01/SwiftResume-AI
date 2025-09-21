@@ -14,7 +14,6 @@ function Resume() {
         
     },[])
 
-
   return (
     <ResumeInfoContext.Provider value={{resumeInfo, setResumeInfo}}>
     <div>
