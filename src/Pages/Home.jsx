@@ -280,9 +280,11 @@ export function Home() {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-blue-600 rounded-xl">
+            <Link to="/dashboard">
+            <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-2 border-white  hover:bg-white text-blue-600 rounded-xl">
               View Templates
             </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -292,7 +294,15 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <img src="./logo.png" alt="SwiftResume AI" className="h-8 mb-4" />
+              <img 
+                src="/logo.png" 
+                alt="SwiftResume AI" 
+                className="h-8 mb-4" 
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  console.warn('Footer logo image failed to load');
+                }}
+              />
               <p className="text-gray-400">
                 AI-powered resume builder that helps you create professional resumes in minutes.
               </p>

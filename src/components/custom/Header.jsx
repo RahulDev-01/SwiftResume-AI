@@ -15,8 +15,16 @@ function Header() {
         : 'bg-white shadow-md'
     }`}>
       <Link to={"/"} className="flex items-center">
-        <img src="./logo.png" alt="SwiftResume AI" className="h-8 sm:h-10 cursor-pointer" />
-        <span className="ml-2 text-xl font-bold text-gray-900 hidden sm:block">SwiftResume AI</span>
+        <img 
+          src="/logo.png" 
+          alt="SwiftResume AI" 
+          className="h-8 sm:h-10 cursor-pointer" 
+          onError={(e) => {
+            e.target.style.display = 'none';
+            console.warn('Logo image failed to load');
+          }}
+        />
+        
       </Link>
       
       <div className="flex items-center gap-2 sm:gap-4">
@@ -30,27 +38,13 @@ function Header() {
                 Dashboard
               </Button>
             </Link>
-            <Link to={"/ai-test"}>
-              <Button 
-                variant="outline"
-                size="sm"
-                className="text-xs"
-              >
-                AI Test
-              </Button>
-            </Link>
+    
             <UserButton className="custom-user-button" />
           </>
         ) : (
           <div className="flex items-center gap-2 sm:gap-4">
             <Link to={"/ai-test"}>
-              <Button 
-                variant="outline"
-                size="sm"
-                className="text-xs"
-              >
-                AI Test
-              </Button>
+       
             </Link>
             <Link to={"/auth/sign-in"}>
               <Button 
