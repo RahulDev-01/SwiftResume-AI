@@ -6,7 +6,7 @@ import GlobalApi from '../../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
 import { Brain, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
-import { sendMessage } from '../../../../../service/AIModal';
+import { sendMessage, listAvailableModels } from '../../../../../service/AIModal';
 
 function Summary({ enableNext }) {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
@@ -26,6 +26,17 @@ function Summary({ enableNext }) {
       }));
     }
   }, [summery, setResumeInfo]);
+  const checkAvailableModels = async () => {
+    try {
+      const models = await listAvailableModels();
+      console.log('Available models:', models);
+      toast(`Found ${models.length} available models`);
+    } catch (e) {
+      console.error('Error checking models:', e);
+      toast('Error checking available models');
+    }
+  };
+
   const GenerateSummeryFromAi = async () => {
     setAiLoading(true);
     const PROMPT = prompt.replace('{jobTitle}', resumeInfo?.jobTitle || '');
@@ -90,10 +101,13 @@ function Summary({ enableNext }) {
         <form className='mt-7' onSubmit={onSave}>
           <div className='flex justify-between items-end'>
             <label htmlFor="">Add Summery</label>
-            <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading }>
-              {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
-              {aiLoading ? 'Generating...' : 'Generate from AI'}
-            </Button>
+            <div className='flex gap-2'>
+             
+              <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading }>
+                {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
+                {aiLoading ? 'Generating...' : 'Generate from AI'}
+              </Button>
+            </div>
           </div>
           <Textarea className='mt-5' value={summery || ''} onChange={(e) => setSummery(e.target.value)} required />
           <div className='mt-2 flex justify-end'>

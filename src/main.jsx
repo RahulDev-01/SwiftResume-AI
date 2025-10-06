@@ -8,6 +8,7 @@ import { Home } from './Pages/Home.jsx'
 import Dashboard from './Pages/dashboard/Dashboard.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import Resume from './Pages/dashboard/resume/[resumeId]/Resume.jsx'
+import AITest from './components/AITest.jsx'
 
 
 const router = createBrowserRouter([
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path:'/auth/sign-in',
     element:<SignIn />
+  },
+  {
+    path:'/ai-test',
+    element:<AITest />
   }
 ])
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY

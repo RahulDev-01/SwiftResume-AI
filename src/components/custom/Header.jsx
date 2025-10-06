@@ -30,10 +30,28 @@ function Header() {
                 Dashboard
               </Button>
             </Link>
+            <Link to={"/ai-test"}>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="text-xs"
+              >
+                AI Test
+              </Button>
+            </Link>
             <UserButton className="custom-user-button" />
           </>
         ) : (
           <div className="flex items-center gap-2 sm:gap-4">
+            <Link to={"/ai-test"}>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="text-xs"
+              >
+                AI Test
+              </Button>
+            </Link>
             <Link to={"/auth/sign-in"}>
               <Button 
                 size="sm"
