@@ -90,14 +90,14 @@ function Summary({ enableNext }) {
         <form className='mt-7' onSubmit={onSave}>
           <div className='flex justify-between items-end'>
             <label htmlFor="">Add Summery</label>
-            <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading || saving}>
+            <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading }>
               {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
               {aiLoading ? 'Generating...' : 'Generate from AI'}
             </Button>
           </div>
           <Textarea className='mt-5' value={summery || ''} onChange={(e) => setSummery(e.target.value)} required />
           <div className='mt-2 flex justify-end'>
-            <Button type="submit" disabled={saving || aiLoading}>
+            <Button type="submit" disabled={saving}>
               {saving ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
           </div>
         </form>
