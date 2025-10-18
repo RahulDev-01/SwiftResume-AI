@@ -6,6 +6,15 @@
   height: 3rem !important; /* Adjust the height */
   font-size: 1.25rem !important; /* Adjust the text size */
 }
+.rsw-ce ul {
+  list-style: disc;
+  padding-left: 2em;
+}
+
+.rsw-ce ol {
+  list-style: decimal;
+  padding-left: 2em;
+}
 
 /* If the above doesn't work, try targeting inner elements as well */
 .custom-user-button .clerk-user-button img {
