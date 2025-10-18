@@ -1,5 +1,5 @@
-import React from 'react'
-import { useState } from 'react'
+import { Brain, Loader2Icon } from 'lucide-react';
+import React, { useContext, useState } from 'react'
 import { 
      BtnBold,
   BtnBulletList,
@@ -18,16 +18,101 @@ import {
   Separator,
   Toolbar,
  } from 'react-simple-wysiwyg'
+import { Button } from "@/components/ui/button";
+import { ResumeInfoContext } from '../../../context/ResumeInfoContext';
+import { toast } from 'sonner';
+import { sendMessage } from '../../../../service/AIModal';
 
-function RichTextEditor({onRichTextEditrChange}) {
-    const [value,setValue] = useState();
+const PROMPT = 'For the position of {positionTitle}, generate exactly 5-7 relevant bullet points for a resume. Return ONLY the bullet points in HTML format using <ul><li> tags. No introduction, no conclusion, just the bullet points.'
+function RichTextEditor({onRichTextEditrChange, index}) {
+        const [value,setValue] = useState('');
+          const [aiLoading, setAiLoading] = useState(false);
+    const {resumeInfo , setResumeInfo} = useContext(ResumeInfoContext)
+// Summary From AI
+    const GenerateSummeryFromAI = async () => {
+        if(!resumeInfo.experience[index].title){
+            toast("Please Add Position Title");
+            return;
+        }
+        
+        setAiLoading(true);
+        try {
+            const prompt = PROMPT.replace('{positionTitle}', resumeInfo?.experience?.[index]?.title || '');
+            // Send the computed prompt and get the AI response.
+            const resultText = await sendMessage(prompt);
+            console.log('AI raw response:', resultText);
+
+            // Extract only the bullet points and clean the response
+            let resp = '';
+            if (typeof resultText === 'string') {
+                // If it's JSON, try to parse it and get the first relevant text
+                try {
+                    const parsed = JSON.parse(resultText);
+                    if (Array.isArray(parsed)) {
+                        resp = parsed[0]?.text || parsed[0]?.summery || '';
+                    }
+                } catch {
+                    // Not JSON, use the string directly
+                    resp = resultText;
+                }
+            } else if (resultText && typeof resultText === 'object') {
+                resp = resultText.text || resultText.output_text || '';
+            } else {
+                resp = String(resultText);
+            }
+
+            // Clean the response: remove code markers and clean HTML
+            resp = resp
+                .replace(/```html/gi, '')
+                .replace(/```/g, '')
+                .replace(/^\s*<ul>/i, '<ul>') // Remove spaces before opening ul
+                .replace(/\s*<\/ul>\s*$/i, '</ul>') // Remove spaces around closing ul
+                .trim();
+
+            console.log('Clean response to be set:', resp);
+            setValue(resp);
+            // Manually trigger the onChange to update parent
+            onRichTextEditrChange({ target: { value: resp } });
+        } catch (error) {
+            console.error('AI generation error:', error);
+            toast.error('Failed to generate content. Please try again.');
+        } finally {
+            setAiLoading(false);
+        }
+    
+  }
+
   return (
     <div>
+        <div className='flex justify-between my-2'>
+            <label htmlFor="" className='text-lg font-semibold'>Summery</label>
+            <Button 
+                className='flex gap-2 border-primary text-primary' 
+                variant='outline' 
+                size='sm' 
+                onClick={GenerateSummeryFromAI}
+                disabled={aiLoading}
+            >
+                {aiLoading ? 
+                    <Loader2Icon className='h-4 w-4 animate-spin' /> : 
+                    <Brain className='h-4 w-4' />
+                }
+                Generate From AI
+            </Button>
+        </div>
+
+
+
+
         <EditorProvider>
-            <Editor value={value} onChange={(e)=>{
-                setValue(e.target.value);
-                onRichTextEditrChange(e)
-            }}>
+            <Editor 
+                value={value} 
+                onChange={(e)=>{
+                    const newValue = e.target.value;
+                    console.log('Editor onChange value:', newValue);
+                    setValue(newValue);
+                    onRichTextEditrChange({ target: { value: newValue } });
+                }}>
                 <Toolbar>
                    {/* <BtnUndo />
             <BtnRedo /> */}

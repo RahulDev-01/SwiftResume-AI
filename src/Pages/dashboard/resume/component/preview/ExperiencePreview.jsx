@@ -12,11 +12,19 @@ function ExperiencePreview({resumeInfo}) {
             style={{color:resumeInfo?.themeColor}}>
                 {exp?.title}</h2>
             <h2 className='text-xs flex justify-between '>{exp?.companyName}, {exp?.city}, {exp?.state}
-            <span className=' text-gray-500'>{exp?.startDate} - {exp?.currentlyWorking?'Present':exp?.endDate}</span>
+            <span className=' text-gray-500'>{exp?.startDate} To {exp?.currentlyWorking?'Present':exp?.endDate}</span>
             </h2>
-            <p className='text-xs py-2  text-gray-700'>
-                {exp?.workSummery}
-            </p>
+      {/* <p className='text-xs py-2  text-gray-700'>
+        {exp?.workSummery}
+      </p> */}
+      <div 
+        className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1" 
+        dangerouslySetInnerHTML={{__html: exp?.workSummery || ''}} 
+      />
+      {/* Debug output */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="hidden">Debug workSummery: {JSON.stringify(exp?.workSummery)}</div>
+      )}
         </div>
     ))}
     </div>

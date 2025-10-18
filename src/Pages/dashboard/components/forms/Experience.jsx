@@ -1,18 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import RichTextEditor from "../RichTextEditor";
-const fromField = {
+import { ResumeInfoContext } from "../../../../context/ResumeInfoContext";
+const createEmptyField = () => ({
     title: '',
     companyName: '',
     city: '',
-    stat: '',
+    state: '',
     startDate: '',
     endDate: '',
     workSummery: '',
-}
+})
+
 function Experience() {
-    const [experienceList, setExperienceList] = useState([fromField]);
+    const [experienceList, setExperienceList] = useState([createEmptyField()]);
+    // Context
+    const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext) ;
     const handleChange = (index, event) => {
         const newEntries = experienceList.slice();
         const { name, value } = event.target;
@@ -20,28 +24,38 @@ function Experience() {
         setExperienceList(newEntries);
 
     }
+
+    
     const AddNewExp = () => {
-        setExperienceList([...experienceList, fromField])
+        setExperienceList(prev => [...prev, createEmptyField()])
     }
     const RemoveNewExp = () => {
-        setExperienceList(experienceList => experienceList.slice(0, -1))
+        setExperienceList(prev => prev.slice(0, -1))
     }
     const handleRichTextEditor =(e,name,index)=>{
-             const newEntries = experienceList.slice();
-             newEntries[index][name] = e.target.value;;
-        setExperienceList(newEntries);
+        console.log('Experience form received value:', e.target.value);
+        setExperienceList(prev => {
+            const newEntries = prev.slice();
+            newEntries[index] = { ...newEntries[index], [name]: e.target.value };
+            console.log('Updated experience entry:', newEntries[index]);
+            return newEntries;
+        })
     }
-    
+
     useEffect(() => {
-        console.log(experienceList);
-    }, [experienceList])
+        console.log('Updating resume context with:', experienceList);
+        setResumeInfo(prev => ({
+            ...prev,
+            experience: experienceList
+        }));
+    }, [experienceList, setResumeInfo])
     return (
         <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1'>
             <h2 className='font-bold text-lg'>Proffesional Experience</h2>
             <p>Add Your Previous Job Experience</p>
             <div>
                 {experienceList.map((field, index) => (
-                    <div>
+                    <div key={index}>
                         <div className='grid grid-cols-2  gap-3 border p-3 my-5 rounded-lg '>
                             <div>
                                 <label className="text-xs " >Position Title</label>
@@ -69,7 +83,7 @@ function Experience() {
                             </div>
                             {/* Rich Text Editor  */}
                             <div className="col-span-2">
-                                <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} />
+                                <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} />
                             </div>
 
 
@@ -79,9 +93,23 @@ function Experience() {
             </div>
             <div className="flex justify-between">
                 <div className="flex gap-2">
-
-                    <Button variant='outline' className='text-primary' onClick={AddNewExp}>+ Add More Experience</Button>
-                    <Button variant='outline' className='text-primary' onClick={RemoveNewExp}>- Remove</Button>
+                    <Button 
+                        variant='outline' 
+                        className='text-primary border-primary hover:bg-primary/10' 
+                        onClick={AddNewExp}
+                    >
+                        + Add More Experience
+                    </Button>
+                    
+                    {experienceList.length > 1 && (
+                        <Button 
+                            variant='outline' 
+                            className='text-primary border-primary hover:bg-primary/10' 
+                            onClick={RemoveNewExp}
+                        >
+                            - Remove
+                        </Button>
+                    )}
                 </div>
                 <Button>Save</Button>
             </div>
