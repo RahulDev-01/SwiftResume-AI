@@ -13,9 +13,48 @@ const axiousClient = axios.create({
 const CreateNewResume =(data)=>axiousClient.post('/user-resumes',data)
 
 const GetUserResumes =(userEmail)=>axiousClient.get('/user-resumes?filters[userEmail][$eq]='+userEmail)
+const GetResumeById =(id)=>axiousClient.get('/user-resumes/'+id)
 const  UpdateResumeDatail =(id,data)=>axiousClient.put('/user-resumes/'+id,data)
+const  UpdateResumeDatailWithLocale =(id,data,locale)=>{
+    const config = locale ? { params: { locale } } : undefined;
+    return axiousClient.put('/user-resumes/'+id,data,config)
+}
+
+// Fetch resume by Strapi documentId (direct endpoint for v5)
+const GetResumeByDocumentId = async (documentId) => {
+    const response = await axiousClient.get('/user-resumes/'+documentId);
+    console.log('GetResumeByDocumentId response for', documentId, ':', {
+        status: response.status,
+        dataKeys: Object.keys(response.data || {}),
+        data: response.data
+    });
+    return response;
+}
+
+// Alternate: fetch by custom resumeId field
+const GetResumeByResumeId = (resumeId) =>
+    axiousClient.get('/user-resumes?filters[resumeId][$eq]='+resumeId)
+
+// Update resume by Strapi documentId
+const UpdateResumeByDocumentId = async (documentId, data) => {
+    console.log('UpdateResumeByDocumentId called with documentId:', documentId);
+    try {
+        // In Strapi v5, documentId can be used directly in the URL
+        const locale = data?.data?.locale;
+        const config = locale ? { params: { locale } } : undefined;
+        return axiousClient.put('/user-resumes/'+documentId, data, config);
+    } catch (err) {
+        console.error('UpdateResumeByDocumentId failed for:', documentId, err);
+        throw err;
+    }
+}
 export default{
     CreateNewResume,
     GetUserResumes,
+    GetResumeById,
     UpdateResumeDatail,
+    UpdateResumeDatailWithLocale,
+    GetResumeByDocumentId,
+    GetResumeByResumeId,
+    UpdateResumeByDocumentId,
 }

@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import React, { useContext, useEffect, useState } from 'react'
 import RichTextEditor from "../RichTextEditor";
 import { ResumeInfoContext } from "../../../../context/ResumeInfoContext";
+import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { LoaderCircle } from 'lucide-react';
+import GlobalApi from '../../../../../service/GlobalApi';
 const createEmptyField = () => ({
     title: '',
     companyName: '',
@@ -15,6 +19,8 @@ const createEmptyField = () => ({
 
 function Experience() {
     const [experienceList, setExperienceList] = useState([createEmptyField()]);
+    const [loading, setLoading] = useState(false);
+    const params = useParams();
     // Context
     const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext) ;
     const handleChange = (index, event) => {
@@ -25,7 +31,86 @@ function Experience() {
 
     }
 
-    
+    const onSave = async () => {
+      try {
+        setLoading(true);
+        const paramId = params.resumeId;
+        const isNumericId = /^\d+$/.test(String(paramId));
+
+        // Use resumeInfo attributes as base, fallback to fetch
+        let current = resumeInfo?.attributes || {};
+        if (!resumeInfo?.attributes) {
+          try {
+            if (isNumericId) {
+              const currentResp = await GlobalApi.GetResumeById(paramId);
+              current = currentResp?.data?.data?.attributes || {};
+              console.log('Fetched by numeric ID, attributes:', Object.keys(current));
+            } else {
+              const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
+              // Strapi v5: when fetching by documentId, attributes are directly in data.data
+              current = currentResp?.data?.data || {};
+              console.log('Fetched by documentId, attributes:', Object.keys(current));
+            }
+          } catch (err) {
+            console.warn('Could not fetch current resume, using empty base', err);
+            current = {};
+          }
+        }
+
+        // Normalize experience entries
+        const normalizedExperience = experienceList
+          .map((e) => ({
+            title: e.title?.trim() || null,
+            companyName: e.companyName?.trim() || null,
+            city: e.city?.trim() || null,
+            state: e.state?.trim() || null,
+            startDate: e.startDate || null,
+            endDate: e.endDate || null,
+            workSummery: (e.workSummery ?? '').toString(),
+          }))
+          .filter((e) =>
+            e.title || e.companyName || e.city || e.state || e.startDate || e.endDate || (e.workSummery && e.workSummery.trim() !== '')
+          );
+
+        // Per Strapi schema, the component field is 'Experience' (capital E)
+        const keys = Object.keys(current || {});
+        const experienceKey = 'Experience';
+
+        // Merge with existing attributes excluding system/read-only keys
+        const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+        const base = Object.fromEntries(
+          Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+        );
+        // Ensure required collection fields are present (title is required in schema)
+        if (!base.title) {
+          console.warn('Missing required field: title. Using fallback default title.');
+          base.title = 'My Resume'; // Provide default to satisfy Strapi required field
+        }
+        const updateData = { ...base, [experienceKey]: normalizedExperience };
+
+        console.log('Experience keys on record:', keys);
+        console.log('Sending experience update keys:', Object.keys(updateData));
+
+        const locale = current?.locale;
+        console.log('Using locale for update (experience):', locale);
+        if (isNumericId) {
+          await GlobalApi.UpdateResumeDatailWithLocale(paramId, { data: updateData }, locale);
+        } else {
+          await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
+        }
+
+        setLoading(false);
+        toast("Experience updated!");
+      } catch (err) {
+        console.error('Failed to update experience', {
+          err,
+          status: err?.response?.status,
+          data: err?.response?.data,
+        });
+        setLoading(false);
+        toast("Server Error, Please Try Again!");
+      }
+    };
     const AddNewExp = () => {
         setExperienceList(prev => [...prev, createEmptyField()])
     }
@@ -111,7 +196,9 @@ function Experience() {
                         </Button>
                     )}
                 </div>
-                <Button>Save</Button>
+                <Button disabled={loading} onClick={onSave}>
+                  {loading ? <LoaderCircle className="animate-spin" /> : 'Save'}
+                </Button>
             </div>
         </div>
     )

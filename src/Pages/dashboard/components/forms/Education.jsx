@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResumeInfoContext } from '../../../../context/ResumeInfoContext';
 import { Textarea } from "@/components/ui/textarea"
+import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { LoaderCircle } from 'lucide-react';
+import GlobalApi from '../../../../../service/GlobalApi';
 function Education() {
     const [educationalList, setEducationalList] = useState([
         {
@@ -14,6 +18,7 @@ function Education() {
             description: '',
         }
     ])
+    const [loading, setLoading] = useState(false);
     // Context
     const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext) ;
 
@@ -23,6 +28,7 @@ function Education() {
         newEntries[index][name] = value;
         setEducationalList(newEntries);
     }
+    const params = useParams()
 
     const AddNewdu = () => {
         setEducationalList(prev => ([
@@ -41,6 +47,93 @@ function Education() {
     const RemoveNewEdu = (index) => {
         setEducationalList(prev => prev.filter((_, i) => i !== index));
     }
+
+    const onSave = async () => {
+        try {
+          setLoading(true);
+          const paramId = params.resumeId;
+          const isNumericId = /^\d+$/.test(String(paramId));
+      
+          // Use resumeInfo attributes as base, fallback to empty object
+          let current = resumeInfo?.attributes || {};
+
+          // If resumeInfo doesn't have attributes, try to fetch
+          if (!resumeInfo?.attributes) {
+            try {
+              if (isNumericId) {
+                const currentResp = await GlobalApi.GetResumeById(paramId);
+                current = currentResp?.data?.data?.attributes || {};
+                console.log('Fetched by numeric ID, attributes:', Object.keys(current));
+              } else {
+                const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                // Strapi v5: when fetching by documentId, attributes are directly in data.data
+                current = currentResp?.data?.data || {};
+                console.log('Fetched by documentId, attributes:', Object.keys(current));
+              }
+            } catch (fetchErr) {
+              console.warn('Could not fetch current resume, using empty base', fetchErr);
+              current = {};
+            }
+          }
+      
+          // Normalize entries: trim strings, empty strings -> null, filter out totally empty rows
+          const normalizedEducation = educationalList
+            .map((e) => ({
+              universityName: e.universityName?.trim() || null,
+              degree: e.degree?.trim() || null,
+              major: e.major?.trim() || null,
+              startDate: e.startDate || null,
+              endDate: e.endDate || null,
+              description: (e.description ?? '').toString(),
+            }))
+            .filter((e) =>
+              e.universityName || e.degree || e.major || e.startDate || e.endDate || (e.description && e.description.trim() !== '')
+            );
+
+          // Per Strapi schema (user-resume.schema.json), the component field is 'Education'
+          const keys = Object.keys(current || {});
+          console.log('Strapi attribute keys on record:', keys);
+          const educationKey = 'Education';
+
+          // Build base from current attributes, excluding Strapi system/readonly fields
+          const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+          const base = Object.fromEntries(
+            Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+          );
+
+          // Safety: ensure required collection fields like 'title' are present
+          if (!base.title) {
+            console.warn('Missing required field: title. Using fallback default title.');
+            base.title = 'My Resume'; // Provide default to satisfy Strapi required field
+          }
+
+          // Create the update payload with the correct structure (merge base + new education)
+          const updateData = { ...base, [educationKey]: normalizedEducation };
+      
+          console.log('Sending update keys:', Object.keys(updateData));
+          console.log('Sending update sample:', { [educationKey]: updateData[educationKey] });
+      
+          // Send the update (pass locale if available)
+          const locale = current?.locale;
+          console.log('Using locale for update (education):', locale);
+          if (isNumericId) {
+            await GlobalApi.UpdateResumeDatailWithLocale(paramId, { data: updateData }, locale);
+          } else {
+            await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
+          }
+          
+          setLoading(false);
+          toast("Details updated!");
+        } catch (err) {
+          console.error('Failed to update education', {
+            err,
+            status: err?.response?.status,
+            data: err?.response?.data,
+          });
+          setLoading(false);
+          toast("Server Error, Please Try Again!");
+        }
+      };
     useEffect(()=>{
             console.log('Updating resume context with:', educationalList);
         setResumeInfo(prev => ({
@@ -103,7 +196,9 @@ function Education() {
                                         </Button>
                                     )}
                                 </div>
-                                <Button>Save</Button>
+                                 <Button disabled={loading} onClick={onSave}>
+          {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
+        </Button>
                             </div>
                         </div>
                     </div>
