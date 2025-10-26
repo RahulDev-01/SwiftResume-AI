@@ -48,6 +48,9 @@ const UpdateResumeByDocumentId = async (documentId, data) => {
         throw err;
     }
 }
+
+
+const  GetId =(id)=>axiousClient.get('/user-resumes/'+id+"?populate=*")
 export default{
     CreateNewResume,
     GetUserResumes,
@@ -57,4 +60,5 @@ export default{
     GetResumeByDocumentId,
     GetResumeByResumeId,
     UpdateResumeByDocumentId,
+    GetId,
 }

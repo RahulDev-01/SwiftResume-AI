@@ -24,20 +24,22 @@ import { toast } from 'sonner';
 import { sendMessage } from '../../../../service/AIModal';
 
 const PROMPT = 'For the position of {positionTitle}, generate exactly 5-7 relevant bullet points for a resume. Return ONLY the bullet points in HTML format using <ul><li> tags. No introduction, no conclusion, just the bullet points.'
-function RichTextEditor({onRichTextEditrChange, index}) {
-        const [value,setValue] = useState('');
+function RichTextEditor({onRichTextEditrChange, index, initialValue = ''}) {
+        const [value,setValue] = useState(initialValue || '');
           const [aiLoading, setAiLoading] = useState(false);
-    const {resumeInfo , setResumeInfo} = useContext(ResumeInfoContext)
+    const {resumeInfo , setResumeInfo} = useContext(ResumeInfoContext) || {};
+    const currentTitle = resumeInfo?.experience?.[index]?.title || '';
 // Summary From AI
     const GenerateSummeryFromAI = async () => {
-        if(!resumeInfo.experience[index].title){
-            toast("Please Add Position Title");
+        if(!currentTitle){
+            toast("Please add Position Title first");
             return;
         }
         
         setAiLoading(true);
         try {
-            const prompt = PROMPT.replace('{positionTitle}', resumeInfo?.experience?.[index]?.title || '');
+            const prompt = PROMPT.replace('{positionTitle}', currentTitle);
+
             // Send the computed prompt and get the AI response.
             const resultText = await sendMessage(prompt);
             console.log('AI raw response:', resultText);
@@ -91,18 +93,26 @@ function RichTextEditor({onRichTextEditrChange, index}) {
                 variant='outline' 
                 size='sm' 
                 onClick={GenerateSummeryFromAI}
-                disabled={aiLoading}
+                disabled={aiLoading || !currentTitle}
             >
                 {aiLoading ? 
                     <Loader2Icon className='h-4 w-4 animate-spin' /> : 
                     <Brain className='h-4 w-4' />
                 }
-                Generate From AI
+                {aiLoading ? 'Generating...' : 'Generate From AI'}
             </Button>
         </div>
 
-
-
+        {/* Hydrate from initialValue when it changes, but don't override user edits if they already typed */}
+        {/** This lightweight effect must be above the Editor to ensure initial render uses the latest value */}
+        {(() => {
+            if ((value === '' || value == null) && (initialValue || '') !== '') {
+                // Set synchronously during render cycle via closure-safe pattern
+                // Note: in strict mode this may run twice, but value equality guards it
+                setTimeout(() => setValue(initialValue), 0);
+            }
+            return null;
+        })()}
 
         <EditorProvider>
             <Editor 

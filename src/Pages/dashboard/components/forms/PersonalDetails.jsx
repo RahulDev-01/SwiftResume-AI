@@ -19,7 +19,15 @@ function PersonalDetails({enableNext}) {
     const  handleInputChange = (e)=>{
         enableNext(false)
 
-        const {name,value}= e.target;
+        const {name}= e.target;
+        let { value } = e.target;
+        // Only allow digits in phone field
+        if (name === 'phone') {
+            const digits = (value || '').replace(/\D/g, '');
+            // reflect sanitized value back to the input element
+            e.target.value = digits;
+            value = digits;
+        }
         setFormData({
             ...formData ,[name]:value
         })
@@ -64,7 +72,16 @@ function PersonalDetails({enableNext}) {
                 </div>
                 <div>
                     <label className='text-sm'>Phone</label>
-                    <Input name='phone' type='text' required onChange={handleInputChange} defaultValue={resumeInfo?.phone}/>
+                    <Input 
+                        name='phone' 
+                        type='tel' 
+                        inputMode='numeric' 
+                        pattern='[0-9]*' 
+                        maxLength={15}
+                        required 
+                        onChange={handleInputChange} 
+                        defaultValue={resumeInfo?.phone}
+                    />
                 </div>
                  <div>
                     <label className='text-sm'>Email</label>

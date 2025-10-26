@@ -19,6 +19,7 @@ const createEmptyField = () => ({
 
 function Experience() {
     const [experienceList, setExperienceList] = useState([createEmptyField()]);
+    const [hasUserEdited, setHasUserEdited] = useState(false);
     const [loading, setLoading] = useState(false);
     const params = useParams();
     // Context
@@ -28,6 +29,7 @@ function Experience() {
         const { name, value } = event.target;
         newEntries[index][name] = value;
         setExperienceList(newEntries);
+        setHasUserEdited(true);
 
     }
 
@@ -113,9 +115,11 @@ function Experience() {
     };
     const AddNewExp = () => {
         setExperienceList(prev => [...prev, createEmptyField()])
+        setHasUserEdited(true);
     }
     const RemoveNewExp = () => {
         setExperienceList(prev => prev.slice(0, -1))
+        setHasUserEdited(true);
     }
     const handleRichTextEditor =(e,name,index)=>{
         console.log('Experience form received value:', e.target.value);
@@ -125,15 +129,26 @@ function Experience() {
             console.log('Updated experience entry:', newEntries[index]);
             return newEntries;
         })
+        setHasUserEdited(true);
     }
 
+    // Hydrate from backend-loaded context once
     useEffect(() => {
-        console.log('Updating resume context with:', experienceList);
+        const incoming = resumeInfo?.experience;
+        if (Array.isArray(incoming) && incoming.length) {
+            setExperienceList(incoming);
+        }
+    }, [resumeInfo?.experience]);
+
+    // Only push to context after user edits
+    useEffect(() => {
+        if (!hasUserEdited) return;
+        console.log('Experience: pushing user-edited list to context:', experienceList);
         setResumeInfo(prev => ({
             ...prev,
             experience: experienceList
         }));
-    }, [experienceList, setResumeInfo])
+    }, [experienceList, hasUserEdited, setResumeInfo])
     return (
         <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1'>
             <h2 className='font-bold text-lg'>Proffesional Experience</h2>
@@ -144,31 +159,31 @@ function Experience() {
                         <div className='grid grid-cols-2  gap-3 border p-3 my-5 rounded-lg '>
                             <div>
                                 <label className="text-xs " >Position Title</label>
-                                <Input type="text" name="title" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             <div>
                                 <label className="text-xs " >Company Name</label>
-                                <Input type="text" name="companyName" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             <div>
                                 <label className="text-xs " >City</label>
-                                <Input type="text" name="city" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             <div>
                                 <label className="text-xs " >State</label>
-                                <Input type="text" name="state" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             <div>
                                 <label className="text-xs " >Start Date </label>
-                                <Input type="date" name="startDate" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" placeholder="e.g., Jan 2021" name="startDate" value={field.startDate || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             <div>
                                 <label className="text-xs " >End Date</label>
-                                <Input type="date" name="endDate" onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
                             </div>
                             {/* Rich Text Editor  */}
                             <div className="col-span-2">
-                                <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} />
+                                <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} initialValue={field.workSummery || ''} />
                             </div>
 
 

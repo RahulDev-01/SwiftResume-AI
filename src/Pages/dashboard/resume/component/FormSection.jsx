@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import PersonalDetails from '../../components/forms/PersonalDetails'
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, LayoutGrid } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Home, LayoutGrid } from 'lucide-react';
 import Summary from '../../components/forms/Summary';
 import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
+import { Link } from 'react-router-dom';
 
 function FormSection() {
   const [activeFormIndex , setActiveFormIndex] = useState(1);
@@ -22,8 +23,13 @@ function FormSection() {
   return (
     <div>
       <div className='flex justify-between mb-3'>
-  <Button varient='outline' size='sm'
-   className='flex gap-2 '> <LayoutGrid />Theme</Button>
+        <div className='flex gap-5'>
+          <Link to={"/dashboard"}>
+          <Button className='mb-1'><Home className='inline'/></Button>
+          </Link>
+  <Button variant='outline' size='sm'
+   className='flex gap-2 scale-112 mt-[1px] '> <LayoutGrid />Theme</Button>
+   </div>
         <div className='flex gap-2'>
           {activeFormIndex>1 &&
            <Button  size='sm'

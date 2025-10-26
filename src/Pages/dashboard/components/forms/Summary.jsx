@@ -18,6 +18,12 @@ function Summary({ enableNext }) {
   const params = useParams();
 
   const [aiGeneratedSummeryList, setAiGeneratedSummeryList] = useState()
+  // Hydrate local state from backend context once available (do not override user typing)
+  useEffect(() => {
+    if ((summery === undefined || summery === null || summery === '') && (resumeInfo?.summery ?? '') !== '') {
+      setSummery(resumeInfo.summery);
+    }
+  }, [resumeInfo?.summery]);
   useEffect(() => {
     if (summery) {
       setResumeInfo(prevResumeInfo => ({

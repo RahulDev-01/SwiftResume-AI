@@ -19,29 +19,41 @@ const Skills = () => {
       rating: 0,
     },
   ]);
+  const [hasUserEdited, setHasUserEdited] = useState(false);
 
   const AddNewSkills = () => {
     setSkills([...skills, { name: "", rating: 0 }]);
+    setHasUserEdited(true);
   };
 
   const RemoveSkills = () => {
     setSkills(skills.slice(0, -1));
+    setHasUserEdited(true);
   };
 
   const handleChange = (index, name, value) => {
     const newEntries = skills.slice();
     newEntries[index][name] = value;
     setSkills(newEntries);
+    setHasUserEdited(true);
   };
 
+  // Hydrate local state from backend-loaded context once
   useEffect(() => {
-    if (typeof setResumeInfo === "function") {
-      setResumeInfo((prev) => ({
-        ...prev,
-        skills: skills,
-      }));
+    const incoming = resumeInfo?.skills;
+    if (Array.isArray(incoming) && incoming.length) {
+      setSkills(incoming);
     }
-  }, [skills, setResumeInfo]);
+  }, [resumeInfo?.skills]);
+
+  // Only push to context after user edits
+  useEffect(() => {
+    if (!hasUserEdited || typeof setResumeInfo !== 'function') return;
+    setResumeInfo((prev) => ({
+      ...prev,
+      skills: skills,
+    }));
+  }, [skills, hasUserEdited, setResumeInfo]);
 
   const onSave = async () => {
     try {
@@ -121,12 +133,13 @@ const Skills = () => {
             <div>
               <label className="text-xs">Name</label>
               <Input
+                value={skill.name || ''}
                 onChange={(e) => handleChange(index, "name", e.target.value)}
               />
             </div>
             <Rating
               style={{ maxWidth: 120 }}
-              value={skill.rating}
+              value={Number.isFinite(Number(skill.rating)) ? Number(skill.rating) : 0}
               onChange={(v) => handleChange(index, "rating", v)}
             />
           </div>

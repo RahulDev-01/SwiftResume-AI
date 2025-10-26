@@ -18,6 +18,7 @@ function Education() {
             description: '',
         }
     ])
+    const [hasUserEdited, setHasUserEdited] = useState(false);
     const [loading, setLoading] = useState(false);
     // Context
     const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext) ;
@@ -27,6 +28,7 @@ function Education() {
         const { name, value } = event.target;
         newEntries[index][name] = value;
         setEducationalList(newEntries);
+        setHasUserEdited(true);
     }
     const params = useParams()
 
@@ -42,10 +44,12 @@ function Education() {
                 description: '',
             }
         ]));
+        setHasUserEdited(true);
     }
 
     const RemoveNewEdu = (index) => {
         setEducationalList(prev => prev.filter((_, i) => i !== index));
+        setHasUserEdited(true);
     }
 
     const onSave = async () => {
@@ -134,13 +138,24 @@ function Education() {
           toast("Server Error, Please Try Again!");
         }
       };
+    // Hydrate local form state from backend-loaded context data once
+    useEffect(() => {
+        const incoming = resumeInfo?.education;
+        if (Array.isArray(incoming) && incoming.length) {
+            setEducationalList(incoming);
+            // Do not mark as user edited on hydration
+        }
+    }, [resumeInfo?.education]);
+
+    // Only push to context after user edits form
     useEffect(()=>{
-            console.log('Updating resume context with:', educationalList);
+        if (!hasUserEdited) return;
+        console.log('Education: pushing user-edited list to context:', educationalList);
         setResumeInfo(prev => ({
             ...prev,
             education: educationalList
         }));
-    },[educationalList])
+    },[educationalList, hasUserEdited, setResumeInfo])
 
     return (
         <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1'>

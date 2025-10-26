@@ -1,12 +1,16 @@
 import React from 'react'
+import Dummy from '../../../../../Data/Dummy'
 
 function ExperiencePreview({resumeInfo}) {
+  const raw = Array.isArray(resumeInfo?.experience) ? resumeInfo.experience : [];
+  const meaningful = raw.filter((e)=> (e?.title?.trim() || e?.companyName?.trim() || e?.workSummery?.trim()));
+  const list = meaningful.length ? meaningful : (Array.isArray(Dummy?.experience) ? Dummy.experience : []);
   return (
     <div className='my-6'> 
     <h2 className='text-center font-bold text-lg mb-2' style={{color:resumeInfo?.themeColor}}>Professional Experience</h2>
     <hr className='border-[2px]' style={{borderColor:resumeInfo?.themeColor}}/>
 
-    {resumeInfo?.experience.map((exp,index)=>(
+    {list.map((exp,index)=>(
         <div key={index} className='my-5'>
             <h2 className='text-sm font-bold'
             style={{color:resumeInfo?.themeColor}}>
@@ -18,7 +22,7 @@ function ExperiencePreview({resumeInfo}) {
         {exp?.workSummery}
       </p> */}
       <div 
-        className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1" 
+        className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1 break-words max-h-48 overflow-y-auto pr-1" 
         dangerouslySetInnerHTML={{__html: exp?.workSummery || ''}} 
       />
       {/* Debug output */}
