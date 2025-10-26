@@ -102,7 +102,7 @@ function Experience() {
         }
 
         setLoading(false);
-        toast("Experience updated!");
+        toast("Experience: Details updated ✅");
       } catch (err) {
         console.error('Failed to update experience', {
           err,
@@ -110,7 +110,7 @@ function Experience() {
           data: err?.response?.data,
         });
         setLoading(false);
-        toast("Server Error, Please Try Again!");
+        toast("Experience: Server error, please try again ❌");
       }
     };
     const AddNewExp = () => {
@@ -159,19 +159,19 @@ function Experience() {
                         <div className='grid grid-cols-2  gap-3 border p-3 my-5 rounded-lg '>
                             <div>
                                 <label className="text-xs " >Position Title</label>
-                                <Input type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Software Engineer" />
                             </div>
                             <div>
                                 <label className="text-xs " >Company Name</label>
-                                <Input type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Acme Corp" />
                             </div>
                             <div>
                                 <label className="text-xs " >City</label>
-                                <Input type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., San Francisco" />
                             </div>
                             <div>
                                 <label className="text-xs " >State</label>
-                                <Input type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} />
+                                <Input type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., CA" />
                             </div>
                             <div>
                                 <label className="text-xs " >Start Date </label>

@@ -23,6 +23,7 @@ function Education() {
     // Context
     const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext) ;
 
+
     const handleChange = (event, index) => {
      const newEntries = educationalList.slice();
         const { name, value } = event.target;
@@ -30,6 +31,7 @@ function Education() {
         setEducationalList(newEntries);
         setHasUserEdited(true);
     }
+    
     const params = useParams()
 
     const AddNewdu = () => {
@@ -135,7 +137,7 @@ function Education() {
           }
           
           setLoading(false);
-          toast("Details updated!");
+          toast("Education: Details updated ✅");
         } catch (err) {
           console.error('Failed to update education', {
             err,
@@ -143,7 +145,7 @@ function Education() {
             data: err?.response?.data,
           });
           setLoading(false);
-          toast("Server Error, Please Try Again!");
+          toast("Education: Server error, please try again ❌");
         }
       };
     // Hydrate local form state from backend-loaded context data once
@@ -173,27 +175,27 @@ function Education() {
                         <div className='grid grid-cols-2  gap-3 border p-3 my-5 rounded-lg '>
                             <div className='col-span-2 '>
                                 <label>University Name</label>
-                                <Input name="universityName" value={item.universityName} onChange={(e) => handleChange(e, index)} />
+                                <Input name="universityName" value={item.universityName} onChange={(e) => handleChange(e, index)} placeholder="e.g., Stanford University" />
                             </div>
                             <div>
                                 <label>Degree </label>
-                                <Input name="degree" value={item.degree} onChange={(e) => handleChange(e, index)} />
+                                <Input name="degree" value={item.degree} onChange={(e) => handleChange(e, index)} placeholder="e.g., B.Sc., M.Tech" />
                             </div>
                             <div>
                                 <label>Major</label>
-                                <Input name="major" value={item.major} onChange={(e) => handleChange(e, index)} />
+                                <Input name="major" value={item.major} onChange={(e) => handleChange(e, index)} placeholder="e.g., Computer Science" />
                             </div>
                             <div>
                                 <label>Start Date</label>
-                                <Input name="startDate" value={item.startDate} onChange={(e) => handleChange(e, index)} type='date' />
+                                <Input name="startDate" value={item.startDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Jan 2021" />
                             </div>
                             <div>
                                 <label>End Date</label>
-                                <Input name="endDate" value={item.endDate} onChange={(e) => handleChange(e, index)} type='date'  />
+                                <Input name="endDate" value={item.endDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Dec 2022 or Present"  />
                             </div>
                             <div className='col-span-2'>
                                 <label>Description</label>
-                                <Textarea name="description" value={item.description} onChange={(e) => handleChange(e, index)} />
+                                <Textarea name="description" value={item.description} onChange={(e) => handleChange(e, index)} placeholder="E.g., Coursework, GPA, awards, projects" />
                             </div>
                         </div>
                         <div>

@@ -36,10 +36,10 @@ function Summary({ enableNext }) {
     try {
       const models = await listAvailableModels();
       console.log('Available models:', models);
-      toast(`Found ${models.length} available models`);
+      toast(`Summary: Found ${models.length} available models ✅`);
     } catch (e) {
       console.error('Error checking models:', e);
-      toast('Error checking available models');
+      toast('Summary: Error checking available models ❌');
     }
   };
 
@@ -72,11 +72,16 @@ function Summary({ enableNext }) {
     } catch (e) {
       console.error(e);
       const msg = e?.message || 'Failed to generate summary';
-      toast(msg);
+      toast(`Summary: ${msg} ❌`);
     } finally {
       setAiLoading(false);
     }
   }
+
+  const handleSummaryChange = (e) => {
+    const next = e.target.value || '';
+    setSummery(next);
+  };
 
   const onSave = (e) => {
     e.preventDefault();
@@ -86,13 +91,13 @@ function Summary({ enableNext }) {
       .then(resp => {
         console.log(resp);
         enableNext(true)
-        toast("Details Updated")
+        toast("Summary: Details updated ✅")
       })
       .catch(err => {
         const status = err?.response?.status;
         const msg = err?.message || 'Failed to update details';
         console.error('Save error:', status, err);
-        toast(`Save failed${status ? ` (${status})` : ''}: ${msg}`);
+        toast(`Summary: Save failed${status ? ` (${status})` : ''}: ${msg} ❌`);
       })
       .finally(() => setSaving(false));
   }
@@ -115,7 +120,7 @@ function Summary({ enableNext }) {
               </Button>
             </div>
           </div>
-          <Textarea className='mt-5' value={summery || ''} onChange={(e) => setSummery(e.target.value)} required />
+          <Textarea className='mt-5' value={summery || ''} onChange={handleSummaryChange} required />
           <div className='mt-2 flex justify-end'>
             <Button type="submit" disabled={saving}>
               {saving ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
@@ -137,8 +142,17 @@ function Summary({ enableNext }) {
               className='my-4 p-5 rounded-xl border shadow-md bg-white cursor-pointer hover:shadow-lg hover:border-[#7C3AED] transition'
               role='button'
               tabIndex={0}
-              onClick={() => setSummery(item?.summery ?? item?.summary ?? item?.Summary ?? '')}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSummery(item?.summery ?? item?.summary ?? item?.Summary ?? ''); } }}
+              onClick={() => {
+                const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
+                setSummery(text);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
+                  setSummery(text);
+                }
+              }}
             >
               <h3 className='font-semibold text-[#7C3AED]'>
                 Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}

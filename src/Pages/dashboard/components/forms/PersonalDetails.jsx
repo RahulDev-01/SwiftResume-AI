@@ -44,8 +44,8 @@ function PersonalDetails({enableNext}) {
         GlobalApi.UpdateResumeDatail(params?.resumeId,data).then(resp=>{console.log(resp);
             enableNext(true)
             setloading(false);
-            toast("Details Updated")
-        },(error)=>setloading(false))
+            toast("Personal Details: Details updated ✅")
+        },(error)=>{ setloading(false); toast("Personal Details: Server error, please try again ❌") })
     }
   return (
     <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1'>
@@ -56,19 +56,19 @@ function PersonalDetails({enableNext}) {
             <div className='grid grid-cols-2 mt-5 gap-3'>
                 <div>
                     <label className='text-sm'>First Name</label>
-                    <Input name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName}/>
+                    <Input name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName} placeholder="e.g., John"/>
                 </div>
                 <div>
                     <label className='text-sm'>Last Name</label>
-                    <Input name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName}/>
+                    <Input name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName} placeholder="e.g., Doe"/>
                 </div>
                 <div className='col-span-2'>
                     <label className='text-sm'>Job Title</label>
-                    <Input name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle}/>
+                    <Input name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle} placeholder="e.g., Software Engineer"/>
                 </div>
                 <div className='col-span-2'>
                     <label className='text-sm'>Address</label>
-                    <Input name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address}/>
+                    <Input name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address} placeholder="e.g., 123 Main St, City, State"/>
                 </div>
                 <div>
                     <label className='text-sm'>Phone</label>
@@ -81,11 +81,12 @@ function PersonalDetails({enableNext}) {
                         required 
                         onChange={handleInputChange} 
                         defaultValue={resumeInfo?.phone}
+                        placeholder='e.g., 5551234567'
                     />
                 </div>
                  <div>
                     <label className='text-sm'>Email</label>
-                    <Input name='email'  type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email}/>
+                    <Input name='email'  type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email} placeholder="e.g., john.doe@example.com"/>
                 </div>
 
                 

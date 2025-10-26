@@ -17,6 +17,14 @@
     overflow: visible;
     font-size: 1.06em;      /* subtle size increase without distorting layout */
   }
+  /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
+  #print-area .screen-zoom-target {
+    transform: none !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+  }
+  #print-area .screen-zoom-wrapper { width: auto !important; margin: 0 auto !important; }
   /* Reduce thick top border on print so content fits */
   .resume-sheet { border-top-width: 6mm !important; }
   html, body {

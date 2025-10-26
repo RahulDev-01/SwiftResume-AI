@@ -4,7 +4,7 @@ import Dummy from '../../../../../Data/Dummy'
 function SummaryPreview({resumeInfo}) {
   const text = (resumeInfo?.summery || '').trim() || Dummy.summery;
   return (
-    <p className='text-sm text-gray-600 break-words max-h-32 overflow-y-auto pr-1'>
+    <p className='text-sm text-gray-600 break-words whitespace-pre-wrap'>
       {text}
     </p>
   )

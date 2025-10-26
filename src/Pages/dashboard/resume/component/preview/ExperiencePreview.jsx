@@ -22,7 +22,7 @@ function ExperiencePreview({resumeInfo}) {
         {exp?.workSummery}
       </p> */}
       <div 
-        className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1 break-words max-h-48 overflow-y-auto pr-1" 
+        className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1 break-words" 
         dangerouslySetInnerHTML={{__html: exp?.workSummery || ''}} 
       />
       {/* Debug output */}
