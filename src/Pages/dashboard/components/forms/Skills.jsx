@@ -36,30 +36,76 @@ const Skills = () => {
 
   useEffect(() => {
     if (typeof setResumeInfo === "function") {
-      setResumeInfo({
-        ...resumeInfo,
+      setResumeInfo((prev) => ({
+        ...prev,
         skills: skills,
-      });
+      }));
     }
-  }, [skills, setResumeInfo, resumeInfo]);
+  }, [skills, setResumeInfo]);
 
-  const onSave = () => {
-    setLoading(true);
-    const data = {
-      data: {
-        skills: skills,
-      },
-    };
-    GlobalApi.updateResumeDetails(params.resumeId, data).then(
-      () => {
-        setLoading(false);
-        toast.success("Skills Updated Successfully");
-      },
-      () => {
-        setLoading(false);
-        toast.error("Skills Update Failed");
+  const onSave = async () => {
+    try {
+      setLoading(true);
+      const paramId = params.resumeId;
+      const isNumericId = /^\d+$/.test(String(paramId));
+
+      // Always fetch fresh data to ensure we have all fields (Education, Experience, etc.)
+      let current = {};
+      try {
+        if (isNumericId) {
+          const currentResp = await GlobalApi.GetResumeById(paramId);
+          current = currentResp?.data?.data?.attributes || {};
+        } else {
+          const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
+          current = currentResp?.data?.data || {};
+        }
+        console.log('Skills: Fetched current data, keys:', Object.keys(current));
+      } catch (err) {
+        console.warn('Could not fetch current resume', err);
+        current = {};
       }
-    );
+
+      // Normalize skills: trim names, coerce rating to number, filter empty rows
+      const normalizedSkills = skills
+        .map((s) => ({
+          name: s.name?.trim() || '',
+          rating: Number.isFinite(Number(s.rating)) ? Number(s.rating) : 0,
+        }))
+        .filter((s) => s.name && s.name.trim() !== '');
+
+      // Merge with existing attributes excluding system/read-only keys
+      const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+      const base = Object.fromEntries(
+        Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+      );
+
+      // Ensure title is present (required field)
+      if (!base.title) {
+        base.title = 'My Resume';
+      }
+
+      const skillsKey = 'Skills';
+      const updateData = { ...base, [skillsKey]: normalizedSkills };
+
+      console.log('Skills: Sending update with keys:', Object.keys(updateData));
+      console.log('Skills: Sample payload:', { [skillsKey]: updateData[skillsKey] });
+
+      const data = { data: updateData };
+
+      // Use appropriate API based on ID type
+      if (isNumericId) {
+        await GlobalApi.UpdateResumeDatailWithLocale(paramId, data, current?.locale);
+      } else {
+        await GlobalApi.UpdateResumeByDocumentId(paramId, data);
+      }
+
+      setLoading(false);
+      toast("Skills Updated Successfully");
+    } catch (err) {
+      console.error('Failed to update skills', err);
+      setLoading(false);
+      toast("Skills Update Failed");
+    }
   };
 
   return (
