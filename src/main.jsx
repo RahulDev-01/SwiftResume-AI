@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './auth/SignIn.jsx'
 import { Home } from './Pages/Home.jsx'
 import Dashboard from './Pages/dashboard/Dashboard.jsx'
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider, AuthenticateWithRedirectCallback } from '@clerk/clerk-react'
 import Resume from './Pages/dashboard/resume/[resumeId]/Resume.jsx'
 import AITest from './components/AITest.jsx'
 import View from './My-resume/[resumeId]/View/View.jsx'
@@ -35,6 +35,10 @@ const router = createBrowserRouter([
     element:<SignIn />
   },
   {
+    path:'/sso-callback',
+    element:<AuthenticateWithRedirectCallback />
+  },
+  {
     path:'/ai-test',
     element:<AITest />
   },
@@ -52,3 +56,4 @@ createRoot(document.getElementById('root')).render(
     </ClerkProvider>
   </StrictMode>,
 )
+
