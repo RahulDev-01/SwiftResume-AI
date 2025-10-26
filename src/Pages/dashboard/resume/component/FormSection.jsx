@@ -6,11 +6,12 @@ import Summary from '../../components/forms/Summary';
 import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 
 function FormSection() {
   const [activeFormIndex , setActiveFormIndex] = useState(1);
   const [enableNext,setEnableNext] = useState(false)
+  const {resumeId} = useParams()
 
   // Reset enableNext when changing form
   const goToForm = (index) => {
@@ -51,6 +52,7 @@ function FormSection() {
       {activeFormIndex==5?<Skills enableNext={(v)=>setEnableNext(v)}/>: null}
 
       {/* Skills */}
+      {activeFormIndex==6?<Navigate  to={'/my-resume/'+ resumeId +"/view"}/>: null}
 
 
     </div>
