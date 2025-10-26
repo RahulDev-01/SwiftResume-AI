@@ -39,7 +39,7 @@ function View() {
               <RWebShare
                 data={{
                   text: "Hello! This is my resume. Open this link to view it.",
-                  url: `${import.meta.env.VITE_URL}/myresume/${resumeId}/view`,
+                  url: `${import.meta.env.VITE_URL}/my-resume/${resumeId}/view`,
                   title: `${(resumeInfo?.firstName||'').trim()} ${(resumeInfo?.lastName||'').trim()} Resume`.trim(),
                 }}
               >
