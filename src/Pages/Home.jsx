@@ -411,7 +411,7 @@ export function Home() {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SwiftResume AI. All rights reserved.</p>
+            <p>&copy; 2024 SwiftResume AI. All rights reserved. Created By <span className='text-blue-700'>Savvana Rahul</span>⚡</p>
           </div>
         </div>
       </footer>
