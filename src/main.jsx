@@ -35,6 +35,10 @@ const router = createBrowserRouter([
     element:<SignIn />
   },
   {
+    path:'/auth/sign-in/sso-callback',
+    element:<AuthenticateWithRedirectCallback />
+  },
+  {
     path:'/sso-callback',
     element:<AuthenticateWithRedirectCallback />
   },
