@@ -7,12 +7,10 @@ function EducationPreview({resumeInfo}) {
     <h2 className='text-center font-bold text-lg mb-2' style={{color:resumeInfo?.themeColor}}>Education </h2>
     <hr className='border-[2px]' style={{borderColor:resumeInfo?.themeColor}}/>
     {(() => {
-        const raw = Array.isArray(resumeInfo?.education) ? resumeInfo.education : [];
-        const meaningful = raw.filter((e)=> (
-          e?.universityName?.trim() || e?.degree?.trim() || e?.major?.trim() || e?.description?.trim()
-        ));
-        const list = meaningful.length ? meaningful : (Array.isArray(Dummy?.education) ? Dummy.education : []);
-        return list;
+        const lower = Array.isArray(resumeInfo?.education) ? resumeInfo.education : [];
+        const upper = Array.isArray(resumeInfo?.Education) ? resumeInfo.Education : [];
+        const source = lower.length ? lower : (upper.length ? upper : (Array.isArray(Dummy?.education) ? Dummy.education : []));
+        return source;
     })().map((edu,index)=>(
         <div key={index} className='my-5'>
             <h2 className='text-sm my-[3px] font-bold'

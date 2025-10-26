@@ -13,9 +13,18 @@ function Dashboard() {
   },[user])
 
   const GetResumeList =()=>{
-    GlobalApi.GetUserResumes(user?.primaryEmailAddress?.emailAddress).then(resp=>{
-      setResumeList(resp.data.data);
-    })
+    const email = user?.primaryEmailAddress?.emailAddress;
+    if(!email){
+      setResumeList([]);
+      return;
+    }
+    GlobalApi.GetUserResumes(email)
+      .then(resp=>{
+        setResumeList(resp?.data?.data || []);
+      })
+      .catch(()=>{
+        setResumeList([]);
+      })
   }
 
 
@@ -26,7 +35,7 @@ function Dashboard() {
 
     <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-10 gap-5 '>
       <AddResume />
-      {resumeList.length>0&&resumeList.map((resume,index)=>(
+      {Array.isArray(resumeList)&&resumeList.length>0&&resumeList.map((resume,index)=>(
         <ResumeCardItem resume={resume} key={index}/>
       ))}
     </div>

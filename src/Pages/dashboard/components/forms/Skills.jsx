@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ const Skills = () => {
     },
   ]);
   const [hasUserEdited, setHasUserEdited] = useState(false);
+  const debounceRef = useRef(null);
 
   const AddNewSkills = () => {
     setSkills([...skills, { name: "", rating: 0 }]);
@@ -85,10 +86,18 @@ const Skills = () => {
         }))
         .filter((s) => s.name && s.name.trim() !== '');
 
-      // Merge with existing attributes excluding system/read-only keys
+      // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
       const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+      const scalarAllowed = new Set([
+        'title','resumeId','userEmail','userName',
+        'firstName','lastName','jobTitle','address','phone','email',
+        'summery','themeColor','color'
+      ]);
       const base = Object.fromEntries(
-        Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+        Object.entries(current || {})
+          .filter(([k, v]) => !systemKeys.includes(k))
+          .filter(([k, v]) => scalarAllowed.has(k))
+          .filter(([k, v]) => v===null || ['string','number','boolean'].includes(typeof v))
       );
 
       // Ensure title is present (required field)

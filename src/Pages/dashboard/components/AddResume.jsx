@@ -34,6 +34,7 @@ function AddResume() {
                     resumeId: uuid,
                     userEmail: user?.primaryEmailAddress?.emailAddress,
                     userName: user?.fullName,
+                    themeColor: '#FFA500'
                 },
             };
             const resp = await GlobalApi.CreateNewResume(payload);

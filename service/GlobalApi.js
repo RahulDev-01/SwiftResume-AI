@@ -2,11 +2,13 @@ import axios from "axios";
 
 
 const API_KEY = import.meta.env.VITE_STRAPI_API_KEY
+// Ensure trailing slash so axios concatenates correctly (avoids '/apiuser-resumes')
+const base = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "") + "/api/";
 const axiousClient = axios.create({
-    baseURL : import.meta.env.VITE_BASE_URL + "/api",
+    baseURL : base,
     headers :{
         'Content-Type':'application/json',
-        'Authorization':`bearer ${API_KEY}`
+        'Authorization':`Bearer ${API_KEY}`
     }
 })
 
@@ -29,7 +31,7 @@ axiousClient.interceptors.response.use(
 
 const CreateNewResume =(data)=>axiousClient.post('user-resumes',data)
 
-const GetUserResumes =(userEmail)=>axiousClient.get('user-resumes?filters[userEmail][$eq]='+userEmail)
+const GetUserResumes =(userEmail)=>axiousClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail))
 const GetResumeById =(id)=>axiousClient.get('user-resumes/'+id)
 const  UpdateResumeDatail =(id,data)=>axiousClient.put('user-resumes/'+id,data)
 const  UpdateResumeDatailWithLocale =(id,data,locale)=>{

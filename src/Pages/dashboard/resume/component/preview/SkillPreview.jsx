@@ -13,12 +13,20 @@ function SkillPreview({resumeInfo}) {
             const list = meaningful.length ? meaningful : (Array.isArray(Dummy?.skills) ? Dummy.skills : []);
             return list;
         })().map((skill,index)=>(
-            <div key={index} className='flex items-center gap-3 min-w-0 flex-wrap'>
-                <div className='flex-1 min-w-0'>
-                    <h2 className='text-xs break-words whitespace-normal'>{skill?.name}</h2>
+            <div key={index} className='grid grid-cols-[1fr_auto] items-center gap-3 min-w-0'>
+                <div className='min-w-0'>
+                    <h2 className='text-xs break-words whitespace-normal truncate'>{skill?.name}</h2>
                 </div>
-                <div className='h-2 bg-gray-200 w-[120px] flex-none'>
-                    <div className='h-2' style={{backgroundColor :resumeInfo?.themeColor, width:(Number(skill?.rating)||0)*20+"%"}}></div>
+                <div className='h-2 bg-gray-200 w-[100px] sm:w-[120px] md:w-[140px] flex-none shrink-0 overflow-hidden rounded'>
+                    {(() => {
+                        const raw = Number(skill?.rating);
+                        const pct = Number.isFinite(raw)
+                          ? (raw <= 5 ? raw * 20 : Math.max(0, Math.min(100, raw)))
+                          : 0;
+                        return (
+                          <div className='h-2 rounded' style={{backgroundColor: resumeInfo?.themeColor, width: pct + "%"}}></div>
+                        );
+                    })()}
                 </div>
             </div>
         ))}

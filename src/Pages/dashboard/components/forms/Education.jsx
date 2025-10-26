@@ -94,15 +94,23 @@ function Education() {
               e.universityName || e.degree || e.major || e.startDate || e.endDate || (e.description && e.description.trim() !== '')
             );
 
-          // Per Strapi schema (user-resume.schema.json), the component field is 'Education'
+          // Per Strapi schema, the attribute key is capitalized 'Education'
           const keys = Object.keys(current || {});
           console.log('Strapi attribute keys on record:', keys);
           const educationKey = 'Education';
 
-          // Build base from current attributes, excluding Strapi system/readonly fields
+          // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
           const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+          const scalarAllowed = new Set([
+            'title','resumeId','userEmail','userName',
+            'firstName','lastName','jobTitle','address','phone','email',
+            'summery','themeColor','color'
+          ]);
           const base = Object.fromEntries(
-            Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+            Object.entries(current || {})
+              .filter(([k, v]) => !systemKeys.includes(k))
+              .filter(([k, v]) => scalarAllowed.has(k))
+              .filter(([k, v]) => v===null || ['string','number','boolean'].includes(typeof v))
           );
 
           // Safety: ensure required collection fields like 'title' are present
@@ -143,16 +151,14 @@ function Education() {
         const incoming = resumeInfo?.education;
         if (Array.isArray(incoming) && incoming.length) {
             setEducationalList(incoming);
-            // Do not mark as user edited on hydration
         }
     }, [resumeInfo?.education]);
 
     // Only push to context after user edits form
     useEffect(()=>{
         if (!hasUserEdited) return;
-        console.log('Education: pushing user-edited list to context:', educationalList);
         setResumeInfo(prev => ({
-            ...prev,
+            ...(prev||{}),
             education: educationalList
         }));
     },[educationalList, hasUserEdited, setResumeInfo])
