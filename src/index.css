@@ -1,19 +1,48 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-/* In your global CSS file (e.g., styles.css or global.css) */
-.custom-user-button .clerk-user-button {
-  width: 3rem !important; /* Adjust the width */
-  height: 3rem !important; /* Adjust the height */
-  font-size: 1.25rem !important; /* Adjust the text size */
-}
-.rsw-ce ul {
-  list-style: disc;
-  padding-left: 2em;
+
+
+@media print{
+  /* Print-only overrides */
+  #no-print { display: none !important; }
+  #print-area { display: block !important; }
+  .resume-sheet {
+    /* Exact A4 size: no scaling */
+    width: 210mm;           /* A4 width */
+    min-height: 297mm;      /* A4 height */
+    margin: 0 auto;
+    padding: 10mm;          /* inner padding so content doesn't touch edges */
+    box-sizing: border-box;
+    box-shadow: none !important;
+    overflow: visible;
+    font-size: 1.06em;      /* subtle size increase without distorting layout */
+  }
+  /* Reduce thick top border on print so content fits */
+  .resume-sheet { border-top-width: 6mm !important; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
-.rsw-ce ol {
-  list-style: decimal;
-  padding-left: 2em;
+@page { size: A4 portrait; margin: 0; }
+
+/* Screen layout: make the resume preview fit the viewport nicely */
+.resume-sheet {
+  width: 100%;
+  max-width: 900px; /* comfortable width on large screens */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .resume-sheet {
+    max-width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }
 
 /* If the above doesn't work, try targeting inner elements as well */
@@ -219,3 +248,25 @@ html {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ---- Print layout overrides (do not remove) ---- */
+@media print {
+  #no-print { display: none !important; }
+  #print-area { display: block !important; }
+  .resume-sheet {
+    width: 210mm;           /* A4 width */
+    min-height: 297mm;      /* A4 height */
+    margin: 0 auto;
+    padding: 10mm;
+    box-sizing: border-box;
+    box-shadow: none !important;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@page { size: A4 portrait; margin: 0; }

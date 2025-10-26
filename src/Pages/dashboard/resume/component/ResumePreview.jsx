@@ -10,7 +10,7 @@ function ResumePreview() {
 
     const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext)
   return (
-    <div className='shadow-lg h-full p-14 border-t-[20px]' style={{borderColor:resumeInfo?.themeColor}}>
+    <div className='shadow-lg p-14 print:p-0 border-t-[20px] print:border-t-0 resume-sheet w-full max-w-[900px] mx-auto print:w-[210mm] print:min-h-[297mm]' style={{borderColor:resumeInfo?.themeColor}}>
         {/* Personal DEtail  */}
         <PersonalDetailPreview  resumeInfo={resumeInfo}/>
 
