@@ -5,7 +5,7 @@ import ResumePreview from '../../../Pages/dashboard/resume/component/ResumePrevi
 import { ResumeInfoContext } from '../../../context/ResumeInfoContext';
 import GlobalApi from '../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
-import { RWebShare } from 'react-web-share';
+import { RWebShare } from '../../../components/shared/RWebShare';
 function View() {
       const [resumeInfo,setResumeInfo] = useState();
       const [zoom, setZoom] = useState(1.5);
@@ -36,17 +36,15 @@ function View() {
             <p className='text-center text-gray-400 mt-5'>Now you are ready to download your resume and you can share unique url with your  friends and family  </p>
             <div className='flex items-center justify-end gap-2 px-6 my-5'>
               <Button onClick={HandleDownload}>Download</Button>
-
-             <RWebShare
-        data={{
-          text: "Hello EveryOne , This is my Resume Click on Url To Check It",
-          url: import.meta.env.VITE_URL+"/myresume/"+resumeId+"/view",
-          title: resumeId?.firstName+" "+resumeId?.lastName+"Resume"
-        }}
-        onClick={() => console.log("shared successfully!")}
-      >
-        <button>Share 🔗</button>
-      </RWebShare>
+              <RWebShare
+                data={{
+                  text: "Hello! This is my resume. Open this link to view it.",
+                  url: `${import.meta.env.VITE_URL}/myresume/${resumeId}/view`,
+                  title: `${(resumeInfo?.firstName||'').trim()} ${(resumeInfo?.lastName||'').trim()} Resume`.trim(),
+                }}
+              >
+                <button className='px-3 py-2 rounded border'>Share 🔗</button>
+              </RWebShare>
             </div>
         </div>
         </div>
