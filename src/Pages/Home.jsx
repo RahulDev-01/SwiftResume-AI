@@ -66,6 +66,20 @@ export function Home() {
         </div>
       </section>
 
+      {/* Trusted By Section */}
+      <section className="py-10 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-500 uppercase tracking-wider text-sm mb-6">Trusted by professionals at</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center opacity-70">
+            <div className="h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">Company A</div>
+            <div className="h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">Company B</div>
+            <div className="h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">Company C</div>
+            <div className="h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">Company D</div>
+            <div className="h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">Company E</div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,6 +156,39 @@ export function Home() {
         </div>
       </section>
 
+      {/* Template Previews Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Modern Templates</h2>
+            <p className="text-lg text-gray-600">Pick a professionally designed template and customize in minutes</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="rounded-xl border bg-white shadow-sm hover:shadow-md transition p-4">
+              <div className="aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg mb-4" />
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">Classic</span>
+                <Link to="/dashboard"><Button variant="outline" size="sm">Use</Button></Link>
+              </div>
+            </div>
+            <div className="rounded-xl border bg-white shadow-sm hover:shadow-md transition p-4">
+              <div className="aspect-[3/4] bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg mb-4" />
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">Modern</span>
+                <Link to="/dashboard"><Button variant="outline" size="sm">Use</Button></Link>
+              </div>
+            </div>
+            <div className="rounded-xl border bg-white shadow-sm hover:shadow-md transition p-4">
+              <div className="aspect-[3/4] bg-gradient-to-br from-emerald-100 to-teal-100 rounded-lg mb-4" />
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-gray-900">Minimal</span>
+                <Link to="/dashboard"><Button variant="outline" size="sm">Use</Button></Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -183,6 +230,30 @@ export function Home() {
               <p className="text-gray-600">
                 Review, customize, and download your professional resume. Start applying to jobs with confidence!
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-10 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="p-6 rounded-xl bg-gray-50">
+              <p className="text-3xl font-bold text-gray-900">50k+</p>
+              <p className="text-gray-600">Resumes created</p>
+            </div>
+            <div className="p-6 rounded-xl bg-gray-50">
+              <p className="text-3xl font-bold text-gray-900">98%</p>
+              <p className="text-gray-600">User satisfaction</p>
+            </div>
+            <div className="p-6 rounded-xl bg-gray-50">
+              <p className="text-3xl font-bold text-gray-900">+3x</p>
+              <p className="text-gray-600">Interview callbacks</p>
+            </div>
+            <div className="p-6 rounded-xl bg-gray-50">
+              <p className="text-3xl font-bold text-gray-900">10min</p>
+              <p className="text-gray-600">Avg. time to build</p>
             </div>
           </div>
         </div>
