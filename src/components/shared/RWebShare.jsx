@@ -10,7 +10,7 @@ export function RWebShare({ data = {}, onClick, children }) {
     e?.preventDefault?.();
     try {
       onClick?.();
-    } catch {}
+    } catch { /* ignore */ }
 
     const { title, text, url, files } = data || {};
 
@@ -25,7 +25,7 @@ export function RWebShare({ data = {}, onClick, children }) {
         await navigator.share({ title, text, url });
         return;
       }
-    } catch (err) {
+    } catch {
       // User cancelled or share failed, fallback below
     }
 
@@ -33,18 +33,15 @@ export function RWebShare({ data = {}, onClick, children }) {
     if (url) {
       try {
         await navigator.clipboard.writeText(url);
-        // eslint-disable-next-line no-alert
         alert('Link copied to clipboard');
         return;
       } catch {
-        // eslint-disable-next-line no-alert
         alert(url);
         return;
       }
     }
 
     // If no URL, just notify
-    // eslint-disable-next-line no-alert
     alert('Sharing is not supported on this device/browser.');
   };
 

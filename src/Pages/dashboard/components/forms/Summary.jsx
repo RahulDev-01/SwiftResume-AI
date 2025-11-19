@@ -23,7 +23,7 @@ function Summary({ enableNext }) {
     if ((summery === undefined || summery === null || summery === '') && (resumeInfo?.summery ?? '') !== '') {
       setSummery(resumeInfo.summery);
     }
-  }, [resumeInfo?.summery]);
+  }, [resumeInfo?.summery, summery]);
   useEffect(() => {
     if (summery) {
       setResumeInfo(prevResumeInfo => ({
@@ -32,16 +32,6 @@ function Summary({ enableNext }) {
       }));
     }
   }, [summery, setResumeInfo]);
-  const checkAvailableModels = async () => {
-    try {
-      const models = await listAvailableModels();
-      console.log('Available models:', models);
-      toast(`Summary: Found ${models.length} available models ✅`);
-    } catch (e) {
-      console.error('Error checking models:', e);
-      toast('Summary: Error checking available models ❌');
-    }
-  };
 
   const GenerateSummeryFromAi = async () => {
     setAiLoading(true);
@@ -113,8 +103,8 @@ function Summary({ enableNext }) {
           <div className='flex justify-between items-end'>
             <label htmlFor="">Add Summery</label>
             <div className='flex gap-2'>
-             
-              <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading }>
+
+              <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
                 {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
                 {aiLoading ? 'Generating...' : 'Generate from AI'}
               </Button>
@@ -137,34 +127,34 @@ function Summary({ enableNext }) {
               return (order[toKey(a)] ?? 99) - (order[toKey(b)] ?? 99);
             })
             .map((item, index) => (
-            <div
-              key={index}
-              className='my-4 p-5 rounded-xl border shadow-md bg-white cursor-pointer hover:shadow-lg hover:border-[#7C3AED] transition'
-              role='button'
-              tabIndex={0}
-              onClick={() => {
-                const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
-                setSummery(text);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+              <div
+                key={index}
+                className='my-4 p-5 rounded-xl border shadow-md bg-white cursor-pointer hover:shadow-lg hover:border-[#7C3AED] transition'
+                role='button'
+                tabIndex={0}
+                onClick={() => {
                   const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
                   setSummery(text);
-                }
-              }}
-            >
-              <h3 className='font-semibold text-[#7C3AED]'>
-                Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
-              </h3>
-              <p className='mt-2 text-gray-700 whitespace-pre-line'>
-                {item?.summery ?? item?.summary ?? item?.Summary ?? ''}
-              </p>
-            </div>
-          ))}
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
+                    setSummery(text);
+                  }
+                }}
+              >
+                <h3 className='font-semibold text-[#7C3AED]'>
+                  Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
+                </h3>
+                <p className='mt-2 text-gray-700 whitespace-pre-line'>
+                  {item?.summery ?? item?.summary ?? item?.Summary ?? ''}
+                </p>
+              </div>
+            ))}
         </div>
       )}
-      
+
     </div>
 
 

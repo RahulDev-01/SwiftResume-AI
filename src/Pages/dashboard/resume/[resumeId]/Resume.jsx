@@ -8,14 +8,11 @@ import GlobalApi from '../../../../../service/GlobalApi';
 
 function Resume() {
 
-    const {resumeId} = useParams();
-    const [resumeInfo, setResumeInfo] = useState()
-    useEffect(()=>{
-        GetResumeInfo()
-    },[])
-
-    const  GetResumeInfo = ()=>{
-      GlobalApi.GetId(resumeId).then(resp=>{
+  const { resumeId } = useParams();
+  const [resumeInfo, setResumeInfo] = useState()
+  useEffect(() => {
+    const GetResumeInfo = () => {
+      GlobalApi.GetId(resumeId).then(resp => {
         const payload = resp?.data?.data;
         // Strapi v4: payload = { id, attributes: { ... } }
         // Strapi v5 (documentId direct): attributes may already be at data level
@@ -40,9 +37,9 @@ function Resume() {
         const normalized = {
           ...Dummy,
           ...attrs,
-          education: pickArray(attrs, ['education','Education','educations','Educations','EducationList']),
-          experience: pickArray(attrs, ['experience','Experience','experiences','Experiences','workExperience','WorkExperience']),
-          skills: pickArray(attrs, ['skills','Skills','skill','Skill']),
+          education: pickArray(attrs, ['education', 'Education', 'educations', 'Educations', 'EducationList']),
+          experience: pickArray(attrs, ['experience', 'Experience', 'experiences', 'Experiences', 'workExperience', 'WorkExperience']),
+          skills: pickArray(attrs, ['skills', 'Skills', 'skill', 'Skill']),
         };
 
         console.log('Normalized resume info for preview:', {
@@ -55,17 +52,19 @@ function Resume() {
         setResumeInfo(normalized)
       })
     }
+    GetResumeInfo()
+  }, [resumeId])
 
   return (
-    <ResumeInfoContext.Provider value={{resumeInfo, setResumeInfo}}>
-    <div>
-      <div className='grid grid-cols-1 gap-10 md:grid-cols-2 p-10 g-10'>
-        {/* Form Section */}
-        <FormSection />
-        {/* Preview Section */}
-        <ResumePreview />
+    <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
+      <div>
+        <div className='grid grid-cols-1 gap-10 md:grid-cols-2 p-10 g-10'>
+          {/* Form Section */}
+          <FormSection />
+          {/* Preview Section */}
+          <ResumePreview />
+        </div>
       </div>
-    </div>
     </ResumeInfoContext.Provider>
   )
 }
