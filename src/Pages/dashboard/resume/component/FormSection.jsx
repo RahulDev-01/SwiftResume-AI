@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import PersonalDetails from '../../components/forms/PersonalDetails'
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Home, LayoutGrid } from 'lucide-react';
@@ -10,9 +10,17 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import ThemeColor from '../../components/ThemeColor';
 
 function FormSection() {
-  const [activeFormIndex , setActiveFormIndex] = useState(1);
-  const [enableNext,setEnableNext] = useState(false)
-  const {resumeId} = useParams()
+  const [activeFormIndex, setActiveFormIndex] = useState(1);
+  const [enableNext, setEnableNext] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { resumeId } = useParams();
+
+  // Refs to access form components
+  const personalDetailsRef = useRef(null);
+  const summaryRef = useRef(null);
+  const experienceRef = useRef(null);
+  const educationRef = useRef(null);
+  const skillsRef = useRef(null);
 
   // Reset enableNext when changing form
   const goToForm = (index) => {
@@ -20,42 +28,91 @@ function FormSection() {
     setEnableNext(false);
   }
 
+  // Handle Next button click - auto-save before moving to next form
+  const handleNext = async () => {
+    setIsSaving(true);
 
+    try {
+      // Get the current form ref based on activeFormIndex
+      let currentFormRef = null;
+      switch (activeFormIndex) {
+        case 1:
+          currentFormRef = personalDetailsRef;
+          break;
+        case 2:
+          currentFormRef = summaryRef;
+          break;
+        case 3:
+          currentFormRef = experienceRef;
+          break;
+        case 4:
+          currentFormRef = educationRef;
+          break;
+        case 5:
+          currentFormRef = skillsRef;
+          break;
+        default:
+          break;
+      }
+
+      // If the form has a save function, call it
+      if (currentFormRef?.current?.handleSave) {
+        await currentFormRef.current.handleSave();
+      }
+
+      // Move to next form after successful save
+      goToForm(activeFormIndex + 1);
+    } catch (error) {
+      console.error('Error saving form:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   return (
     <div>
       <div className='flex justify-between mb-3'>
         <div className='flex gap-5'>
           <Link to={"/dashboard"}>
-          <Button className='mb-1'><Home className='inline'/></Button>
+            <Button className='mb-1'><Home className='inline' /></Button>
           </Link>
           <ThemeColor />
-  
-   </div>
+        </div>
         <div className='flex gap-2'>
-          {activeFormIndex>1 &&
-           <Button  size='sm'
-           onClick={()=>goToForm(activeFormIndex -1)}><ArrowLeft /> </Button>}
-        <Button className ='flex gap-2' size='sm' 
-          onClick={()=>goToForm(activeFormIndex +1)}
-          >Next <ArrowRight /></Button>
+          {activeFormIndex > 1 &&
+            <Button size='sm'
+              onClick={() => goToForm(activeFormIndex - 1)}
+              disabled={isSaving}
+            >
+              <ArrowLeft />
+            </Button>}
+          <Button
+            className='flex gap-2'
+            size='sm'
+            onClick={handleNext}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Next'} <ArrowRight />
+          </Button>
         </div>
       </div>
-      {/* Personal Detail */}
-    {activeFormIndex==1?<PersonalDetails enableNext={(v)=>setEnableNext(v)}/>: null}
 
-    {/* Summery */}
-  {activeFormIndex==2?<Summary enableNext={(v)=>setEnableNext(v)}/>: null}
-  {activeFormIndex==3?<Experience enableNext={(v)=>setEnableNext(v)}/>: null}
+      {/* Personal Detail */}
+      {activeFormIndex == 1 ? <PersonalDetails ref={personalDetailsRef} enableNext={(v) => setEnableNext(v)} /> : null}
+
+      {/* Summary */}
+      {activeFormIndex == 2 ? <Summary ref={summaryRef} enableNext={(v) => setEnableNext(v)} /> : null}
+
       {/* Experience */}
-              {activeFormIndex==4?<Education enableNext={(v)=>setEnableNext(v)}/>: null}
+      {activeFormIndex == 3 ? <Experience ref={experienceRef} enableNext={(v) => setEnableNext(v)} /> : null}
+
       {/* Educational Details */}
-      {activeFormIndex==5?<Skills enableNext={(v)=>setEnableNext(v)}/>: null}
+      {activeFormIndex == 4 ? <Education ref={educationRef} enableNext={(v) => setEnableNext(v)} /> : null}
 
       {/* Skills */}
-      {activeFormIndex==6?<Navigate  to={'/my-resume/'+ resumeId +"/view"}/>: null}
+      {activeFormIndex == 5 ? <Skills ref={skillsRef} enableNext={(v) => setEnableNext(v)} /> : null}
 
-
+      {activeFormIndex == 6 ? <Navigate to={'/my-resume/' + resumeId + "/view"} /> : null}
     </div>
   )
 }

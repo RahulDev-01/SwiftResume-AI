@@ -87,33 +87,16 @@ export function Home() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Enhanced Background decoration */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
-
-          {/* Floating elements */}
-          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-lg opacity-20 animate-float"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-float animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-pink-200 rounded-lg opacity-20 animate-float animation-delay-4000"></div>
-        </div>
-      </section>
-
-      {/* Trusted By Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 uppercase tracking-wider text-sm font-semibold mb-8">Trusted by professionals at</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center">
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Google</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Microsoft</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Amazon</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Meta</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Apple</div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-center text-gray-500 uppercase tracking-wider text-sm font-semibold mb-8">Trusted by professionals at</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center">
+              <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Google</div>
+              <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Microsoft</div>
+              <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Amazon</div>
+              <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Meta</div>
+              <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Apple</div>
+            </div>
           </div>
-        </div>
       </section>
 
       {/* Features Section */}

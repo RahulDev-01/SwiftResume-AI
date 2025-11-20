@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef } from 'react'
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea"
 import { ResumeInfoContext } from '../../../../context/ResumeInfoContext';
@@ -8,7 +8,7 @@ import { Brain, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 import { sendMessage, listAvailableModels } from '../../../../../service/AIModal';
 
-function Summary({ enableNext }) {
+const Summary = forwardRef(({ enableNext }, ref) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const [summery, setSummery] = useState();
   const prompt = 'Given the job title "{jobTitle}", generate EXACTLY 3 resume summary suggestions as a JSON array. Each array item must be an object with the fields: "ExperienceLevel" (one of "Fresher", "Mid Level", "Experienced") and "summery" (a 4-5 line professional summary tailored to the job title). Return ONLY valid JSON (no markdown, no code fences, no extra text). Order the items as: Fresher, Mid Level, Experienced.'
@@ -92,6 +92,31 @@ function Summary({ enableNext }) {
       .finally(() => setSaving(false));
   }
 
+  // Expose handleSave method to parent component
+  useImperativeHandle(ref, () => ({
+    handleSave: async () => {
+      return new Promise((resolve, reject) => {
+        setSaving(true);
+        const data = { data: { summery: summery } };
+        GlobalApi.UpdateResumeDatail(params?.resumeId, data)
+          .then(resp => {
+            console.log(resp);
+            enableNext(true);
+            toast("Summary: Details updated ✅");
+            resolve(resp);
+          })
+          .catch(err => {
+            const status = err?.response?.status;
+            const msg = err?.message || 'Failed to update details';
+            console.error('Save error:', status, err);
+            toast(`Summary: Save failed${status ? ` (${status})` : ''}: ${msg} ❌`);
+            reject(err);
+          })
+          .finally(() => setSaving(false));
+      });
+    }
+  }));
+
 
   return (
     <div>
@@ -159,6 +184,8 @@ function Summary({ enableNext }) {
 
 
   )
-}
+});
+
+Summary.displayName = 'Summary';
 
 export default Summary
