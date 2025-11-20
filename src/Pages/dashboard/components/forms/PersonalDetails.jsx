@@ -11,9 +11,22 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
     const params = useParams();
 
     const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-    const [formData, setFormData] = useState();
+    const [formData, setFormData] = useState({});
     const [loading, setloading] = useState(false);
-    useEffect(() => { }, [])
+
+    useEffect(() => {
+        if (resumeInfo) {
+            setFormData({
+                firstName: resumeInfo.firstName,
+                lastName: resumeInfo.lastName,
+                jobTitle: resumeInfo.jobTitle,
+                address: resumeInfo.address,
+                phone: resumeInfo.phone,
+                email: resumeInfo.email
+            });
+        }
+    }, [resumeInfo])
+
     const handleInputChange = (e) => {
         enableNext(false)
 
