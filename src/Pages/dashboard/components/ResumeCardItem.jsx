@@ -64,7 +64,7 @@ function ResumeCardItem({ resume, refreshData }) {
     <div className='group relative hover:-translate-y-2 transition-all duration-300 ease-in-out'>
       <Link to={'/dashboard/resume/' + resumeId + "/edit"}>
         <div
-          className='h-[320px] bg-white dark:bg-secondary rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 relative group-hover:shadow-2xl transition-all'
+          className='h-[320px] bg-white dark:bg-secondary rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800 relative group-hover:shadow-2xl transition-all cursor-pointer'
         >
           {/* Resume Preview Mockup */}
           <div className='h-full w-full p-4 flex flex-col gap-3 opacity-80 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800'>
@@ -91,8 +91,8 @@ function ResumeCardItem({ resume, refreshData }) {
             </div>
 
             {/* Hover Overlay */}
-            <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity backdrop-blur-[2px]'>
-              <button className='bg-white text-black px-6 py-2 rounded-full font-medium transform scale-90 group-hover:scale-100 transition-transform shadow-xl cursor-pointer'>
+            <div className='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px] cursor-pointer'>
+              <button className='bg-white text-black px-6 py-2 rounded-full font-medium transform scale-90 group-hover:scale-[1.02] transition-transform shadow-xl cursor-pointer'>
                 Edit Resume
               </button>
             </div>

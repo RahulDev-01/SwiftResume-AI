@@ -52,7 +52,7 @@ function AddResume() {
         className='h-[320px] bg-white dark:bg-secondary/20 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center hover:border-primary hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all cursor-pointer group hover:shadow-xl'
         onClick={() => setOpenDailog(true)}
       >
-        <div className='h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-primary/20'>
+        <div className='h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.02] transition-transform group-hover:bg-primary/20'>
           <Plus className='h-8 w-8 text-primary' />
         </div>
         <h3 className='font-semibold text-lg text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors'>Create New Resume</h3>
