@@ -37,7 +37,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Badge */}
-            <div className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-semibold mb-8 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-semibold mb-8 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01]">
               <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
               AI-Powered Resume Builder
               <span className="ml-2 px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full">NEW</span>
@@ -60,12 +60,12 @@ export function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-8">
               <Link to="/auth/sign-in">
-                <Button size="lg" className="group text-lg px-10 py-7 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
+                <Button size="lg" className="group text-lg px-10 py-7 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-[1.01]">
                   Get Started Free
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="group text-lg px-10 py-7 border-2 border-gray-300 hover:border-blue-600 hover:bg-blue-50 rounded-2xl transition-all duration-300 hover:scale-105">
+              <Button variant="outline" size="lg" className="group text-lg px-10 py-7 border-2 border-gray-300 hover:border-blue-600 hover:bg-blue-50 rounded-2xl transition-all duration-300 hover:scale-[1.01]">
                 <Play className="w-5 h-5 mr-2" />
                 Watch Demo
               </Button>
@@ -136,7 +136,7 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature Card 1 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-100 hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-500 hover:-translate-y-2 border border-blue-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Zap className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">AI-Powered Content</h3>
@@ -150,7 +150,7 @@ export function Home() {
 
             {/* Feature Card 2 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 hover:shadow-2xl hover:shadow-green-200/50 transition-all duration-500 hover:-translate-y-2 border border-green-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Target className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors">ATS Optimized</h3>
@@ -164,7 +164,7 @@ export function Home() {
 
             {/* Feature Card 3 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-purple-50 via-purple-50 to-pink-100 hover:shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 hover:-translate-y-2 border border-purple-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Clock className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">Save Time</h3>
@@ -178,7 +178,7 @@ export function Home() {
 
             {/* Feature Card 4 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-orange-50 via-orange-50 to-red-100 hover:shadow-2xl hover:shadow-orange-200/50 transition-all duration-500 hover:-translate-y-2 border border-orange-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <FileText className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-orange-600 transition-colors">Multiple Formats</h3>
@@ -192,7 +192,7 @@ export function Home() {
 
             {/* Feature Card 5 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-100 hover:shadow-2xl hover:shadow-teal-200/50 transition-all duration-500 hover:-translate-y-2 border border-teal-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-600 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-teal-600 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Shield className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-teal-600 transition-colors">Secure & Private</h3>
@@ -206,7 +206,7 @@ export function Home() {
 
             {/* Feature Card 6 */}
             <div className="group p-8 rounded-3xl bg-gradient-to-br from-indigo-50 via-indigo-50 to-blue-100 hover:shadow-2xl hover:shadow-indigo-200/50 transition-all duration-500 hover:-translate-y-2 border border-indigo-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+              <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Users className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-indigo-600 transition-colors">Expert Guidance</h3>
@@ -263,7 +263,7 @@ export function Home() {
             <div className="hidden md:block absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 -z-10"></div>
 
             <div className="text-center relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-110 transition-transform">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
                 <span className="text-3xl font-bold text-white">1</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Sign Up & Choose Template</h3>
@@ -273,7 +273,7 @@ export function Home() {
             </div>
 
             <div className="text-center relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-110 transition-transform">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
                 <span className="text-3xl font-bold text-white">2</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">AI-Powered Content Generation</h3>
@@ -283,7 +283,7 @@ export function Home() {
             </div>
 
             <div className="text-center relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-pink-600 to-pink-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-110 transition-transform">
+              <div className="w-20 h-20 bg-gradient-to-br from-pink-600 to-pink-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
                 <span className="text-3xl font-bold text-white">3</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Download & Apply</h3>
