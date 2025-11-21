@@ -1,4 +1,4 @@
-import { Loader2, PlusSquare } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,30 +49,37 @@ function AddResume() {
   return (
     <div>
       <div
-        className='p-14 py-24 border-2 border-dashed items-center flex justify-center bg-secondary/20 rounded-xl h-[280px] hover:scale-101 transition-all hover:shadow-xl cursor-pointer hover:border-primary group'
+        className='h-[320px] bg-white dark:bg-secondary/20 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center hover:border-primary hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all cursor-pointer group hover:shadow-xl'
         onClick={() => setOpenDailog(true)}
       >
-        <div className='flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors'>
-          <PlusSquare className='h-10 w-10' />
-          <span className='font-medium'>Create New Resume</span>
+        <div className='h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-primary/20'>
+          <Plus className='h-8 w-8 text-primary' />
         </div>
+        <h3 className='font-semibold text-lg text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors'>Create New Resume</h3>
+        <p className='text-sm text-gray-400 mt-1 font-medium'>Start from scratch</p>
       </div>
+
       <Dialog open={openDailog} onOpenChange={(open) => { if (!loading) setOpenDailog(open); }}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Create New Resume</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">Create New Resume</DialogTitle>
             <DialogDescription>
-              Add a title for your new resume
+              Give your resume a name to get started.
             </DialogDescription>
           </DialogHeader>
-          <div className='space-y-4'>
-            <Input
-              placeholder="Ex. Full Stack Developer Resume"
-              onChange={(e) => setResumeTitle(e.target.value)}
-            />
+          <div className='space-y-6 py-4'>
+            <div className="space-y-2">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Resume Title</label>
+              <Input
+                className="h-11"
+                placeholder="e.g. Full Stack Developer, Product Manager..."
+                onChange={(e) => setResumeTitle(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && resumeTitle && onCreate()}
+              />
+            </div>
             <div className='flex justify-end gap-3'>
               <Button variant="outline" onClick={() => { setOpenDailog(false) }} disabled={loading}>Cancel</Button>
-              <Button onClick={onCreate} disabled={!resumeTitle || loading}>
+              <Button onClick={onCreate} disabled={!resumeTitle || loading} className="px-8">
                 {loading ? <Loader2 className='animate-spin h-4 w-4 mr-2' /> : null}
                 Create
               </Button>
