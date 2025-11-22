@@ -120,22 +120,22 @@ const Summary = forwardRef(({ enableNext }, ref) => {
 
   return (
     <div>
-      <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1'>
-        <h2 className='font-bold text-lg'>Summery</h2>
-        <p>Add Summery for your job title </p>
+      <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white'>
+        <h2 className='font-bold text-lg'>Summary</h2>
+        <p>Add Summary for your job title</p>
 
         <form className='mt-7' onSubmit={onSave}>
           <div className='flex justify-between items-end'>
-            <label htmlFor="">Add Summery</label>
+            <label className='font-semibold text-sm'>Add Summary</label>
             <div className='flex gap-2'>
 
-              <Button className='border-[#2987CB] text-[#2987CB] font-semibold flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
+              <Button className='border-primary text-primary font-semibold flex gap-2 hover:bg-primary/10' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
                 {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
                 {aiLoading ? 'Generating...' : 'Generate from AI'}
               </Button>
             </div>
           </div>
-          <Textarea className='mt-5' value={summery || ''} onChange={handleSummaryChange} required />
+          <Textarea className='mt-5 min-h-[150px] border-gray-300 focus:border-primary' value={summery || ''} onChange={handleSummaryChange} required placeholder="Write a professional summary..." />
           <div className='mt-2 flex justify-end'>
             <Button type="submit" disabled={saving}>
               {saving ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
@@ -143,40 +143,42 @@ const Summary = forwardRef(({ enableNext }, ref) => {
         </form>
       </div>
       {aiGeneratedSummeryList && (
-        <div>
+        <div className='mt-5'>
           <h2 className='font-bold text-lg'>Suggestions</h2>
-          {[...aiGeneratedSummeryList]
-            .sort((a, b) => {
-              const toKey = (v) => String(v?.ExperienceLevel ?? v?.Level ?? '').toLowerCase().trim();
-              const order = { 'fresher': 0, 'mid level': 1, 'experienced': 2 };
-              return (order[toKey(a)] ?? 99) - (order[toKey(b)] ?? 99);
-            })
-            .map((item, index) => (
-              <div
-                key={index}
-                className='my-4 p-5 rounded-xl border shadow-md bg-white cursor-pointer hover:shadow-lg hover:border-[#7C3AED] transition'
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
-                  setSummery(text);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
+          <div className='grid grid-cols-1 gap-4 mt-3'>
+            {[...aiGeneratedSummeryList]
+              .sort((a, b) => {
+                const toKey = (v) => String(v?.ExperienceLevel ?? v?.Level ?? '').toLowerCase().trim();
+                const order = { 'fresher': 0, 'mid level': 1, 'experienced': 2 };
+                return (order[toKey(a)] ?? 99) - (order[toKey(b)] ?? 99);
+              })
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className='p-5 rounded-xl border border-gray-200 shadow-sm bg-white cursor-pointer hover:shadow-md hover:border-primary transition-all duration-300'
+                  role='button'
+                  tabIndex={0}
+                  onClick={() => {
                     const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
                     setSummery(text);
-                  }
-                }}
-              >
-                <h3 className='font-semibold text-[#7C3AED]'>
-                  Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
-                </h3>
-                <p className='mt-2 text-gray-700 whitespace-pre-line'>
-                  {item?.summery ?? item?.summary ?? item?.Summary ?? ''}
-                </p>
-              </div>
-            ))}
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      const text = item?.summery ?? item?.summary ?? item?.Summary ?? '';
+                      setSummery(text);
+                    }
+                  }}
+                >
+                  <h3 className='font-semibold text-primary'>
+                    Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
+                  </h3>
+                  <p className='mt-2 text-gray-600 text-sm leading-relaxed whitespace-pre-line'>
+                    {item?.summery ?? item?.summary ?? item?.Summary ?? ''}
+                  </p>
+                </div>
+              ))}
+          </div>
         </div>
       )}
 

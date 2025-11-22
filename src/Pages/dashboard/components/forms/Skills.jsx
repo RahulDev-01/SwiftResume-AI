@@ -89,15 +89,15 @@ const Skills = () => {
       // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
       const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
       const scalarAllowed = new Set([
-        'title','resumeId','userEmail','userName',
-        'firstName','lastName','jobTitle','address','phone','email',
-        'summery','themeColor','color'
+        'title', 'resumeId', 'userEmail', 'userName',
+        'firstName', 'lastName', 'jobTitle', 'address', 'phone', 'email',
+        'summery', 'themeColor', 'color'
       ]);
       const base = Object.fromEntries(
         Object.entries(current || {})
           .filter(([k, v]) => !systemKeys.includes(k))
           .filter(([k, v]) => scalarAllowed.has(k))
-          .filter(([k, v]) => v===null || ['string','number','boolean'].includes(typeof v))
+          .filter(([k, v]) => v === null || ['string', 'number', 'boolean'].includes(typeof v))
       );
 
       // Ensure title is present (required field)
@@ -130,7 +130,7 @@ const Skills = () => {
   };
 
   return (
-    <div className="p-5 shadow-lg rounded-lg border-t-violet-500 border-t-4 mt-5">
+    <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white">
       <h2 className="font-bold text-lg">Skills</h2>
       <p>Add Your Professional Skills</p>
       <div>
@@ -140,10 +140,11 @@ const Skills = () => {
             className="flex justify-between items-center mt-4 p-4 border rounded-lg "
           >
             <div>
-              <label className="text-xs">Name</label>
+              <label className="text-xs font-semibold">Name</label>
               <Input
                 value={skill.name || ''}
                 onChange={(e) => handleChange(index, "name", e.target.value)}
+                placeholder="e.g., React, Python"
               />
             </div>
             <Rating
@@ -156,10 +157,10 @@ const Skills = () => {
       </div>
       <div className="flex justify-between mt-4">
         <div className="flex gap-2">
-          <Button onClick={AddNewSkills} variant="outline" className="text-primary">
+          <Button onClick={AddNewSkills} variant="outline" className="text-primary border-primary hover:bg-primary/10">
             + Add More Skills
           </Button>
-          <Button onClick={RemoveSkills} variant="outline" className="text-primary">
+          <Button onClick={RemoveSkills} variant="outline" className="text-primary border-primary hover:bg-primary/10">
             Remove
           </Button>
         </div>
