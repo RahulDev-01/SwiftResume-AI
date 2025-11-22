@@ -166,46 +166,46 @@ function Education() {
   }, [educationalList, hasUserEdited, setResumeInfo])
 
   return (
-    <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white'>
-      <h2 className='font-bold text-lg'>Education</h2>
-      <p>Add Your Educational Details</p>
+    <div className='glass-card p-8 mt-5 animate-fade-in-up'>
+      <h2 className='section-title'>Education</h2>
+      <p className='section-subtitle'>Add Your Educational Details</p>
       <div>
         {educationalList.map((item, index) => (
-          <div key={index}>
-            <div className='grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg '>
-              <div className='col-span-2 '>
-                <label className='text-xs font-semibold'>University Name</label>
-                <Input name="universityName" value={item.universityName} onChange={(e) => handleChange(e, index)} placeholder="e.g., Stanford University" />
+          <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+            <div className='grid grid-cols-2 gap-6 border border-gray-100 p-6 my-5 rounded-xl bg-white/50 hover:shadow-md transition-all duration-300'>
+              <div className='col-span-2 space-y-2'>
+                <label className='text-sm font-semibold text-gray-700'>University Name</label>
+                <Input className="input-premium" name="universityName" value={item.universityName} onChange={(e) => handleChange(e, index)} placeholder="e.g., Stanford University" />
               </div>
-              <div>
-                <label className='text-xs font-semibold'>Degree </label>
-                <Input name="degree" value={item.degree} onChange={(e) => handleChange(e, index)} placeholder="e.g., B.Sc., M.Tech" />
+              <div className="space-y-2">
+                <label className='text-sm font-semibold text-gray-700'>Degree </label>
+                <Input className="input-premium" name="degree" value={item.degree} onChange={(e) => handleChange(e, index)} placeholder="e.g., B.Sc., M.Tech" />
               </div>
-              <div>
-                <label className='text-xs font-semibold'>Major</label>
-                <Input name="major" value={item.major} onChange={(e) => handleChange(e, index)} placeholder="e.g., Computer Science" />
+              <div className="space-y-2">
+                <label className='text-sm font-semibold text-gray-700'>Major</label>
+                <Input className="input-premium" name="major" value={item.major} onChange={(e) => handleChange(e, index)} placeholder="e.g., Computer Science" />
               </div>
-              <div>
-                <label className='text-xs font-semibold'>Start Date</label>
-                <Input name="startDate" value={item.startDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Jan 2021" />
+              <div className="space-y-2">
+                <label className='text-sm font-semibold text-gray-700'>Start Date</label>
+                <Input className="input-premium" name="startDate" value={item.startDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Jan 2021" />
               </div>
-              <div>
-                <label className='text-xs font-semibold'>End Date</label>
-                <Input name="endDate" value={item.endDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Dec 2022 or Present" />
+              <div className="space-y-2">
+                <label className='text-sm font-semibold text-gray-700'>End Date</label>
+                <Input className="input-premium" name="endDate" value={item.endDate} onChange={(e) => handleChange(e, index)} type='text' placeholder="e.g., Dec 2022 or Present" />
               </div>
-              <div className='col-span-2'>
-                <label className='text-xs font-semibold'>Description</label>
-                <Textarea name="description" value={item.description} onChange={(e) => handleChange(e, index)} placeholder="E.g., Coursework, GPA, awards, projects" />
+              <div className='col-span-2 space-y-2'>
+                <label className='text-sm font-semibold text-gray-700'>Description</label>
+                <Textarea className="input-premium min-h-[100px]" name="description" value={item.description} onChange={(e) => handleChange(e, index)} placeholder="E.g., Coursework, GPA, awards, projects" />
               </div>
             </div>
           </div>
         ))}
       </div>
-      <div className="flex justify-between">
-        <div className="flex gap-2">
+      <div className="flex justify-between mt-6">
+        <div className="flex gap-3">
           <Button
             variant='outline'
-            className='text-primary border-primary hover:bg-primary/10'
+            className='border-primary text-primary hover:bg-primary/10 transition-all duration-300'
             onClick={AddNewdu}
           >
             + Add More Education
@@ -214,14 +214,14 @@ function Education() {
           {educationalList.length > 1 && (
             <Button
               variant='outline'
-              className='text-primary border-primary hover:bg-primary/10'
+              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-300'
               onClick={() => RemoveNewEdu(educationalList.length - 1)}
             >
               - Remove
             </Button>
           )}
         </div>
-        <Button disabled={loading} onClick={onSave}>
+        <Button disabled={loading} onClick={onSave} className="btn-premium">
           {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
         </Button>
       </div>

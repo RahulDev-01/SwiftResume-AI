@@ -150,39 +150,39 @@ function Experience() {
     }));
   }, [experienceList, hasUserEdited, setResumeInfo])
   return (
-    <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white'>
-      <h2 className='font-bold text-lg'>Professional Experience</h2>
-      <p>Add Your Previous Job Experience</p>
+    <div className='glass-card p-8 mt-5 animate-fade-in-up'>
+      <h2 className='section-title'>Professional Experience</h2>
+      <p className='section-subtitle'>Add Your Previous Job Experience</p>
       <div>
         {experienceList.map((field, index) => (
-          <div key={index}>
-            <div className='grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg '>
-              <div>
-                <label className="text-xs font-semibold">Position Title</label>
-                <Input type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Software Engineer" />
+          <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+            <div className='grid grid-cols-2 gap-6 border border-gray-100 p-6 my-5 rounded-xl bg-white/50 hover:shadow-md transition-all duration-300'>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">Position Title</label>
+                <Input className="input-premium" type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Software Engineer" />
               </div>
-              <div>
-                <label className="text-xs font-semibold">Company Name</label>
-                <Input type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Acme Corp" />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">Company Name</label>
+                <Input className="input-premium" type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Acme Corp" />
               </div>
-              <div>
-                <label className="text-xs font-semibold">City</label>
-                <Input type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., San Francisco" />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">City</label>
+                <Input className="input-premium" type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., San Francisco" />
               </div>
-              <div>
-                <label className="text-xs font-semibold">State</label>
-                <Input type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., CA" />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">State</label>
+                <Input className="input-premium" type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., CA" />
               </div>
-              <div>
-                <label className="text-xs font-semibold">Start Date </label>
-                <Input type="text" placeholder="e.g., Jan 2021" name="startDate" value={field.startDate || ''} onChange={(event) => handleChange(index, event)} />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">Start Date </label>
+                <Input className="input-premium" type="text" placeholder="e.g., Jan 2021" name="startDate" value={field.startDate || ''} onChange={(event) => handleChange(index, event)} />
               </div>
-              <div>
-                <label className="text-xs font-semibold">End Date</label>
-                <Input type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">End Date</label>
+                <Input className="input-premium" type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
               </div>
               {/* Rich Text Editor  */}
-              <div className="col-span-2">
+              <div className="col-span-2 space-y-2">
                 <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} initialValue={field.workSummery || ''} />
               </div>
 
@@ -191,11 +191,11 @@ function Experience() {
           </div>
         ))}
       </div>
-      <div className="flex justify-between">
-        <div className="flex gap-2">
+      <div className="flex justify-between mt-6">
+        <div className="flex gap-3">
           <Button
             variant='outline'
-            className='text-primary border-primary hover:bg-primary/10'
+            className='border-primary text-primary hover:bg-primary/10 transition-all duration-300'
             onClick={AddNewExp}
           >
             + Add More Experience
@@ -204,14 +204,14 @@ function Experience() {
           {experienceList.length > 1 && (
             <Button
               variant='outline'
-              className='text-primary border-primary hover:bg-primary/10'
+              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-300'
               onClick={RemoveNewExp}
             >
               - Remove
             </Button>
           )}
         </div>
-        <Button disabled={loading} onClick={onSave}>
+        <Button disabled={loading} onClick={onSave} className="btn-premium">
           {loading ? <LoaderCircle className="animate-spin" /> : 'Save'}
         </Button>
       </div>

@@ -84,33 +84,32 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
     }));
 
     return (
-        <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white'>
-            <h2 className='font-bold text-lg flex justify-between items-center'>
-                Personal Detail
-            </h2>
-            <p>Get Started with the basic information</p>
+        <div className='form-card mt-5'>
+            <h2 className='section-title'>Personal Details</h2>
+            <p className='section-subtitle'>Get Started with the basic information</p>
 
             <form onSubmit={onSave}>
-                <div className='grid grid-cols-2 mt-5 gap-3'>
-                    <div>
-                        <label className='text-sm font-semibold'>First Name</label>
-                        <Input name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName} placeholder="e.g., John" />
+                <div className='grid grid-cols-2 mt-5 gap-6'>
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>First Name</label>
+                        <Input className="input-clean" name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName} placeholder="e.g., John" />
                     </div>
-                    <div>
-                        <label className='text-sm font-semibold'>Last Name</label>
-                        <Input name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName} placeholder="e.g., Doe" />
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>Last Name</label>
+                        <Input className="input-clean" name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName} placeholder="e.g., Doe" />
                     </div>
-                    <div className='col-span-2'>
-                        <label className='text-sm font-semibold'>Job Title</label>
-                        <Input name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle} placeholder="e.g., Software Engineer" />
+                    <div className='col-span-2 space-y-1.5'>
+                        <label className='text-sm font-medium text-gray-700'>Job Title</label>
+                        <Input className="input-clean" name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle} placeholder="e.g., Software Engineer" />
                     </div>
-                    <div className='col-span-2'>
-                        <label className='text-sm font-semibold'>Address</label>
-                        <Input name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address} placeholder="e.g., 123 Main St, City, State" />
+                    <div className='col-span-2 space-y-1.5'>
+                        <label className='text-sm font-medium text-gray-700'>Address</label>
+                        <Input className="input-clean" name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address} placeholder="e.g., 123 Main St, City, State" />
                     </div>
-                    <div>
-                        <label className='text-sm font-semibold'>Phone</label>
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>Phone</label>
                         <Input
+                            className="input-clean"
                             name='phone'
                             type='tel'
                             inputMode='numeric'
@@ -122,15 +121,15 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                             placeholder='e.g., 5551234567'
                         />
                     </div>
-                    <div>
-                        <label className='text-sm font-semibold'>Email</label>
-                        <Input name='email' type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email} placeholder="e.g., john.doe@example.com" />
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>Email</label>
+                        <Input className="input-clean" name='email' type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email} placeholder="e.g., john.doe@example.com" />
                     </div>
 
 
                 </div>
-                <div className='mt-3 flex justify-end'>
-                    <Button type="submit" disabled={loading}>
+                <div className='mt-6 flex justify-end'>
+                    <Button type="submit" disabled={loading} className="btn-primary">
                         {loading ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
                 </div>
             </form>

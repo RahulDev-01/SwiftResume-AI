@@ -120,31 +120,31 @@ const Summary = forwardRef(({ enableNext }, ref) => {
 
   return (
     <div>
-      <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-1 bg-white'>
-        <h2 className='font-bold text-lg'>Summary</h2>
-        <p>Add Summary for your job title</p>
+      <div className='glass-card p-8 mt-5 animate-fade-in-up'>
+        <h2 className='section-title'>Summary</h2>
+        <p className='section-subtitle'>Add Summary for your job title</p>
 
         <form className='mt-7' onSubmit={onSave}>
           <div className='flex justify-between items-end'>
-            <label className='font-semibold text-sm'>Add Summary</label>
+            <label className='text-sm font-semibold text-gray-700'>Add Summary</label>
             <div className='flex gap-2'>
 
-              <Button className='border-primary text-primary font-semibold flex gap-2 hover:bg-primary/10' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
-                {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
+              <Button className='border-primary text-primary font-semibold flex gap-2 hover:bg-primary/10 transition-all duration-300' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
+                {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4 text-purple-500' />}
                 {aiLoading ? 'Generating...' : 'Generate from AI'}
               </Button>
             </div>
           </div>
-          <Textarea className='mt-5 min-h-[150px] border-gray-300 focus:border-primary' value={summery || ''} onChange={handleSummaryChange} required placeholder="Write a professional summary..." />
-          <div className='mt-2 flex justify-end'>
-            <Button type="submit" disabled={saving}>
+          <Textarea className='mt-5 min-h-[150px] input-premium' value={summery || ''} onChange={handleSummaryChange} required placeholder="Write a professional summary..." />
+          <div className='mt-6 flex justify-end'>
+            <Button type="submit" disabled={saving} className="btn-premium">
               {saving ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
           </div>
         </form>
       </div>
       {aiGeneratedSummeryList && (
-        <div className='mt-5'>
-          <h2 className='font-bold text-lg'>Suggestions</h2>
+        <div className='mt-8 animate-fade-in-up animation-delay-2000'>
+          <h2 className='section-title text-xl'>Suggestions</h2>
           <div className='grid grid-cols-1 gap-4 mt-3'>
             {[...aiGeneratedSummeryList]
               .sort((a, b) => {
@@ -155,7 +155,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
               .map((item, index) => (
                 <div
                   key={index}
-                  className='p-5 rounded-xl border border-gray-200 shadow-sm bg-white cursor-pointer hover:shadow-md hover:border-primary transition-all duration-300'
+                  className='p-6 rounded-xl border border-gray-100 shadow-sm bg-white/50 backdrop-blur-sm cursor-pointer hover:shadow-md hover:border-purple-400 transition-all duration-300 group'
                   role='button'
                   tabIndex={0}
                   onClick={() => {
@@ -170,7 +170,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
                     }
                   }}
                 >
-                  <h3 className='font-semibold text-primary'>
+                  <h3 className='font-semibold text-purple-600 group-hover:text-purple-700 transition-colors'>
                     Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
                   </h3>
                   <p className='mt-2 text-gray-600 text-sm leading-relaxed whitespace-pre-line'>
