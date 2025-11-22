@@ -84,7 +84,7 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
     }));
 
     return (
-        <div className='form-card mt-5'>
+        <div className='glass-card mt-5'>
             <h2 className='section-title'>Personal Details</h2>
             <p className='section-subtitle'>Get Started with the basic information</p>
 
@@ -92,24 +92,24 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                 <div className='grid grid-cols-2 mt-5 gap-6'>
                     <div className="space-y-1.5">
                         <label className='text-sm font-medium text-gray-700'>First Name</label>
-                        <Input className="input-clean" name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName} placeholder="e.g., John" />
+                        <Input className="input-glass" name='firstName' required onChange={handleInputChange} defaultValue={resumeInfo?.firstName} placeholder="e.g., John" />
                     </div>
                     <div className="space-y-1.5">
                         <label className='text-sm font-medium text-gray-700'>Last Name</label>
-                        <Input className="input-clean" name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName} placeholder="e.g., Doe" />
+                        <Input className="input-glass" name='lastName' required onChange={handleInputChange} defaultValue={resumeInfo?.lastName} placeholder="e.g., Doe" />
                     </div>
                     <div className='col-span-2 space-y-1.5'>
                         <label className='text-sm font-medium text-gray-700'>Job Title</label>
-                        <Input className="input-clean" name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle} placeholder="e.g., Software Engineer" />
+                        <Input className="input-glass" name='jobTitle' required onChange={handleInputChange} defaultValue={resumeInfo?.jobTitle} placeholder="e.g., Software Engineer" />
                     </div>
                     <div className='col-span-2 space-y-1.5'>
                         <label className='text-sm font-medium text-gray-700'>Address</label>
-                        <Input className="input-clean" name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address} placeholder="e.g., 123 Main St, City, State" />
+                        <Input className="input-glass" name='address' required onChange={handleInputChange} defaultValue={resumeInfo?.address} placeholder="e.g., 123 Main St, City, State" />
                     </div>
                     <div className="space-y-1.5">
                         <label className='text-sm font-medium text-gray-700'>Phone</label>
                         <Input
-                            className="input-clean"
+                            className="input-glass"
                             name='phone'
                             type='tel'
                             inputMode='numeric'
@@ -123,13 +123,13 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                     </div>
                     <div className="space-y-1.5">
                         <label className='text-sm font-medium text-gray-700'>Email</label>
-                        <Input className="input-clean" name='email' type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email} placeholder="e.g., john.doe@example.com" />
+                        <Input className="input-glass" name='email' type='email' required onChange={handleInputChange} defaultValue={resumeInfo?.email} placeholder="e.g., john.doe@example.com" />
                     </div>
 
 
                 </div>
                 <div className='mt-6 flex justify-end'>
-                    <Button type="submit" disabled={loading} className="btn-primary">
+                    <Button type="submit" disabled={loading} className="btn-glass">
                         {loading ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
                 </div>
             </form>

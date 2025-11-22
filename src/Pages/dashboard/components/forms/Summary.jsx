@@ -120,31 +120,31 @@ const Summary = forwardRef(({ enableNext }, ref) => {
 
   return (
     <div>
-      <div className='glass-card p-8 mt-5 animate-fade-in-up'>
+      <div className='glass-card mt-5'>
         <h2 className='section-title'>Summary</h2>
         <p className='section-subtitle'>Add Summary for your job title</p>
 
         <form className='mt-7' onSubmit={onSave}>
           <div className='flex justify-between items-end'>
-            <label className='text-sm font-semibold text-gray-700'>Add Summary</label>
+            <label className='text-sm font-medium text-gray-700'>Add Summary</label>
             <div className='flex gap-2'>
 
-              <Button className='border-primary text-primary font-semibold flex gap-2 hover:bg-primary/10 transition-all duration-300' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
-                {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4 text-purple-500' />}
+              <Button className='btn-glass-outline flex gap-2' variant='outline' onClick={() => GenerateSummeryFromAi()} size='sm' type='button' disabled={aiLoading}>
+                {aiLoading ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
                 {aiLoading ? 'Generating...' : 'Generate from AI'}
               </Button>
             </div>
           </div>
-          <Textarea className='mt-5 min-h-[150px] input-premium' value={summery || ''} onChange={handleSummaryChange} required placeholder="Write a professional summary..." />
+          <Textarea className='mt-5 min-h-[150px] input-glass' value={summery || ''} onChange={handleSummaryChange} required placeholder="Write a professional summary..." />
           <div className='mt-6 flex justify-end'>
-            <Button type="submit" disabled={saving} className="btn-premium">
+            <Button type="submit" disabled={saving} className="btn-glass">
               {saving ? <Loader2Icon className='animate-spin' /> : "Save"}</Button>
           </div>
         </form>
       </div>
       {aiGeneratedSummeryList && (
-        <div className='mt-8 animate-fade-in-up animation-delay-2000'>
-          <h2 className='section-title text-xl'>Suggestions</h2>
+        <div className='mt-8'>
+          <h2 className='section-title text-lg'>Suggestions</h2>
           <div className='grid grid-cols-1 gap-4 mt-3'>
             {[...aiGeneratedSummeryList]
               .sort((a, b) => {
@@ -155,7 +155,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
               .map((item, index) => (
                 <div
                   key={index}
-                  className='p-6 rounded-xl border border-gray-100 shadow-sm bg-white/50 backdrop-blur-sm cursor-pointer hover:shadow-md hover:border-purple-400 transition-all duration-300 group'
+                  className='p-5 rounded-xl border border-white/40 bg-white/40 backdrop-blur-sm cursor-pointer hover:bg-white/60 hover:shadow-md transition-all duration-300'
                   role='button'
                   tabIndex={0}
                   onClick={() => {
@@ -170,7 +170,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
                     }
                   }}
                 >
-                  <h3 className='font-semibold text-purple-600 group-hover:text-purple-700 transition-colors'>
+                  <h3 className='font-semibold text-gray-800'>
                     Level: {item?.Level ?? item?.ExperienceLevel ?? item?.experienceLevel ?? '—'}
                   </h3>
                   <p className='mt-2 text-gray-600 text-sm leading-relaxed whitespace-pre-line'>

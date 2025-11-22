@@ -150,39 +150,39 @@ function Experience() {
     }));
   }, [experienceList, hasUserEdited, setResumeInfo])
   return (
-    <div className='glass-card p-8 mt-5 animate-fade-in-up'>
+    <div className='glass-card mt-5'>
       <h2 className='section-title'>Professional Experience</h2>
       <p className='section-subtitle'>Add Your Previous Job Experience</p>
       <div>
         {experienceList.map((field, index) => (
-          <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
-            <div className='grid grid-cols-2 gap-6 border border-gray-100 p-6 my-5 rounded-xl bg-white/50 hover:shadow-md transition-all duration-300'>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Position Title</label>
-                <Input className="input-premium" type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Software Engineer" />
+          <div key={index} className="mb-8 last:mb-0">
+            <div className='grid grid-cols-2 gap-6 border border-white/30 p-6 rounded-xl bg-white/40 backdrop-blur-sm hover:shadow-md transition-all duration-300'>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Position Title</label>
+                <Input className="input-glass" type="text" name="title" value={field.title || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Software Engineer" />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Company Name</label>
-                <Input className="input-premium" type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Acme Corp" />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Company Name</label>
+                <Input className="input-glass" type="text" name="companyName" value={field.companyName || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., Acme Corp" />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">City</label>
-                <Input className="input-premium" type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., San Francisco" />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">City</label>
+                <Input className="input-glass" type="text" name="city" value={field.city || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., San Francisco" />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">State</label>
-                <Input className="input-premium" type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., CA" />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">State</label>
+                <Input className="input-glass" type="text" name="state" value={field.state || ''} onChange={(event) => handleChange(index, event)} placeholder="e.g., CA" />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">Start Date </label>
-                <Input className="input-premium" type="text" placeholder="e.g., Jan 2021" name="startDate" value={field.startDate || ''} onChange={(event) => handleChange(index, event)} />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Start Date </label>
+                <Input className="input-glass" type="text" placeholder="e.g., Jan 2021" name="startDate" value={field.startDate || ''} onChange={(event) => handleChange(index, event)} />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">End Date</label>
-                <Input className="input-premium" type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">End Date</label>
+                <Input className="input-glass" type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
               </div>
               {/* Rich Text Editor  */}
-              <div className="col-span-2 space-y-2">
+              <div className="col-span-2 space-y-1.5">
                 <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} initialValue={field.workSummery || ''} />
               </div>
 
@@ -195,7 +195,7 @@ function Experience() {
         <div className="flex gap-3">
           <Button
             variant='outline'
-            className='border-primary text-primary hover:bg-primary/10 transition-all duration-300'
+            className='btn-glass-outline'
             onClick={AddNewExp}
           >
             + Add More Experience
@@ -204,14 +204,14 @@ function Experience() {
           {experienceList.length > 1 && (
             <Button
               variant='outline'
-              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-300'
+              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200'
               onClick={RemoveNewExp}
             >
               - Remove
             </Button>
           )}
         </div>
-        <Button disabled={loading} onClick={onSave} className="btn-premium">
+        <Button disabled={loading} onClick={onSave} className="btn-glass">
           {loading ? <LoaderCircle className="animate-spin" /> : 'Save'}
         </Button>
       </div>

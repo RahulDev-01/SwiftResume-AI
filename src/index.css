@@ -335,27 +335,70 @@ html {
 
 @page { size: A4 portrait; margin: 0; }
 
-/* Professional Minimalist Utilities */
-.form-card {
-  @apply p-8 shadow-sm rounded-xl border border-gray-200 bg-white;
+/* Glassmorphism Utilities */
+body {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  transform: translateY(-2px);
 }
 
 .section-title {
-  @apply text-xl font-bold text-gray-900 mb-1;
+  @apply text-2xl font-bold text-gray-800 mb-2;
 }
 
 .section-subtitle {
   @apply text-gray-500 text-sm font-medium mb-6;
 }
 
-.input-clean {
-  @apply border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all duration-200 bg-white;
+.input-glass {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
 }
 
-.btn-primary {
-  @apply bg-primary text-white hover:bg-primary/90 transition-colors duration-200 shadow-sm;
+.input-glass:focus {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
 }
 
-.btn-outline {
-  @apply border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200;
+.btn-glass {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-glass-outline {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #764ba2;
+  color: #764ba2;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.btn-glass-outline:hover {
+  background: rgba(118, 75, 162, 0.1);
 }

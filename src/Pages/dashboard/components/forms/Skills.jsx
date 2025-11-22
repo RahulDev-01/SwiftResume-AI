@@ -130,46 +130,30 @@ const Skills = () => {
   };
 
   return (
-    <div className="glass-card p-8 mt-5 animate-fade-in-up">
+    <div className="glass-card mt-5">
       <h2 className="section-title">Skills</h2>
       <p className="section-subtitle">Add Your Professional Skills</p>
       <div>
         {skills.map((skill, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center mt-4 p-4 border border-gray-100 rounded-xl bg-white/50 hover:shadow-md transition-all duration-300 animate-fade-in-up"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Name</label>
-              <Input
-                className="input-premium"
-                value={skill.name || ''}
-                onChange={(e) => handleChange(index, "name", e.target.value)}
-                placeholder="e.g., React, Python"
-              />
+          <div key={index} className="flex justify-between items-center mt-4 p-4 border border-white/30 rounded-xl bg-white/40 backdrop-blur-sm hover:shadow-md transition-all duration-300">
+            <div>
+              <label className="text-xs font-medium text-gray-700">Name</label>
+              <Input className="input-glass w-full" value={skill.name || ''} onChange={(e) => handleChange(index, "name", e.target.value)} />
             </div>
-            <Rating
-              style={{ maxWidth: 120 }}
-              value={Number.isFinite(Number(skill.rating)) ? Number(skill.rating) : 0}
-              onChange={(v) => handleChange(index, "rating", v)}
-              itemStyles={{
-                itemShapes: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" /></svg>,
-                activeFillColor: '#9333ea',
-                inactiveFillColor: '#e5e7eb'
-              }}
-            />
+            <Rating style={{ maxWidth: 120 }} value={Number.isFinite(Number(skill.rating)) ? Number(skill.rating) : 0} onChange={(v) => handleChange(index, "rating", v)} />
           </div>
         ))}
       </div>
       <div className="flex justify-between mt-6">
         <div className="flex gap-3">
-          <Button onClick={AddNewSkills} variant="outline" className="border-primary text-primary hover:bg-primary/10 transition-all duration-300">
-            + Add More Skills
+          <Button variant="outline" onClick={AddNewSkills} className="btn-glass-outline">
+            + Add More Skill
           </Button>
-          <Button onClick={RemoveSkills} variant="outline" className="border-red-500 text-red-500 hover:bg-red-50 transition-all duration-300">
-            Remove
-          </Button>
+          {skills.length > 1 && (
+            <Button variant="outline" onClick={RemoveSkills} className="border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200">
+              - Remove
+            </Button>
+          )}
         </div>
 
         <Button disabled={loading} onClick={onSave} className="btn-premium">
