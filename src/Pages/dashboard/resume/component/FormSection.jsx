@@ -74,7 +74,7 @@ function FormSection() {
       <div className='flex justify-between mb-3'>
         <div className='flex gap-5'>
           <Link to={"/dashboard"}>
-            <Button className='mb-1'><Home className='inline' /></Button>
+            <Button className='mb-1 btn-glass-outline' size="sm"><Home className='inline' /></Button>
           </Link>
           <ThemeColor />
         </div>
@@ -83,11 +83,12 @@ function FormSection() {
             <Button size='sm'
               onClick={() => goToForm(activeFormIndex - 1)}
               disabled={isSaving}
+              className="btn-glass-outline"
             >
               <ArrowLeft />
             </Button>}
           <Button
-            className='flex gap-2'
+            className='flex gap-2 btn-glass'
             size='sm'
             onClick={handleNext}
             disabled={isSaving}

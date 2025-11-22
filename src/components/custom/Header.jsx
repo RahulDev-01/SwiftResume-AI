@@ -9,51 +9,45 @@ function Header() {
   const isHomePage = location.pathname === "/";
 
   return (
-    <div className={`px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center transition-all duration-300 ${
-      isHomePage 
-        ? 'bg-white/80 backdrop-blur-md shadow-sm' 
+    <div className={`px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center transition-all duration-300 ${isHomePage
+        ? 'bg-white/80 backdrop-blur-md shadow-sm'
         : 'bg-white shadow-md'
-    }`}>
+      }`}>
       <Link to={"/"} className="flex items-center">
-        <img 
-          src="/logo.png" 
-          alt="SwiftResume AI" 
-          className="h-8 sm:h-10 cursor-pointer" 
+        <img
+          src="/logo.png"
+          alt="SwiftResume AI"
+          className="h-8 sm:h-10 cursor-pointer"
           onError={(e) => {
             e.target.style.display = 'none';
             console.warn('Logo image failed to load');
           }}
         />
-        
       </Link>
-      
+
       <div className="flex items-center gap-2 sm:gap-4">
         {isSignedIn ? (
           <>
             <Link to={"/dashboard"}>
-              <Button 
+              <Button
                 variant={isHomePage ? "outline" : "default"}
-                className="hidden sm:inline-flex"
+                className="hidden sm:inline-flex btn-glass-outline"
               >
                 Dashboard
               </Button>
             </Link>
-    
+
             <UserButton className="custom-user-button" />
           </>
         ) : (
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link to={"/ai-test"}>
-       
-            </Link>
             <Link to={"/auth/sign-in"}>
-              <Button 
+              <Button
                 size="sm"
-                className={`${
-                  isHomePage 
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                className={`btn-glass ${isHomePage
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
                     : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
+                  }`}
               >
                 <span className="hidden sm:inline">Get Started</span>
                 <span className="sm:hidden">Sign In</span>
