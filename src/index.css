@@ -10,40 +10,57 @@
 body {
   font-family: 'Outfit', sans-serif;
 }
-@media print{
+@media print {
   /* Print-only overrides */
   #no-print { display: none !important; }
   #print-area { display: block !important; }
+  
   .resume-sheet {
-    /* Exact A4 size: no scaling */
-    width: 210mm;           /* A4 width */
-    min-height: 297mm;      /* A4 height */
-    margin: 0 auto;
-    padding: 10mm;          /* inner padding so content doesn't touch edges */
-    box-sizing: border-box;
+    /* Exact A4 size with optimized padding */
+    width: 210mm !important;           /* A4 width */
+    min-height: 297mm !important;      /* A4 height */
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 8mm 12mm !important;      /* Optimized padding for better fit */
+    box-sizing: border-box !important;
     box-shadow: none !important;
-    overflow: visible;
-    font-size: 1.06em;      /* subtle size increase without distorting layout */
+    overflow: visible !important;
+    font-size: 0.95em !important;      /* Slightly smaller font for better fit */
+    border-top-width: 0 !important;    /* Remove top border to save space */
   }
+  
   /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
   #print-area .screen-zoom-target {
     transform: none !important;
     width: 210mm !important;
     min-height: 297mm !important;
+    max-width: 210mm !important;
     margin: 0 auto !important;
   }
-  #print-area .screen-zoom-wrapper { width: auto !important; margin: 0 auto !important; }
-  /* Reduce thick top border on print so content fits */
-  .resume-sheet { border-top-width: 6mm !important; }
+  
+  #print-area .screen-zoom-wrapper { 
+    width: auto !important; 
+    margin: 0 auto !important; 
+  }
+  
   html, body {
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  
+  /* Optimize spacing for print */
+  .resume-sheet * {
+    page-break-inside: avoid;
   }
 }
 
-@page { size: A4 portrait; margin: 0; }
+@page { 
+  size: A4 portrait; 
+  margin: 0; 
+}
 
 /* Screen layout: make the resume preview fit the viewport nicely */
 .resume-sheet {
@@ -313,27 +330,7 @@ html {
   background-size: 40px 40px;
 }
 
-/* ---- Print layout overrides (do not remove) ---- */
-@media print {
-  #no-print { display: none !important; }
-  #print-area { display: block !important; }
-  .resume-sheet {
-    width: 210mm;           /* A4 width */
-    min-height: 297mm;      /* A4 height */
-    margin: 0 auto;
-    padding: 10mm;
-    box-sizing: border-box;
-    box-shadow: none !important;
-  }
-  html, body {
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
 
-@page { size: A4 portrait; margin: 0; }
 
 /* Glassmorphism Utilities */
 body {

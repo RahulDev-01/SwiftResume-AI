@@ -8,23 +8,23 @@ import SkillPreview from './preview/SkillPreview'
 
 function ResumePreview() {
 
-    const {resumeInfo, setResumeInfo} = useContext(ResumeInfoContext)
+  const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext)
   return (
-    <div className='shadow-lg p-14 print:p-0 border-t-[20px] print:border-t-0 resume-sheet w-full max-w-[900px] mx-auto print:w-[210mm] print:min-h-[297mm]' style={{borderColor:resumeInfo?.themeColor}}>
-        {/* Personal DEtail  */}
-        <PersonalDetailPreview  resumeInfo={resumeInfo}/>
+    <div className='shadow-lg p-14 border-t-[20px] resume-sheet w-full max-w-[900px] mx-auto' style={{ borderColor: resumeInfo?.themeColor }}>
+      {/* Personal DEtail  */}
+      <PersonalDetailPreview resumeInfo={resumeInfo} />
 
-        {/* Summary  */}
-        <SummaryPreview  resumeInfo ={resumeInfo}/>
+      {/* Summary  */}
+      <SummaryPreview resumeInfo={resumeInfo} />
 
-        {/* Professional Experience  */}
-        <ExperiencePreview resumeInfo ={resumeInfo}/>
+      {/* Professional Experience  */}
+      <ExperiencePreview resumeInfo={resumeInfo} />
 
-        {/* Educational Details */}
-        <EducationPreview resumeInfo ={resumeInfo} />
+      {/* Educational Details */}
+      <EducationPreview resumeInfo={resumeInfo} />
 
-        {/* Skills*/}
-        <SkillPreview resumeInfo ={resumeInfo} />
+      {/* Skills*/}
+      <SkillPreview resumeInfo={resumeInfo} />
 
     </div>
   )
