@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext.jsx";
 
-const Skills = () => {
+const Skills = forwardRef(({ enableNext }, ref) => {
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext) || {};
@@ -126,8 +126,14 @@ const Skills = () => {
       console.error('Failed to update skills', err);
       setLoading(false);
       toast("Skills Update Failed");
+      throw err;
     }
   };
+
+  // Expose handleSave method to parent component
+  useImperativeHandle(ref, () => ({
+    handleSave: onSave
+  }));
 
   return (
     <div className="glass-card mt-5">
@@ -162,6 +168,8 @@ const Skills = () => {
       </div>
     </div>
   );
-};
+});
+
+Skills.displayName = 'Skills';
 
 export default Skills;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef } from 'react'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResumeInfoContext } from '../../../../context/ResumeInfoContext';
@@ -7,7 +7,8 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { LoaderCircle } from 'lucide-react';
 import GlobalApi from '../../../../../service/GlobalApi';
-function Education() {
+
+const Education = forwardRef(({ enableNext }, ref) => {
   const [educationalList, setEducationalList] = useState([
     {
       universityName: '',
@@ -146,8 +147,15 @@ function Education() {
       });
       setLoading(false);
       toast("Education: Server error, please try again ❌");
+      throw err;
     }
   };
+
+  // Expose handleSave method to parent component
+  useImperativeHandle(ref, () => ({
+    handleSave: onSave
+  }));
+
   // Hydrate local form state from backend-loaded context data once
   useEffect(() => {
     const incoming = resumeInfo?.education;
@@ -227,6 +235,8 @@ function Education() {
       </div>
     </div>
   )
-}
+});
+
+Education.displayName = 'Education';
 
 export default Education
