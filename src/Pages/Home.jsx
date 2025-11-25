@@ -100,20 +100,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* Trusted By Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 uppercase tracking-wider text-sm font-semibold mb-8">Trusted by professionals at</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center">
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Google</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Microsoft</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Amazon</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Meta</div>
-            <div className="h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-gray-500 text-sm font-medium hover:shadow-md transition-shadow">Apple</div>
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-24 bg-white relative overflow-hidden">
         {/* Background Pattern */}
@@ -222,7 +208,7 @@ export function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+      <section className="py-20 bg-blue-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-white opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -414,7 +400,7 @@ export function Home() {
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SwiftResume AI. All rights reserved. Created By <span className='text-blue-400 font-semibold'>Savvana Rahul</span>⚡</p>
+            <p>&copy; 2025 SwiftResume AI. All rights reserved. Created By <span className='text-blue-400 font-semibold'> <a href="https://savvana-rahul.tech/" target="_blank">Savvana Rahul</a></span>⚡</p>
           </div>
         </div>
       </footer>

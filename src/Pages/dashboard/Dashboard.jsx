@@ -1,37 +1,83 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import AddResume from './components/AddResume'
 import { useUser } from '@clerk/clerk-react'
 import GlobalApi from '../../../service/GlobalApi';
 import ResumeCardItem from './components/ResumeCardItem';
 import { Loader2 } from 'lucide-react';
 
+// Cache key for localStorage
+const CACHE_KEY = 'dashboard_resumes_cache';
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 function Dashboard() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [resumeList, setResumeList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const GetResumeList = () => {
-    setLoading(true);
+  const GetResumeList = useCallback(async () => {
     const email = user?.primaryEmailAddress?.emailAddress;
     if (!email) {
       setResumeList([]);
       setLoading(false);
       return;
     }
-    GlobalApi.GetUserResumes(email)
-      .then(resp => {
-        setResumeList(resp?.data?.data || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setResumeList([]);
-        setLoading(false);
-      })
-  }
+
+    // Check cache first
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp, userEmail } = JSON.parse(cached);
+        const isExpired = Date.now() - timestamp > CACHE_DURATION;
+
+        // Use cache if valid and for same user
+        if (!isExpired && userEmail === email) {
+          setResumeList(data);
+          setLoading(false);
+          // Still fetch in background to update cache
+          fetchAndUpdateCache(email);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Cache read error:', e);
+    }
+
+    // No valid cache, fetch data
+    setLoading(true);
+    await fetchAndUpdateCache(email);
+  }, [user]);
+
+  const fetchAndUpdateCache = async (email) => {
+    try {
+      const resp = await GlobalApi.GetUserResumes(email);
+      const data = resp?.data?.data || [];
+      setResumeList(data);
+
+      // Update cache
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data,
+          timestamp: Date.now(),
+          userEmail: email
+        }));
+      } catch (e) {
+        console.error('Cache write error:', e);
+      }
+    } catch (error) {
+      console.error('Failed to fetch resumes:', error);
+      setResumeList([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (user) GetResumeList();
-  }, [user])
+    if (isLoaded && user) {
+      GetResumeList();
+    } else if (isLoaded && !user) {
+      setLoading(false);
+    }
+  }, [user, isLoaded, GetResumeList])
 
 
   return (
