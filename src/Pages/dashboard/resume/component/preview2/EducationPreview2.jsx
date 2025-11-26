@@ -13,7 +13,7 @@ function EducationPreview2({ resumeInfo }) {
             <h2 className='text-lg font-bold text-gray-800 mb-3 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
                 EDUCATION
             </h2>
-            <div className='space-y-3'>
+            <div className='space-y-3 break-words'>
                 {educations.map((edu, index) => (
                     <div key={index} className='relative pl-4'>
                         <div className='absolute left-0 top-1 w-2 h-2 rounded-full' style={{ backgroundColor: resumeInfo?.themeColor }}></div>

@@ -4,19 +4,19 @@ import Dummy from '../../../../../Data/Dummy'
 
 function CertificationsPreview2({ resumeInfo }) {
     const certifications = (() => {
-        const raw = Array.isArray(resumeInfo?.certifications) ? resumeInfo.certifications : [];
-        const meaningful = raw.filter((c) => c?.title?.trim());
-        return meaningful.length ? meaningful : [];
+        const raw = resumeInfo?.certifications;
+        if (raw === undefined || raw === null) return Dummy.certifications;
+        return raw.filter((c) => c?.title?.trim());
     })();
 
-    if (certifications.length === 0) return null;
+    if (!certifications || certifications.length === 0) return null;
 
     return (
         <div className='mb-6'>
             <h2 className='text-lg font-bold text-gray-800 mb-3 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
                 TRAINING AND CERTIFICATIONS
             </h2>
-            <div className='space-y-3'>
+            <div className='space-y-3 break-words'>
                 {certifications.map((cert, index) => (
                     <div key={index}>
                         <div className='flex items-start gap-1'>

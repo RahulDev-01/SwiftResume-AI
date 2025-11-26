@@ -87,4 +87,32 @@ export default {
       rating: 100,
     },
   ],
+  certifications: [
+    {
+      id: 1,
+      title: "Certified React Developer",
+      issuer: "Meta",
+      date: "2023",
+      url: "https://example.com",
+    },
+    {
+      id: 2,
+      title: "AWS Certified Cloud Practitioner",
+      issuer: "Amazon Web Services",
+      date: "2022",
+      url: "",
+    },
+  ],
+  languages: [
+    {
+      id: 1,
+      name: "English",
+      proficiency: "Native",
+    },
+    {
+      id: 2,
+      name: "Spanish",
+      proficiency: "Intermediate",
+    },
+  ],
 };

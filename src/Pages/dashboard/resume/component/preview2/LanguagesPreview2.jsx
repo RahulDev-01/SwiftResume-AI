@@ -3,12 +3,12 @@ import Dummy from '../../../../../Data/Dummy'
 
 function LanguagesPreview2({ resumeInfo }) {
     const languages = (() => {
-        const raw = Array.isArray(resumeInfo?.languages) ? resumeInfo.languages : [];
-        const meaningful = raw.filter((l) => l?.name?.trim());
-        return meaningful.length ? meaningful : [];
+        const raw = resumeInfo?.languages;
+        if (raw === undefined || raw === null) return Dummy.languages;
+        return raw.filter((l) => l?.name?.trim());
     })();
 
-    if (languages.length === 0) return null;
+    if (!languages || languages.length === 0) return null;
 
     return (
         <div className='mb-6'>

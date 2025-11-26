@@ -32,7 +32,7 @@ function Resume() {
               return rel.map((it) => it?.attributes || it).filter(Boolean);
             }
           }
-          return [];
+          return null;
         };
         const normalized = {
           ...Dummy,
@@ -62,20 +62,21 @@ function Resume() {
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
       <div>
         {/* Template Selection */}
-        <div className='my-10 mx-10 md:mx-20 lg:mx-36 flex justify-end items-center gap-4'>
-          <div className='flex items-center gap-2'>
-            <span className='text-sm font-medium text-gray-700'>Current Template:</span>
-            <span className='px-3 py-1 rounded-full text-sm font-semibold' style={{
+        {/* Template Selection */}
+        <div className='my-10 mx-10 md:mx-20 lg:mx-36 flex flex-col md:flex-row justify-between items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm'>
+          <div className='flex items-center gap-3'>
+            <span className='text-base font-semibold text-gray-700'>Current Template:</span>
+            <span className='px-4 py-1.5 rounded-full text-sm font-bold shadow-sm transition-all' style={{
               backgroundColor: resumeInfo?.themeColor || '#047857',
               color: 'white'
             }}>
               Template {resumeInfo?.templateId || '1'}
             </span>
           </div>
-          <div className='flex items-center gap-2'>
-            <label className='text-sm font-medium text-gray-700'>Select Template:</label>
+          <div className='flex items-center gap-3'>
+            <label className='text-base font-semibold text-gray-700'>Select Template:</label>
             <select
-              className='p-2 border rounded-lg bg-white'
+              className='p-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all cursor-pointer hover:border-purple-400'
               value={resumeInfo?.templateId || '1'}
               onChange={(e) => {
                 const newTemplateId = e.target.value;
@@ -94,7 +95,9 @@ function Resume() {
           {/* Form Section */}
           <FormSection />
           {/* Preview Section */}
-          <ResumePreview />
+          <div className='md:sticky md:top-20 h-fit'>
+            <ResumePreview />
+          </div>
         </div>
       </div>
     </ResumeInfoContext.Provider>

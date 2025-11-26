@@ -23,7 +23,7 @@ function ExperiencePreview2({ resumeInfo }) {
                     ></div>
                 )}
 
-                <div className='space-y-5'>
+                <div className='space-y-5 break-words'>
                     {experiences.map((exp, index) => (
                         <div key={index} className='relative pl-6'>
                             {/* Timeline marker */}

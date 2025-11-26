@@ -6,7 +6,7 @@ function SummaryPreview2({ resumeInfo }) {
 
     return (
         <div className='mb-6'>
-            <p className='text-sm text-gray-700 leading-relaxed text-justify'>
+            <p className='text-sm text-gray-700 leading-relaxed text-justify break-words'>
                 {summary}
             </p>
         </div>

@@ -36,7 +36,7 @@ function PersonalDetailPreview2({ resumeInfo }) {
             </div>
 
             {/* Contact Info */}
-            <div className='flex flex-col gap-2 text-sm text-gray-700'>
+            <div className='flex flex-col gap-2 text-sm text-gray-700 break-all'>
                 <div className='flex items-center gap-2'>
                     <Mail className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
                     <span>{email}</span>
