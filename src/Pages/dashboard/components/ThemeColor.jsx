@@ -13,41 +13,41 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 function ThemeColor() {
-const colors=[
-"#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFA1", "#FF7133", "#71FF33", "#7133FF", "#FF3371", "#33FF71", "#3371FF", "#A1FF33", "#33A1FF", "#FF5733", "#5733FF", "#33FF5A", "#5A33FF", "#FF335A", "#335AFF"]
+  const colors = [
+    "#000000", "#047857", "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFA1", "#FF7133", "#71FF33", "#7133FF", "#FF3371", "#33FF71", "#3371FF", "#A1FF33", "#33A1FF", "#FF5733", "#5733FF", "#33FF5A", "#5A33FF", "#FF335A", "#335AFF"]
 
-const {resumeInfo,setResumeInfo} = useContext(ResumeInfoContext)
-const [selectedColor, setSelectedColor] = useState();
-const {resumeId} = useParams()
-const onColorSelect =(color)=>{
-  setSelectedColor(color);
-  setResumeInfo((prev)=>({
-    ...prev,
-    themeColor: color
-  }));
-  const data ={
-    data:{
-        themeColor:color
+  const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext)
+  const [selectedColor, setSelectedColor] = useState();
+  const { resumeId } = useParams()
+  const onColorSelect = (color) => {
+    setSelectedColor(color);
+    setResumeInfo((prev) => ({
+      ...prev,
+      themeColor: color
+    }));
+    const data = {
+      data: {
+        themeColor: color
+      }
     }
+    GlobalApi.UpdateResumeDatail(resumeId, data).then(resp => {
+      console.log(resp);
+      toast('Theme Color Updated')
+
+    })
   }
-  GlobalApi.UpdateResumeDatail(resumeId,data).then(resp=>{
-    console.log(resp);
-    toast('Theme Color Updated')
-    
-  })
-}
-return (
-<Popover>
-  <PopoverTrigger asChild><Button variant='outline' size='sm'
-   className='flex gap-2 scale-112 mt-[1px] '> <LayoutGrid />Theme   </Button></PopoverTrigger>
-  <PopoverContent>
-    <h2 className="mb-4 text-sm font-bold">Select Theme Color</h2>
-    <div className="grid grid-cols-5 gap-2" >
-    {colors.map((item,index)=>(
-    <div key={index} style={{ background:item}} className={`h-5 w-5 rounded-full cursor-pointer hover:border-black border ${selectedColor==item&&'border border-black'}`} onClick={()=>onColorSelect(item)}></div>
-  ))}</div>
-</PopoverContent>
-</Popover>
-)
+  return (
+    <Popover>
+      <PopoverTrigger asChild><Button variant='outline' size='sm'
+        className='flex gap-2 scale-112 mt-[1px] '> <LayoutGrid />Theme   </Button></PopoverTrigger>
+      <PopoverContent>
+        <h2 className="mb-4 text-sm font-bold">Select Theme Color</h2>
+        <div className="grid grid-cols-5 gap-2" >
+          {colors.map((item, index) => (
+            <div key={index} style={{ background: item }} className={`h-5 w-5 rounded-full cursor-pointer hover:border-black border ${selectedColor == item && 'border border-black'}`} onClick={() => onColorSelect(item)}></div>
+          ))}</div>
+      </PopoverContent>
+    </Popover>
+  )
 }
 export default ThemeColor

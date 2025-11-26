@@ -4,6 +4,8 @@ import SummaryPreview2 from './preview2/SummaryPreview2'
 import ExperiencePreview2 from './preview2/ExperiencePreview2'
 import EducationPreview2 from './preview2/EducationPreview2'
 import SkillPreview2 from './preview2/SkillPreview2'
+import LanguagesPreview2 from './preview2/LanguagesPreview2'
+import CertificationsPreview2 from './preview2/CertificationsPreview2'
 
 function ResumePreview2({ resumeInfo }) {
     return (
@@ -20,10 +22,12 @@ function ResumePreview2({ resumeInfo }) {
                     <ExperiencePreview2 resumeInfo={resumeInfo} />
                 </div>
 
-                {/* Right Column: Skills, Education (1/3 width) */}
+                {/* Right Column: Skills, Certifications, Education, Languages (1/3 width) */}
                 <div className='col-span-1 flex flex-col'>
                     <SkillPreview2 resumeInfo={resumeInfo} />
+                    <CertificationsPreview2 resumeInfo={resumeInfo} />
                     <EducationPreview2 resumeInfo={resumeInfo} />
+                    <LanguagesPreview2 resumeInfo={resumeInfo} />
                 </div>
             </div>
         </div>

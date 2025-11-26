@@ -36,6 +36,8 @@ function View() {
           education: pickArray(attrs, ['education', 'Education', 'educations', 'Educations']),
           experience: pickArray(attrs, ['experience', 'Experience', 'experiences', 'Experiences']),
           skills: pickArray(attrs, ['skills', 'Skills', 'skill', 'Skill']),
+          languages: pickArray(attrs, ['languages', 'Languages']),
+          certifications: pickArray(attrs, ['certifications', 'Certifications']),
           templateId: attrs.templateId || '1'
         };
 
