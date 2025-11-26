@@ -96,7 +96,7 @@ function Resume() {
           <FormSection />
           {/* Preview Section */}
           <div className='md:sticky md:top-20 h-fit'>
-            <ResumePreview />
+            <ResumePreview enableEditMode={true} />
           </div>
         </div>
       </div>

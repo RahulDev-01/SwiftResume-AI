@@ -12,21 +12,38 @@ function CertificationsPreview2({ resumeInfo }) {
     if (!certifications || certifications.length === 0) return null;
 
     return (
-        <div className='mb-6'>
-            <h2 className='text-lg font-bold text-gray-800 mb-3 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
+        <div className='my-6'>
+            <h2 className='text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
                 TRAINING AND CERTIFICATIONS
             </h2>
-            <div className='space-y-3 break-words'>
-                {certifications.map((cert, index) => (
-                    <div key={index}>
-                        <div className='flex items-start gap-1'>
-                            <h3 className='text-sm font-semibold text-gray-800 flex-1'>{cert?.title}</h3>
-                            {cert?.url && <ExternalLink className='w-3 h-3 mt-0.5' style={{ color: resumeInfo?.themeColor }} />}
+            <div className='relative'>
+                {/* Vertical timeline line */}
+                {certifications.length > 1 && (
+                    <div
+                        className='absolute left-[5px] top-3 bottom-3 w-0.5'
+                        style={{ backgroundColor: resumeInfo?.themeColor }}
+                    ></div>
+                )}
+
+                <div className='space-y-5 break-words'>
+                    {certifications.map((cert, index) => (
+                        <div key={index} className='relative pl-6'>
+                            {/* Timeline marker */}
+                            <div className='absolute left-0 top-1 w-3 h-3 rounded-full border-2 bg-white' style={{ borderColor: resumeInfo?.themeColor }}></div>
+
+                            <div>
+                                <h3 className='font-bold text-base text-gray-800'>{cert?.title}</h3>
+                                <div className='flex items-center gap-2 mb-1'>
+                                    <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
+                                        {cert?.issuer}
+                                    </span>
+                                    {cert?.url && <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />}
+                                </div>
+                                {cert?.date && <div className='text-xs text-gray-500 italic mb-2'>{cert?.date}</div>}
+                            </div>
                         </div>
-                        <p className='text-xs text-gray-600'>{cert?.issuer}</p>
-                        {cert?.date && <p className='text-xs text-gray-500 italic'>{cert?.date}</p>}
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     )

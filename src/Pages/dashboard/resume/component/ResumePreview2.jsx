@@ -7,7 +7,7 @@ import SkillPreview2 from './preview2/SkillPreview2'
 import LanguagesPreview2 from './preview2/LanguagesPreview2'
 import CertificationsPreview2 from './preview2/CertificationsPreview2'
 
-function ResumePreview2({ resumeInfo }) {
+function ResumePreview2({ resumeInfo, enableEditMode }) {
     return (
         <div className='shadow-lg p-10 border-t-[20px] resume-sheet mx-auto bg-white overflow-hidden w-full max-w-[900px]' style={{ borderColor: resumeInfo?.themeColor, minHeight: '297mm' }}>
             {/* Header with Personal Details */}
@@ -20,12 +20,12 @@ function ResumePreview2({ resumeInfo }) {
                 {/* Left Column: Experience (2/3 width) */}
                 <div className='col-span-2'>
                     <ExperiencePreview2 resumeInfo={resumeInfo} />
+                    <CertificationsPreview2 resumeInfo={resumeInfo} />
                 </div>
 
                 {/* Right Column: Skills, Certifications, Education, Languages (1/3 width) */}
                 <div className='col-span-1 flex flex-col'>
-                    <SkillPreview2 resumeInfo={resumeInfo} />
-                    <CertificationsPreview2 resumeInfo={resumeInfo} />
+                    <SkillPreview2 resumeInfo={resumeInfo} enableEditMode={enableEditMode} />
                     <EducationPreview2 resumeInfo={resumeInfo} />
                     <LanguagesPreview2 resumeInfo={resumeInfo} />
                 </div>

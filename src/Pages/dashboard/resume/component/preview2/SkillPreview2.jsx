@@ -1,9 +1,15 @@
 import React from 'react'
 import Dummy from '../../../../../Data/Dummy'
 
-function SkillPreview2({ resumeInfo }) {
+function SkillPreview2({ resumeInfo, enableEditMode }) {
     const skills = (() => {
         const raw = Array.isArray(resumeInfo?.skills) ? resumeInfo.skills : [];
+        if (enableEditMode) {
+            // In edit mode, show whatever is in the list (even empty ones) so user sees "Add More" working
+            // But if completely empty, show Dummy
+            return raw.length > 0 ? raw : (Array.isArray(Dummy?.skills) ? Dummy.skills : []);
+        }
+        // In view mode, filter out empty ones
         const meaningful = raw.filter((s) => s?.name?.trim());
         return meaningful.length ? meaningful : (Array.isArray(Dummy?.skills) ? Dummy.skills : []);
     })();
@@ -13,14 +19,13 @@ function SkillPreview2({ resumeInfo }) {
             <h2 className='text-lg font-bold text-gray-800 mb-3 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
                 AREAS OF EXPERTISE
             </h2>
-            <div className='flex flex-wrap gap-2'>
+            <div className='text-sm text-gray-700 leading-relaxed'>
                 {skills.map((skill, index) => (
-                    <span
-                        key={index}
-                        className='px-3 py-1 text-xs font-medium text-white rounded'
-                        style={{ backgroundColor: resumeInfo?.themeColor || '#047857' }}
-                    >
+                    <span key={index}>
                         {skill?.name}
+                        {index < skills.length - 1 && (
+                            <span className='mx-2 text-gray-400'>•</span>
+                        )}
                     </span>
                 ))}
             </div>

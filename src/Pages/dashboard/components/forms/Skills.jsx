@@ -44,11 +44,12 @@ const Skills = forwardRef(({ enableNext }, ref) => {
 
   // Hydrate local state from backend-loaded context once
   useEffect(() => {
+    if (hasUserEdited) return; // Don't overwrite if user has edited
     const incoming = resumeInfo?.skills;
     if (Array.isArray(incoming) && incoming.length) {
       setSkills(incoming);
     }
-  }, [resumeInfo?.skills]);
+  }, [resumeInfo?.skills, hasUserEdited]);
 
   // Only push to context after user edits
   useEffect(() => {
@@ -73,22 +74,6 @@ const Skills = forwardRef(({ enableNext }, ref) => {
       const paramId = params.resumeId;
       const isNumericId = /^\d+$/.test(String(paramId));
 
-      // Always fetch fresh data to ensure we have all fields (Education, Experience, etc.)
-      let current = {};
-      try {
-        if (isNumericId) {
-          const currentResp = await GlobalApi.GetResumeById(paramId);
-          current = currentResp?.data?.data?.attributes || {};
-        } else {
-          const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
-          current = currentResp?.data?.data || {};
-        }
-        console.log('Skills: Fetched current data, keys:', Object.keys(current));
-      } catch (err) {
-        console.warn('Could not fetch current resume', err);
-        current = {};
-      }
-
       // Normalize skills: trim names, coerce rating to number, filter empty rows - STRIP 'id' field
       const normalizedSkills = skills
         .map((s) => {
@@ -100,27 +85,8 @@ const Skills = forwardRef(({ enableNext }, ref) => {
         })
         .filter((s) => s.name && s.name.trim() !== '');
 
-      // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
-      const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
-      const scalarAllowed = new Set([
-        'title', 'resumeId', 'userEmail', 'userName',
-        'firstName', 'lastName', 'jobTitle', 'address', 'phone', 'email',
-        'summery', 'themeColor', 'color'
-      ]);
-      const base = Object.fromEntries(
-        Object.entries(current || {})
-          .filter(([k, v]) => !systemKeys.includes(k))
-          .filter(([k, v]) => scalarAllowed.has(k))
-          .filter(([k, v]) => v === null || ['string', 'number', 'boolean'].includes(typeof v))
-      );
-
-      // Ensure title is present (required field)
-      if (!base.title) {
-        base.title = 'My Resume';
-      }
-
       const skillsKey = 'Skills';
-      const updateData = { ...base, [skillsKey]: normalizedSkills };
+      const updateData = { [skillsKey]: normalizedSkills };
 
       console.log('Skills: Sending update with keys:', Object.keys(updateData));
       console.log('Skills: Sample payload:', { [skillsKey]: updateData[skillsKey] });
@@ -129,7 +95,7 @@ const Skills = forwardRef(({ enableNext }, ref) => {
 
       // Use appropriate API based on ID type
       if (isNumericId) {
-        await GlobalApi.UpdateResumeDetailWithLocale(paramId, data, current?.locale);
+        await GlobalApi.UpdateResumeDetail(paramId, data);
       } else {
         await GlobalApi.UpdateResumeByDocumentId(paramId, data);
       }

@@ -54,20 +54,6 @@ const Languages = forwardRef(({ enableNext }, ref) => {
             const paramId = params.resumeId;
             const isNumericId = /^\d+$/.test(String(paramId));
 
-            let current = {};
-            try {
-                if (isNumericId) {
-                    const currentResp = await GlobalApi.GetResumeById(paramId);
-                    current = currentResp?.data?.data?.attributes || {};
-                } else {
-                    const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
-                    current = currentResp?.data?.data || {};
-                }
-            } catch (err) {
-                console.warn('Could not fetch current resume', err);
-                current = {};
-            }
-
             // Normalize languages - STRIP 'id' field
             const normalizedLanguages = languages
                 .map((l) => {
@@ -79,29 +65,12 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 })
                 .filter((l) => l.name && l.name.trim() !== '');
 
-            const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
-            const scalarAllowed = new Set([
-                'title', 'resumeId', 'userEmail', 'userName',
-                'firstName', 'lastName', 'jobTitle', 'address', 'phone', 'email',
-                'summery', 'themeColor', 'color', 'templateId'
-            ]);
-            const base = Object.fromEntries(
-                Object.entries(current || {})
-                    .filter(([k, v]) => !systemKeys.includes(k))
-                    .filter(([k, v]) => scalarAllowed.has(k))
-                    .filter(([k, v]) => v === null || ['string', 'number', 'boolean'].includes(typeof v))
-            );
-
-            if (!base.title) {
-                base.title = 'My Resume';
-            }
-
             const languagesKey = 'Languages';
-            const updateData = { ...base, [languagesKey]: normalizedLanguages };
+            const updateData = { [languagesKey]: normalizedLanguages };
             const data = { data: updateData };
 
             if (isNumericId) {
-                await GlobalApi.UpdateResumeDetailWithLocale(paramId, data, current?.locale);
+                await GlobalApi.UpdateResumeDetail(paramId, data);
             } else {
                 await GlobalApi.UpdateResumeByDocumentId(paramId, data);
             }
