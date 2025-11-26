@@ -19,13 +19,14 @@ function SkillPreview2({ resumeInfo, enableEditMode }) {
             <h2 className='text-lg font-bold text-gray-800 mb-3 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
                 AREAS OF EXPERTISE
             </h2>
-            <div className='text-sm text-gray-700 leading-relaxed'>
+            <div className='flex flex-wrap gap-2'>
                 {skills.map((skill, index) => (
-                    <span key={index}>
+                    <span
+                        key={index}
+                        className='px-3 py-1 text-xs font-medium text-white rounded text-center'
+                        style={{ backgroundColor: resumeInfo?.themeColor || '#047857' }}
+                    >
                         {skill?.name}
-                        {index < skills.length - 1 && (
-                            <span className='mx-2 text-gray-400'>•</span>
-                        )}
                     </span>
                 ))}
             </div>
