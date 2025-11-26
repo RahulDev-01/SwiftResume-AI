@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { LoaderCircle } from 'lucide-react';
 import GlobalApi from '../../../../../service/GlobalApi';
+
 const createEmptyField = () => ({
   title: '',
   companyName: '',
@@ -22,15 +23,14 @@ function Experience() {
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const params = useParams();
-  // Context
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+
   const handleChange = (index, event) => {
     const newEntries = experienceList.slice();
     const { name, value } = event.target;
     newEntries[index][name] = value;
     setExperienceList(newEntries);
     setHasUserEdited(true);
-
   }
 
   const onSave = async () => {
@@ -39,64 +39,55 @@ function Experience() {
       const paramId = params.resumeId;
       const isNumericId = /^\d+$/.test(String(paramId));
 
-      // Use resumeInfo attributes as base, fallback to fetch
       let current = resumeInfo?.attributes || {};
       if (!resumeInfo?.attributes) {
         try {
           if (isNumericId) {
             const currentResp = await GlobalApi.GetResumeById(paramId);
             current = currentResp?.data?.data?.attributes || {};
-            console.log('Fetched by numeric ID, attributes:', Object.keys(current));
           } else {
             const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
-            // Strapi v5: when fetching by documentId, attributes are directly in data.data
             current = currentResp?.data?.data || {};
-            console.log('Fetched by documentId, attributes:', Object.keys(current));
           }
         } catch (err) {
-          console.warn('Could not fetch current resume, using empty base', err);
+          console.warn('Could not fetch current resume', err);
           current = {};
         }
       }
 
-      // Normalize experience entries
+      // Normalize experience - STRIP 'id' field to avoid Strapi validation error
       const normalizedExperience = experienceList
-        .map((e) => ({
-          title: e.title?.trim() || null,
-          companyName: e.companyName?.trim() || null,
-          city: e.city?.trim() || null,
-          state: e.state?.trim() || null,
-          startDate: e.startDate || null,
-          endDate: e.endDate || null,
-          workSummery: (e.workSummery ?? '').toString(),
-        }))
+        .map((e) => {
+          const { id, ...rest } = e; // Remove id field
+          return {
+            title: rest.title?.trim() || null,
+            companyName: rest.companyName?.trim() || null,
+            city: rest.city?.trim() || null,
+            state: rest.state?.trim() || null,
+            startDate: rest.startDate || null,
+            endDate: rest.endDate || null,
+            workSummery: (rest.workSummery ?? '').toString(),
+          };
+        })
         .filter((e) =>
           e.title || e.companyName || e.city || e.state || e.startDate || e.endDate || (e.workSummery && e.workSummery.trim() !== '')
         );
 
-      // Per Strapi schema, the component field is 'Experience' (capital E)
-      const keys = Object.keys(current || {});
       const experienceKey = 'Experience';
-
-      // Merge with existing attributes excluding system/read-only keys
       const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
       const base = Object.fromEntries(
         Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
       );
-      // Ensure required collection fields are present (title is required in schema)
+
       if (!base.title) {
-        console.warn('Missing required field: title. Using fallback default title.');
-        base.title = 'My Resume'; // Provide default to satisfy Strapi required field
+        base.title = 'My Resume';
       }
+
       const updateData = { ...base, [experienceKey]: normalizedExperience };
-
-      console.log('Experience keys on record:', keys);
-      console.log('Sending experience update keys:', Object.keys(updateData));
-
       const locale = current?.locale;
-      console.log('Using locale for update (experience):', locale);
+
       if (isNumericId) {
-        await GlobalApi.UpdateResumeDatailWithLocale(paramId, { data: updateData }, locale);
+        await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: updateData }, locale);
       } else {
         await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
       }
@@ -113,26 +104,26 @@ function Experience() {
       toast("Experience: Server error, please try again ❌");
     }
   };
+
   const AddNewExp = () => {
     setExperienceList(prev => [...prev, createEmptyField()])
     setHasUserEdited(true);
   }
+
   const RemoveNewExp = () => {
     setExperienceList(prev => prev.slice(0, -1))
     setHasUserEdited(true);
   }
+
   const handleRichTextEditor = (e, name, index) => {
-    console.log('Experience form received value:', e.target.value);
     setExperienceList(prev => {
       const newEntries = prev.slice();
       newEntries[index] = { ...newEntries[index], [name]: e.target.value };
-      console.log('Updated experience entry:', newEntries[index]);
       return newEntries;
     })
     setHasUserEdited(true);
   }
 
-  // Hydrate from backend-loaded context once
   useEffect(() => {
     const incoming = resumeInfo?.experience;
     if (Array.isArray(incoming) && incoming.length) {
@@ -140,15 +131,14 @@ function Experience() {
     }
   }, [resumeInfo?.experience]);
 
-  // Only push to context after user edits
   useEffect(() => {
     if (!hasUserEdited) return;
-    console.log('Experience: pushing user-edited list to context:', experienceList);
     setResumeInfo(prev => ({
       ...prev,
       experience: experienceList
     }));
   }, [experienceList, hasUserEdited, setResumeInfo])
+
   return (
     <div className='glass-card mt-5'>
       <h2 className='section-title'>Professional Experience</h2>
@@ -181,32 +171,20 @@ function Experience() {
                 <label className="text-sm font-medium text-gray-700">End Date</label>
                 <Input className="input-glass" type="text" placeholder="e.g., Dec 2022 or Present" name="endDate" value={field.endDate || ''} onChange={(event) => handleChange(index, event)} />
               </div>
-              {/* Rich Text Editor  */}
               <div className="col-span-2 space-y-1.5">
                 <RichTextEditor onRichTextEditrChange={(event) => handleRichTextEditor(event, 'workSummery', index)} index={index} initialValue={field.workSummery || ''} />
               </div>
-
-
             </div>
           </div>
         ))}
       </div>
       <div className="flex justify-between mt-6">
         <div className="flex gap-3">
-          <Button
-            variant='outline'
-            className='btn-glass-outline'
-            onClick={AddNewExp}
-          >
+          <Button variant='outline' className='btn-glass-outline' onClick={AddNewExp}>
             + Add More Experience
           </Button>
-
           {experienceList.length > 1 && (
-            <Button
-              variant='outline'
-              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200'
-              onClick={RemoveNewExp}
-            >
+            <Button variant='outline' className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200' onClick={RemoveNewExp}>
               - Remove
             </Button>
           )}

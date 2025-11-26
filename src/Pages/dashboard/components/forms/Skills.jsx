@@ -78,12 +78,15 @@ const Skills = forwardRef(({ enableNext }, ref) => {
         current = {};
       }
 
-      // Normalize skills: trim names, coerce rating to number, filter empty rows
+      // Normalize skills: trim names, coerce rating to number, filter empty rows - STRIP 'id' field
       const normalizedSkills = skills
-        .map((s) => ({
-          name: s.name?.trim() || '',
-          rating: Number.isFinite(Number(s.rating)) ? Number(s.rating) : 0,
-        }))
+        .map((s) => {
+          const { id, ...rest } = s; // Remove id field
+          return {
+            name: rest.name?.trim() || '',
+            rating: Number.isFinite(Number(rest.rating)) ? Number(rest.rating) : 0,
+          };
+        })
         .filter((s) => s.name && s.name.trim() !== '');
 
       // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
@@ -115,7 +118,7 @@ const Skills = forwardRef(({ enableNext }, ref) => {
 
       // Use appropriate API based on ID type
       if (isNumericId) {
-        await GlobalApi.UpdateResumeDatailWithLocale(paramId, data, current?.locale);
+        await GlobalApi.UpdateResumeDetailWithLocale(paramId, data, current?.locale);
       } else {
         await GlobalApi.UpdateResumeByDocumentId(paramId, data);
       }

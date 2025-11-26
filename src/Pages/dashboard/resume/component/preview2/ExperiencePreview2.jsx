@@ -4,9 +4,9 @@ import Dummy from '../../../../../Data/Dummy'
 
 function ExperiencePreview2({ resumeInfo }) {
     const experiences = (() => {
-        const raw = Array.isArray(resumeInfo?.experience) ? resumeInfo.experience : [];
-        const meaningful = raw.filter((e) => e?.title?.trim() || e?.companyName?.trim());
-        return meaningful.length ? meaningful : (Array.isArray(Dummy?.experience) ? Dummy.experience : []);
+        const raw = resumeInfo?.experience;
+        if (raw === undefined || raw === null) return Dummy.experience;
+        return raw.filter((e) => e?.title?.trim() || e?.companyName?.trim());
     })();
 
     return (

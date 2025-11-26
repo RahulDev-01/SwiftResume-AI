@@ -30,7 +30,7 @@ function ThemeColor() {
         themeColor: color
       }
     }
-    GlobalApi.UpdateResumeDatail(resumeId, data).then(resp => {
+    GlobalApi.UpdateResumeDetail(resumeId, data).then(resp => {
       console.log(resp);
       toast('Theme Color Updated')
 

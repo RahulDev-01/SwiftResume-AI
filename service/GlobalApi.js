@@ -33,8 +33,8 @@ const CreateNewResume =(data)=>axiousClient.post('user-resumes',data)
 
 const GetUserResumes =(userEmail)=>axiousClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail))
 const GetResumeById =(id)=>axiousClient.get('user-resumes/'+id)
-const  UpdateResumeDatail =(id,data)=>axiousClient.put('user-resumes/'+id,data)
-const  UpdateResumeDatailWithLocale =(id,data,locale)=>{
+const  UpdateResumeDetail =(id,data)=>axiousClient.put('user-resumes/'+id,data)
+const  UpdateResumeDetailWithLocale =(id,data,locale)=>{
     const config = locale ? { params: { locale } } : undefined;
     return axiousClient.put('user-resumes/'+id,data,config)
 }
@@ -57,13 +57,19 @@ const GetResumeByResumeId = (resumeId) =>
 // Update resume by Strapi documentId
 const UpdateResumeByDocumentId = async (documentId, data) => {
     console.log('UpdateResumeByDocumentId called with documentId:', documentId);
+    console.log('Payload being sent:', JSON.stringify(data, null, 2));
     try {
         // In Strapi v5, documentId can be used directly in the URL
         const locale = data?.data?.locale;
         const config = locale ? { params: { locale } } : undefined;
-        return axiousClient.put('user-resumes/'+documentId, data, config);
+        const response = await axiousClient.put('user-resumes/'+documentId, data, config);
+        console.log('Update successful:', response.data);
+        return response;
     } catch (err) {
-        console.error('UpdateResumeByDocumentId failed for:', documentId, err);
+        console.error('UpdateResumeByDocumentId failed for:', documentId);
+        console.error('Error response:', err.response?.data);
+        console.error('Error status:', err.response?.status);
+        console.error('Error details:', err.response?.data?.error);
         throw err;
     }
 }
@@ -76,8 +82,8 @@ export default{
     CreateNewResume,
     GetUserResumes,
     GetResumeById,
-    UpdateResumeDatail,
-    UpdateResumeDatailWithLocale,
+    UpdateResumeDetail,
+    UpdateResumeDetailWithLocale,
     GetResumeByDocumentId,
     GetResumeByResumeId,
     UpdateResumeByDocumentId,

@@ -9,7 +9,7 @@ import CertificationsPreview2 from './preview2/CertificationsPreview2'
 
 function ResumePreview2({ resumeInfo }) {
     return (
-        <div className='shadow-lg p-10 border-t-[20px] resume-sheet w-full max-w-[900px] mx-auto bg-white' style={{ borderColor: resumeInfo?.themeColor }}>
+        <div className='shadow-lg p-10 border-t-[20px] resume-sheet mx-auto bg-white' style={{ borderColor: resumeInfo?.themeColor, width: '210mm', minHeight: '297mm' }}>
             {/* Header with Personal Details */}
             <PersonalDetailPreview2 resumeInfo={resumeInfo} />
 

@@ -52,7 +52,7 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
         e.preventDefault();
         setloading(true)
         const data = { data: formData }
-        GlobalApi.UpdateResumeDatail(params?.resumeId, data).then(resp => {
+        GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(resp => {
             console.log(resp);
             enableNext(true)
             setloading(false);
@@ -66,7 +66,7 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
             return new Promise((resolve, reject) => {
                 setloading(true);
                 const data = { data: formData };
-                GlobalApi.UpdateResumeDatail(params?.resumeId, data)
+                GlobalApi.UpdateResumeDetail(params?.resumeId, data)
                     .then(resp => {
                         console.log(resp);
                         enableNext(true);

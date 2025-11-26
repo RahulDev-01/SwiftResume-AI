@@ -77,7 +77,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
     e.preventDefault();
     setSaving(true)
     const data = { data: { summery: summery } };
-    GlobalApi.UpdateResumeDatail(params?.resumeId, data)
+    GlobalApi.UpdateResumeDetail(params?.resumeId, data)
       .then(resp => {
         console.log(resp);
         enableNext(true)
@@ -98,7 +98,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
       return new Promise((resolve, reject) => {
         setSaving(true);
         const data = { data: { summery: summery } };
-        GlobalApi.UpdateResumeDatail(params?.resumeId, data)
+        GlobalApi.UpdateResumeDetail(params?.resumeId, data)
           .then(resp => {
             console.log(resp);
             enableNext(true);

@@ -5,12 +5,12 @@ import Dummy from '../../../../../Data/Dummy'
 
 function PersonalDetailPreview2({ resumeInfo }) {
     const { user } = useUser();
-    const firstName = (resumeInfo?.firstName || '').trim() || Dummy.firstName;
-    const lastName = (resumeInfo?.lastName || '').trim() || Dummy.lastName;
-    const jobTitle = (resumeInfo?.jobTitle || '').trim() || Dummy.jobTitle;
-    const address = (resumeInfo?.address || '').trim() || Dummy.address;
-    const phone = (resumeInfo?.phone || '').trim() || Dummy.phone;
-    const email = (resumeInfo?.email || '').trim() || Dummy.email;
+    const firstName = resumeInfo?.firstName != null ? resumeInfo.firstName : Dummy.firstName;
+    const lastName = resumeInfo?.lastName != null ? resumeInfo.lastName : Dummy.lastName;
+    const jobTitle = resumeInfo?.jobTitle != null ? resumeInfo.jobTitle : Dummy.jobTitle;
+    const address = resumeInfo?.address != null ? resumeInfo.address : Dummy.address;
+    const phone = resumeInfo?.phone != null ? resumeInfo.phone : Dummy.phone;
+    const email = resumeInfo?.email != null ? resumeInfo.email : Dummy.email;
 
     return (
         <div className='flex gap-6 items-start mb-6'>

@@ -2,7 +2,7 @@ import React from 'react'
 import Dummy from '../../../../../Data/Dummy'
 
 function SummaryPreview2({ resumeInfo }) {
-    const summary = (resumeInfo?.summery || '').trim() || Dummy.summery;
+    const summary = resumeInfo?.summery != null ? resumeInfo.summery : Dummy.summery;
 
     return (
         <div className='mb-6'>

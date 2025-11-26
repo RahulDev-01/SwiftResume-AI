@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import PersonalDetails from '../../components/forms/PersonalDetails'
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Home, LayoutGrid } from 'lucide-react';
@@ -6,14 +6,18 @@ import Summary from '../../components/forms/Summary';
 import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
+import Languages from '../../components/forms/Languages';
+import Certifications from '../../components/forms/Certifications';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import ThemeColor from '../../components/ThemeColor';
+import { ResumeInfoContext } from '@/context/ResumeInfoContext.jsx';
 
 function FormSection() {
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnableNext] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { resumeId } = useParams();
+  const { resumeInfo } = useContext(ResumeInfoContext) || {};
 
   // Refs to access form components
   const personalDetailsRef = useRef(null);
@@ -21,6 +25,11 @@ function FormSection() {
   const experienceRef = useRef(null);
   const educationRef = useRef(null);
   const skillsRef = useRef(null);
+  const certificationsRef = useRef(null);
+  const languagesRef = useRef(null);
+
+  // Check if Template 2 is selected
+  const isTemplate2 = resumeInfo?.templateId === '2' || resumeInfo?.templateId === 2;
 
   // Reset enableNext when changing form
   const goToForm = (index) => {
@@ -50,6 +59,12 @@ function FormSection() {
           break;
         case 5:
           currentFormRef = skillsRef;
+          break;
+        case 6:
+          currentFormRef = certificationsRef;
+          break;
+        case 7:
+          currentFormRef = languagesRef;
           break;
         default:
           break;
@@ -113,7 +128,14 @@ function FormSection() {
       {/* Skills */}
       {activeFormIndex == 5 ? <Skills ref={skillsRef} enableNext={(v) => setEnableNext(v)} /> : null}
 
-      {activeFormIndex == 6 ? <Navigate to={'/my-resume/' + resumeId + "/view"} /> : null}
+      {/* Certifications - Only for Template 2 */}
+      {isTemplate2 && activeFormIndex == 6 ? <Certifications ref={certificationsRef} enableNext={(v) => setEnableNext(v)} /> : null}
+
+      {/* Languages - Only for Template 2 */}
+      {isTemplate2 && activeFormIndex == 7 ? <Languages ref={languagesRef} enableNext={(v) => setEnableNext(v)} /> : null}
+
+      {/* Navigate to view page */}
+      {(isTemplate2 && activeFormIndex == 8) || (!isTemplate2 && activeFormIndex == 6) ? <Navigate to={'/my-resume/' + resumeId + "/view"} /> : null}
     </div>
   )
 }

@@ -21,9 +21,7 @@ const Education = forwardRef(({ enableNext }, ref) => {
   ])
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [loading, setLoading] = useState(false);
-  // Context
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-
 
   const handleChange = (event, index) => {
     const newEntries = educationalList.slice();
@@ -61,48 +59,41 @@ const Education = forwardRef(({ enableNext }, ref) => {
       const paramId = params.resumeId;
       const isNumericId = /^\d+$/.test(String(paramId));
 
-      // Use resumeInfo attributes as base, fallback to empty object
       let current = resumeInfo?.attributes || {};
 
-      // If resumeInfo doesn't have attributes, try to fetch
       if (!resumeInfo?.attributes) {
         try {
           if (isNumericId) {
             const currentResp = await GlobalApi.GetResumeById(paramId);
             current = currentResp?.data?.data?.attributes || {};
-            console.log('Fetched by numeric ID, attributes:', Object.keys(current));
           } else {
             const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
-            // Strapi v5: when fetching by documentId, attributes are directly in data.data
             current = currentResp?.data?.data || {};
-            console.log('Fetched by documentId, attributes:', Object.keys(current));
           }
         } catch (fetchErr) {
-          console.warn('Could not fetch current resume, using empty base', fetchErr);
+          console.warn('Could not fetch current resume', fetchErr);
           current = {};
         }
       }
 
-      // Normalize entries: trim strings, empty strings -> null, filter out totally empty rows
+      // Normalize education - STRIP 'id' field to avoid Strapi validation error
       const normalizedEducation = educationalList
-        .map((e) => ({
-          universityName: e.universityName?.trim() || null,
-          degree: e.degree?.trim() || null,
-          major: e.major?.trim() || null,
-          startDate: e.startDate || null,
-          endDate: e.endDate || null,
-          description: (e.description ?? '').toString(),
-        }))
+        .map((e) => {
+          const { id, ...rest } = e; // Remove id field
+          return {
+            universityName: rest.universityName?.trim() || null,
+            degree: rest.degree?.trim() || null,
+            major: rest.major?.trim() || null,
+            startDate: rest.startDate || null,
+            endDate: rest.endDate || null,
+            description: (rest.description ?? '').toString(),
+          };
+        })
         .filter((e) =>
           e.universityName || e.degree || e.major || e.startDate || e.endDate || (e.description && e.description.trim() !== '')
         );
 
-      // Per Strapi schema, the attribute key is capitalized 'Education'
-      const keys = Object.keys(current || {});
-      console.log('Strapi attribute keys on record:', keys);
       const educationKey = 'Education';
-
-      // Build base from current attributes: keep only scalar fields (avoid arrays/objects that may include nested ids)
       const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
       const scalarAllowed = new Set([
         'title', 'resumeId', 'userEmail', 'userName',
@@ -116,23 +107,15 @@ const Education = forwardRef(({ enableNext }, ref) => {
           .filter(([k, v]) => v === null || ['string', 'number', 'boolean'].includes(typeof v))
       );
 
-      // Safety: ensure required collection fields like 'title' are present
       if (!base.title) {
-        console.warn('Missing required field: title. Using fallback default title.');
-        base.title = 'My Resume'; // Provide default to satisfy Strapi required field
+        base.title = 'My Resume';
       }
 
-      // Create the update payload with the correct structure (merge base + new education)
       const updateData = { ...base, [educationKey]: normalizedEducation };
-
-      console.log('Sending update keys:', Object.keys(updateData));
-      console.log('Sending update sample:', { [educationKey]: updateData[educationKey] });
-
-      // Send the update (pass locale if available)
       const locale = current?.locale;
-      console.log('Using locale for update (education):', locale);
+
       if (isNumericId) {
-        await GlobalApi.UpdateResumeDatailWithLocale(paramId, { data: updateData }, locale);
+        await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: updateData }, locale);
       } else {
         await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
       }
@@ -151,12 +134,10 @@ const Education = forwardRef(({ enableNext }, ref) => {
     }
   };
 
-  // Expose handleSave method to parent component
   useImperativeHandle(ref, () => ({
     handleSave: onSave
   }));
 
-  // Hydrate local form state from backend-loaded context data once
   useEffect(() => {
     const incoming = resumeInfo?.education;
     if (Array.isArray(incoming) && incoming.length) {
@@ -164,7 +145,6 @@ const Education = forwardRef(({ enableNext }, ref) => {
     }
   }, [resumeInfo?.education]);
 
-  // Only push to context after user edits form
   useEffect(() => {
     if (!hasUserEdited) return;
     setResumeInfo(prev => ({
@@ -211,20 +191,11 @@ const Education = forwardRef(({ enableNext }, ref) => {
       </div>
       <div className="flex justify-between mt-6">
         <div className="flex gap-3">
-          <Button
-            variant='outline'
-            className='btn-glass-outline'
-            onClick={AddNewdu}
-          >
+          <Button variant='outline' className='btn-glass-outline' onClick={AddNewdu}>
             + Add More Education
           </Button>
-
           {educationalList.length > 1 && (
-            <Button
-              variant='outline'
-              className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200'
-              onClick={() => RemoveNewEdu(educationalList.length - 1)}
-            >
+            <Button variant='outline' className='border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200' onClick={() => RemoveNewEdu(educationalList.length - 1)}>
               - Remove
             </Button>
           )}

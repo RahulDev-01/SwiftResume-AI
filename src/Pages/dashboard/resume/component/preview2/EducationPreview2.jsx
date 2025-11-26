@@ -3,9 +3,9 @@ import Dummy from '../../../../../Data/Dummy'
 
 function EducationPreview2({ resumeInfo }) {
     const educations = (() => {
-        const raw = Array.isArray(resumeInfo?.education) ? resumeInfo.education : [];
-        const meaningful = raw.filter((e) => e?.universityName?.trim() || e?.degree?.trim());
-        return meaningful.length ? meaningful : (Array.isArray(Dummy?.education) ? Dummy.education : []);
+        const raw = resumeInfo?.education;
+        if (raw === undefined || raw === null) return Dummy.education;
+        return raw.filter((e) => e?.universityName?.trim() || e?.degree?.trim());
     })();
 
     return (
