@@ -6,6 +6,8 @@ import { ResumeInfoContext } from '../../../context/ResumeInfoContext';
 import GlobalApi from '../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
+import Dummy from '../../../Data/Dummy';
+
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
@@ -28,10 +30,11 @@ function View() {
               return rel.map((it) => it?.attributes || it).filter(Boolean);
             }
           }
-          return [];
+          return null;
         };
 
         const normalized = {
+          ...Dummy,
           ...attrs,
           education: pickArray(attrs, ['education', 'Education', 'educations', 'Educations']),
           experience: pickArray(attrs, ['experience', 'Experience', 'experiences', 'Experiences']),

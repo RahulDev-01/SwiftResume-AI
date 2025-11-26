@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import RichTextEditor from "../RichTextEditor";
 import { ResumeInfoContext } from "../../../../context/ResumeInfoContext";
 import { useParams } from 'react-router-dom';
@@ -18,7 +18,7 @@ const createEmptyField = () => ({
   workSummery: '',
 })
 
-function Experience() {
+const Experience = forwardRef(({ enableNext }, ref) => {
   const [experienceList, setExperienceList] = useState([createEmptyField()]);
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,76 +34,87 @@ function Experience() {
   }
 
   const onSave = async () => {
-    try {
-      setLoading(true);
-      const paramId = params.resumeId;
-      const isNumericId = /^\d+$/.test(String(paramId));
+    return new Promise(async (resolve, reject) => {
+      try {
+        setLoading(true);
+        const paramId = params.resumeId;
+        const isNumericId = /^\d+$/.test(String(paramId));
 
-      let current = resumeInfo?.attributes || {};
-      if (!resumeInfo?.attributes) {
-        try {
-          if (isNumericId) {
-            const currentResp = await GlobalApi.GetResumeById(paramId);
-            current = currentResp?.data?.data?.attributes || {};
-          } else {
-            const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
-            current = currentResp?.data?.data || {};
+        let current = resumeInfo?.attributes || {};
+        if (!resumeInfo?.attributes) {
+          try {
+            if (isNumericId) {
+              const currentResp = await GlobalApi.GetResumeById(paramId);
+              current = currentResp?.data?.data?.attributes || {};
+            } else {
+              const currentResp = await GlobalApi.GetResumeByDocumentId(paramId);
+              current = currentResp?.data?.data || {};
+            }
+          } catch (err) {
+            console.warn('Could not fetch current resume', err);
+            current = {};
           }
-        } catch (err) {
-          console.warn('Could not fetch current resume', err);
-          current = {};
         }
-      }
 
-      // Normalize experience - STRIP 'id' field to avoid Strapi validation error
-      const normalizedExperience = experienceList
-        .map((e) => {
-          const { id, ...rest } = e; // Remove id field
-          return {
-            title: rest.title?.trim() || null,
-            companyName: rest.companyName?.trim() || null,
-            city: rest.city?.trim() || null,
-            state: rest.state?.trim() || null,
-            startDate: rest.startDate || null,
-            endDate: rest.endDate || null,
-            workSummery: (rest.workSummery ?? '').toString(),
-          };
-        })
-        .filter((e) =>
-          e.title || e.companyName || e.city || e.state || e.startDate || e.endDate || (e.workSummery && e.workSummery.trim() !== '')
+        // Normalize experience - STRIP 'id' field to avoid Strapi validation error
+        const normalizedExperience = experienceList
+          .map((e) => {
+            const { id, ...rest } = e; // Remove id field
+            return {
+              title: rest.title?.trim() || null,
+              companyName: rest.companyName?.trim() || null,
+              city: rest.city?.trim() || null,
+              state: rest.state?.trim() || null,
+              startDate: rest.startDate || null,
+              endDate: rest.endDate || null,
+              workSummery: (rest.workSummery ?? '').toString(),
+            };
+          })
+          .filter((e) =>
+            e.title || e.companyName || e.city || e.state || e.startDate || e.endDate || (e.workSummery && e.workSummery.trim() !== '')
+          );
+
+        const experienceKey = 'Experience';
+        const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+        const base = Object.fromEntries(
+          Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
         );
 
-      const experienceKey = 'Experience';
-      const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
-      const base = Object.fromEntries(
-        Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
-      );
+        if (!base.title) {
+          base.title = 'My Resume';
+        }
 
-      if (!base.title) {
-        base.title = 'My Resume';
+        const updateData = { ...base, [experienceKey]: normalizedExperience };
+        const locale = current?.locale;
+
+        let resp;
+        if (isNumericId) {
+          resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: updateData }, locale);
+        } else {
+          resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
+        }
+
+        setLoading(false);
+        toast("Experience: Details updated ✅");
+        if (enableNext) enableNext(true);
+        resolve(resp);
+      } catch (err) {
+        console.error('Failed to update experience', {
+          err,
+          status: err?.response?.status,
+          data: err?.response?.data,
+        });
+        setLoading(false);
+        toast("Experience: Server error, please try again ❌");
+        reject(err);
       }
-
-      const updateData = { ...base, [experienceKey]: normalizedExperience };
-      const locale = current?.locale;
-
-      if (isNumericId) {
-        await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: updateData }, locale);
-      } else {
-        await GlobalApi.UpdateResumeByDocumentId(paramId, { data: updateData });
-      }
-
-      setLoading(false);
-      toast("Experience: Details updated ✅");
-    } catch (err) {
-      console.error('Failed to update experience', {
-        err,
-        status: err?.response?.status,
-        data: err?.response?.data,
-      });
-      setLoading(false);
-      toast("Experience: Server error, please try again ❌");
-    }
+    });
   };
+
+  // Expose handleSave method to parent component
+  useImperativeHandle(ref, () => ({
+    handleSave: onSave
+  }));
 
   const AddNewExp = () => {
     setExperienceList(prev => [...prev, createEmptyField()])
@@ -195,6 +206,8 @@ function Experience() {
       </div>
     </div>
   )
-}
+});
+
+Experience.displayName = 'Experience';
 
 export default Experience

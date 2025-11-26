@@ -20,11 +20,14 @@ const Skills = forwardRef(({ enableNext }, ref) => {
     },
   ]);
   const [hasUserEdited, setHasUserEdited] = useState(false);
+  const [shouldFocusNew, setShouldFocusNew] = useState(false);
+  const lastInputRef = useRef(null);
   const debounceRef = useRef(null);
 
   const AddNewSkills = () => {
     setSkills([...skills, { name: "", rating: 0 }]);
     setHasUserEdited(true);
+    setShouldFocusNew(true);
   };
 
   const RemoveSkills = () => {
@@ -55,6 +58,14 @@ const Skills = forwardRef(({ enableNext }, ref) => {
       skills: skills,
     }));
   }, [skills, hasUserEdited, setResumeInfo]);
+
+  // Auto-focus new input
+  useEffect(() => {
+    if (shouldFocusNew && lastInputRef.current) {
+      lastInputRef.current.focus();
+      setShouldFocusNew(false);
+    }
+  }, [skills, shouldFocusNew]);
 
   const onSave = async () => {
     try {
@@ -147,7 +158,12 @@ const Skills = forwardRef(({ enableNext }, ref) => {
           <div key={index} className="flex justify-between items-center mt-4 p-4 border border-white/30 rounded-xl bg-white/40 backdrop-blur-sm hover:shadow-md transition-all duration-300">
             <div>
               <label className="text-xs font-medium text-gray-700">Name</label>
-              <Input className="input-glass w-full" value={skill.name || ''} onChange={(e) => handleChange(index, "name", e.target.value)} />
+              <Input
+                className="input-glass w-full"
+                value={skill.name || ''}
+                onChange={(e) => handleChange(index, "name", e.target.value)}
+                ref={index === skills.length - 1 ? lastInputRef : null}
+              />
             </div>
             <Rating style={{ maxWidth: 120 }} value={Number.isFinite(Number(skill.rating)) ? Number(skill.rating) : 0} onChange={(v) => handleChange(index, "rating", v)} />
           </div>

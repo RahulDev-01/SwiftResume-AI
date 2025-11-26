@@ -6,7 +6,8 @@ function ExperiencePreview2({ resumeInfo }) {
     const experiences = (() => {
         const raw = resumeInfo?.experience;
         if (raw === undefined || raw === null) return Dummy.experience;
-        return raw.filter((e) => e?.title?.trim() || e?.companyName?.trim());
+        const filtered = raw.filter((e) => e?.title?.trim() || e?.companyName?.trim());
+        return filtered.length > 0 ? filtered : Dummy.experience;
     })();
 
     return (

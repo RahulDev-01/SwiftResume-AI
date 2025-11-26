@@ -5,7 +5,8 @@ function EducationPreview2({ resumeInfo }) {
     const educations = (() => {
         const raw = resumeInfo?.education;
         if (raw === undefined || raw === null) return Dummy.education;
-        return raw.filter((e) => e?.universityName?.trim() || e?.degree?.trim());
+        const filtered = raw.filter((e) => e?.universityName?.trim() || e?.degree?.trim());
+        return filtered.length > 0 ? filtered : Dummy.education;
     })();
 
     return (
