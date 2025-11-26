@@ -14,9 +14,32 @@ function View() {
   useEffect(() => {
     const GetResumeInfo = () => {
       GlobalApi.GetId(resumeId).then(resp => {
-        console.log(resp);
-        setResumeInfo(resp.data.data)
+        const payload = resp?.data?.data;
+        const attrs = payload?.attributes || payload || {};
 
+        // Normalize arrays
+        const pickArray = (obj, keys) => {
+          for (const k of keys) {
+            if (Array.isArray(obj?.[k])) return obj[k];
+          }
+          for (const k of keys) {
+            const rel = obj?.[k]?.data;
+            if (Array.isArray(rel)) {
+              return rel.map((it) => it?.attributes || it).filter(Boolean);
+            }
+          }
+          return [];
+        };
+
+        const normalized = {
+          ...attrs,
+          education: pickArray(attrs, ['education', 'Education', 'educations', 'Educations']),
+          experience: pickArray(attrs, ['experience', 'Experience', 'experiences', 'Experiences']),
+          skills: pickArray(attrs, ['skills', 'Skills', 'skill', 'Skill']),
+          templateId: attrs.templateId || '1'
+        };
+
+        setResumeInfo(normalized);
       })
     }
     GetResumeInfo();
