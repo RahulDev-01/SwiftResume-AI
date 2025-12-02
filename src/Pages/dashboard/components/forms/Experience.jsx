@@ -18,6 +18,7 @@ const createEmptyField = () => ({
   startDate: '',
   endDate: '',
   workSummery: '',
+  url: '',
 });
 
 /**
@@ -140,6 +141,7 @@ const Experience = forwardRef(({ enableNext }, ref) => {
               startDate: rest.startDate || null,
               endDate: rest.endDate || null,
               workSummery: (rest.workSummery ?? '').toString(),
+              url: rest.url?.trim() || null,
             };
           })
           .filter(
@@ -314,6 +316,17 @@ const Experience = forwardRef(({ enableNext }, ref) => {
                   value={field.endDate || ''}
                   onChange={(e) => handleChange(index, e)}
                   placeholder="e.g., Dec 2022 or Present"
+                />
+              </div>
+              <div className="col-span-2 space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">URL (Optional)</label>
+                <Input
+                  className="input-glass"
+                  type="text"
+                  name="url"
+                  value={field.url || ''}
+                  onChange={(e) => handleChange(index, e)}
+                  placeholder="e.g., https://company.com"
                 />
               </div>
               <div className="col-span-2 space-y-1.5">

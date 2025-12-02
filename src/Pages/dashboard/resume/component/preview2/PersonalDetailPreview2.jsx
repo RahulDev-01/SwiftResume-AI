@@ -1,5 +1,5 @@
 import React from 'react'
-import { Mail, Phone, MapPin, Linkedin } from 'lucide-react'
+import { Mail, Phone, MapPin, Linkedin, Github } from 'lucide-react'
 import { useUser } from '@clerk/clerk-react'
 import Dummy from '../../../../../Data/Dummy'
 
@@ -49,10 +49,14 @@ function PersonalDetailPreview2({ resumeInfo }) {
                     <MapPin className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
                     <span>{address}</span>
                 </div>
-                <div className='flex items-center gap-2'>
+                {resumeInfo?.linkedin && <div className='flex items-center gap-2'>
                     <Linkedin className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
-                    <span className='text-xs'>linkedin.com/in/{firstName.toLowerCase()}.{lastName.toLowerCase()}</span>
-                </div>
+                    <a href={resumeInfo?.linkedin} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>LinkedIn</a>
+                </div>}
+                {resumeInfo?.github && <div className='flex items-center gap-2'>
+                    <Github className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
+                    <a href={resumeInfo?.github} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>GitHub</a>
+                </div>}
             </div>
         </div>
     )

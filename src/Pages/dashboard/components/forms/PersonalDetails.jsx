@@ -22,7 +22,10 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                 jobTitle: resumeInfo.jobTitle,
                 address: resumeInfo.address,
                 phone: resumeInfo.phone,
-                email: resumeInfo.email
+                phone: resumeInfo.phone,
+                email: resumeInfo.email,
+                linkedin: resumeInfo.linkedin,
+                github: resumeInfo.github
             });
         }
     }, [resumeInfo])
@@ -127,6 +130,16 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                     </div>
 
 
+                </div>
+                <div className='grid grid-cols-2 mt-3 gap-6'>
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>LinkedIn</label>
+                        <Input className="input-glass" name='linkedin' onChange={handleInputChange} defaultValue={resumeInfo?.linkedin} placeholder="e.g., https://linkedin.com/in/johndoe" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className='text-sm font-medium text-gray-700'>GitHub</label>
+                        <Input className="input-glass" name='github' onChange={handleInputChange} defaultValue={resumeInfo?.github} placeholder="e.g., https://github.com/johndoe" />
+                    </div>
                 </div>
                 <div className='mt-6 flex justify-end'>
                     <Button type="submit" disabled={loading} className="btn-glass">

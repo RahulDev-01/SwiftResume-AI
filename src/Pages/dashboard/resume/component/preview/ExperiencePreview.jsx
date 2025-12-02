@@ -15,7 +15,14 @@ function ExperiencePreview({ resumeInfo }) {
           <h2 className='text-sm font-bold'
             style={{ color: resumeInfo?.themeColor }}>
             {exp?.title}</h2>
-          <h2 className='text-xs flex justify-between '>{exp?.companyName}, {exp?.city}, {exp?.state}
+          <h2 className='text-xs flex justify-between '>
+            {exp?.url ? (
+              <a href={exp?.url} target="_blank" rel="noreferrer" className='hover:underline cursor-pointer'>
+                {exp?.companyName}, {exp?.city}, {exp?.state}
+              </a>
+            ) : (
+              <span>{exp?.companyName}, {exp?.city}, {exp?.state}</span>
+            )}
             <span className=' text-gray-500'>{exp?.startDate} To {exp?.currentlyWorking ? 'Present' : exp?.endDate}</span>
           </h2>
           {/* <p className='text-xs py-2  text-gray-700'>

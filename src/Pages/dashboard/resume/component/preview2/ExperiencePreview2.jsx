@@ -33,10 +33,21 @@ function ExperiencePreview2({ resumeInfo }) {
                             <div>
                                 <h3 className='font-bold text-base text-gray-800'>{exp?.title}</h3>
                                 <div className='flex items-center gap-2 mb-1'>
-                                    <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
-                                        {exp?.companyName}
-                                    </span>
-                                    <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
+                                    {exp?.url ? (
+                                        <a href={exp?.url} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
+                                            <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
+                                                {exp?.companyName}
+                                            </span>
+                                            <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
+                                        </a>
+                                    ) : (
+                                        <>
+                                            <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
+                                                {exp?.companyName}
+                                            </span>
+                                            <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
+                                        </>
+                                    )}
                                 </div>
                                 <div className='text-xs text-gray-500 italic mb-2'>
                                     {exp?.startDate} - {exp?.currentlyWorking ? 'Present' : exp?.endDate}
