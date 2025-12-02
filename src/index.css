@@ -56,6 +56,13 @@ body {
   .resume-sheet * {
     page-break-inside: avoid;
   }
+
+  /* Force links to be clickable and visible in PDF */
+  a {
+    text-decoration: underline !important;
+    color: inherit !important; /* Or specify a color if needed */
+    pointer-events: auto !important;
+  }
 }
 
 @page { 

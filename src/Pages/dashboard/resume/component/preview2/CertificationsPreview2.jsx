@@ -1,6 +1,7 @@
 import React from 'react'
 import { ExternalLink } from 'lucide-react'
 import Dummy from '../../../../../Data/Dummy'
+import { ensureUrl } from '../../../../../utils/urlHelper';
 
 function CertificationsPreview2({ resumeInfo }) {
     const certifications = (() => {
@@ -35,7 +36,7 @@ function CertificationsPreview2({ resumeInfo }) {
                                 <h3 className='font-bold text-base text-gray-800'>{cert?.title}</h3>
                                 <div className='flex items-center gap-2 mb-1'>
                                     {cert?.url ? (
-                                        <a href={cert?.url} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
+                                        <a href={ensureUrl(cert?.url)} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
                                             <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
                                                 {cert?.issuer}
                                             </span>

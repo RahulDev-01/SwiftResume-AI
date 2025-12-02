@@ -1,5 +1,6 @@
 import React from 'react'
 import Dummy from '../../../../../Data/Dummy'
+import { ensureUrl } from '../../../../../utils/urlHelper';
 
 function ExperiencePreview({ resumeInfo }) {
   const raw = Array.isArray(resumeInfo?.experience) ? resumeInfo.experience : [];
@@ -17,7 +18,7 @@ function ExperiencePreview({ resumeInfo }) {
             {exp?.title}</h2>
           <h2 className='text-xs flex justify-between '>
             {exp?.url ? (
-              <a href={exp?.url} target="_blank" rel="noreferrer" className='hover:underline cursor-pointer'>
+              <a href={ensureUrl(exp?.url)} target="_blank" rel="noreferrer" className='hover:underline cursor-pointer'>
                 {exp?.companyName}, {exp?.city}, {exp?.state}
               </a>
             ) : (

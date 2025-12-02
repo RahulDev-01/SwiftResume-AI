@@ -1,6 +1,7 @@
 import React from 'react'
 import { ExternalLink } from 'lucide-react'
 import Dummy from '../../../../../Data/Dummy'
+import { ensureUrl } from '../../../../../utils/urlHelper';
 
 function ExperiencePreview2({ resumeInfo }) {
     const experiences = (() => {
@@ -34,7 +35,7 @@ function ExperiencePreview2({ resumeInfo }) {
                                 <h3 className='font-bold text-base text-gray-800'>{exp?.title}</h3>
                                 <div className='flex items-center gap-2 mb-1'>
                                     {exp?.url ? (
-                                        <a href={exp?.url} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
+                                        <a href={ensureUrl(exp?.url)} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
                                             <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
                                                 {exp?.companyName}
                                             </span>
