@@ -20,8 +20,8 @@ function PersonalDetailPreview({ resumeInfo }) {
         <h2 className='font-normal text-xs break-words' style={{ color: resumeInfo?.themeColor }}>{email}</h2>
       </div>
       <div className='flex flex-wrap justify-between gap-2 mt-1'>
-        {resumeInfo?.linkedin && <a href={resumeInfo?.linkedin} target="_blank" rel="noreferrer" className='font-normal text-xs break-words cursor-pointer' style={{ color: resumeInfo?.themeColor }}>LinkedIn</a>}
-        {resumeInfo?.github && <a href={resumeInfo?.github} target="_blank" rel="noreferrer" className='font-normal text-xs break-words cursor-pointer' style={{ color: resumeInfo?.themeColor }}>GitHub</a>}
+        {(resumeInfo?.linkedin || Dummy.linkedin) && <a href={resumeInfo?.linkedin || Dummy.linkedin} target="_blank" rel="noreferrer" className='font-normal text-xs break-words cursor-pointer' style={{ color: resumeInfo?.themeColor }}>{resumeInfo?.linkedin || Dummy.linkedin}</a>}
+        {(resumeInfo?.github || Dummy.github) && <a href={resumeInfo?.github || Dummy.github} target="_blank" rel="noreferrer" className='font-normal text-xs break-words cursor-pointer' style={{ color: resumeInfo?.themeColor }}>{resumeInfo?.github || Dummy.github}</a>}
       </div>
       <hr className='border-[2px] my-2 ' style={{ borderColor: resumeInfo?.themeColor }} />
     </div >

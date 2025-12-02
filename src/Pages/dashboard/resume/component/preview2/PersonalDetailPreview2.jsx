@@ -49,13 +49,17 @@ function PersonalDetailPreview2({ resumeInfo }) {
                     <MapPin className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
                     <span>{address}</span>
                 </div>
-                {resumeInfo?.linkedin && <div className='flex items-center gap-2'>
+                {(resumeInfo?.linkedin || Dummy.linkedin) && <div className='flex items-center gap-2'>
                     <Linkedin className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
-                    <a href={resumeInfo?.linkedin} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>LinkedIn</a>
+                    <a href={resumeInfo?.linkedin || Dummy.linkedin} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>
+                        {resumeInfo?.linkedin || Dummy.linkedin}
+                    </a>
                 </div>}
-                {resumeInfo?.github && <div className='flex items-center gap-2'>
+                {(resumeInfo?.github || Dummy.github) && <div className='flex items-center gap-2'>
                     <Github className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
-                    <a href={resumeInfo?.github} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>GitHub</a>
+                    <a href={resumeInfo?.github || Dummy.github} target="_blank" rel="noreferrer" className='text-xs cursor-pointer hover:underline'>
+                        {resumeInfo?.github || Dummy.github}
+                    </a>
                 </div>}
             </div>
         </div>

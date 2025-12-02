@@ -32,7 +32,7 @@ axiousClient.interceptors.response.use(
 const CreateNewResume =(data)=>axiousClient.post('user-resumes',data)
 
 const GetUserResumes =(userEmail)=>axiousClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail))
-const GetResumeById =(id)=>axiousClient.get('user-resumes/'+id)
+const GetResumeById =(id)=>axiousClient.get('user-resumes/'+id+'?populate=*')
 const  UpdateResumeDetail =(id,data)=>axiousClient.put('user-resumes/'+id,data)
 const  UpdateResumeDetailWithLocale =(id,data,locale)=>{
     const config = locale ? { params: { locale } } : undefined;
@@ -41,7 +41,7 @@ const  UpdateResumeDetailWithLocale =(id,data,locale)=>{
 
 // Fetch resume by Strapi documentId (direct endpoint for v5)
 const GetResumeByDocumentId = async (documentId) => {
-    const response = await axiousClient.get('user-resumes/'+documentId);
+    const response = await axiousClient.get('user-resumes/'+documentId+'?populate=*');
     console.log('GetResumeByDocumentId response for', documentId, ':', {
         status: response.status,
         dataKeys: Object.keys(response.data || {}),
