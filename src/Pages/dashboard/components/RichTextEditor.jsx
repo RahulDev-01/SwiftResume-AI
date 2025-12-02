@@ -1,41 +1,41 @@
 import { Brain, Loader2Icon } from 'lucide-react';
 import React, { useContext, useState } from 'react'
-import { 
-     BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnItalic,
-  BtnLink,
-  BtnNumberedList,
-  BtnRedo,
-  BtnStrikeThrough,
-  BtnStyles,
-  BtnUnderline,
-  BtnUndo,
-  Editor,
-  EditorProvider,
-  HtmlButton,
-  Separator,
-  Toolbar,
- } from 'react-simple-wysiwyg'
+import {
+    BtnBold,
+    BtnBulletList,
+    BtnClearFormatting,
+    BtnItalic,
+    BtnLink,
+    BtnNumberedList,
+    BtnRedo,
+    BtnStrikeThrough,
+    BtnStyles,
+    BtnUnderline,
+    BtnUndo,
+    Editor,
+    EditorProvider,
+    HtmlButton,
+    Separator,
+    Toolbar,
+} from 'react-simple-wysiwyg'
 import { Button } from "@/components/ui/button";
 import { ResumeInfoContext } from '../../../context/ResumeInfoContext';
 import { toast } from 'sonner';
 import { sendMessage } from '../../../../service/AIModal';
 
-const PROMPT = 'For the position of {positionTitle}, generate exactly 5-7 relevant bullet points for a resume. Return ONLY the bullet points in HTML format using <ul><li> tags. No introduction, no conclusion, just the bullet points.'
-function RichTextEditor({onRichTextEditrChange, index, initialValue = ''}) {
-        const [value,setValue] = useState(initialValue || '');
-          const [aiLoading, setAiLoading] = useState(false);
-    const {resumeInfo , setResumeInfo} = useContext(ResumeInfoContext) || {};
+const PROMPT = 'For the position of {positionTitle}, generate exactly 5-7 ATS-optimized bullet points that score 10/10 for Applicant Tracking Systems. Each bullet point should be keyword-rich, professionally written, and include action verbs with quantifiable results. Return ONLY the bullet points in HTML format using <ul><li> tags with relevant industry keywords and achievements. No introduction, no conclusion, just the ATS-optimized bullet points.'
+function RichTextEditor({ onRichTextEditrChange, index, initialValue = '' }) {
+    const [value, setValue] = useState(initialValue || '');
+    const [aiLoading, setAiLoading] = useState(false);
+    const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext) || {};
     const currentTitle = resumeInfo?.experience?.[index]?.title || '';
-// Summary From AI
+    // Summary From AI
     const GenerateSummeryFromAI = async () => {
-        if(!currentTitle){
+        if (!currentTitle) {
             toast("Please add Position Title first");
             return;
         }
-        
+
         setAiLoading(true);
         try {
             const prompt = PROMPT.replace('{positionTitle}', currentTitle);
@@ -81,71 +81,71 @@ function RichTextEditor({onRichTextEditrChange, index, initialValue = ''}) {
         } finally {
             setAiLoading(false);
         }
-    
-  }
 
-  return (
-    <div>
-        <div className='flex justify-between my-2'>
-            <label htmlFor="" className='text-lg font-semibold'>Summery</label>
-            <Button 
-                className='flex gap-2 border-primary text-primary' 
-                variant='outline' 
-                size='sm' 
-                onClick={GenerateSummeryFromAI}
-                disabled={aiLoading || !currentTitle}
-            >
-                {aiLoading ? 
-                    <Loader2Icon className='h-4 w-4 animate-spin' /> : 
-                    <Brain className='h-4 w-4' />
+    }
+
+    return (
+        <div>
+            <div className='flex justify-between my-2'>
+                <label htmlFor="" className='text-lg font-semibold'>Summery</label>
+                <Button
+                    className='flex gap-2 border-primary text-primary'
+                    variant='outline'
+                    size='sm'
+                    onClick={GenerateSummeryFromAI}
+                    disabled={aiLoading || !currentTitle}
+                >
+                    {aiLoading ?
+                        <Loader2Icon className='h-4 w-4 animate-spin' /> :
+                        <Brain className='h-4 w-4' />
+                    }
+                    {aiLoading ? 'Generating...' : 'Generate From AI'}
+                </Button>
+            </div>
+
+            {/* Hydrate from initialValue when it changes, but don't override user edits if they already typed */}
+            {/** This lightweight effect must be above the Editor to ensure initial render uses the latest value */}
+            {(() => {
+                if ((value === '' || value == null) && (initialValue || '') !== '') {
+                    // Set synchronously during render cycle via closure-safe pattern
+                    // Note: in strict mode this may run twice, but value equality guards it
+                    setTimeout(() => setValue(initialValue), 0);
                 }
-                {aiLoading ? 'Generating...' : 'Generate From AI'}
-            </Button>
-        </div>
+                return null;
+            })()}
 
-        {/* Hydrate from initialValue when it changes, but don't override user edits if they already typed */}
-        {/** This lightweight effect must be above the Editor to ensure initial render uses the latest value */}
-        {(() => {
-            if ((value === '' || value == null) && (initialValue || '') !== '') {
-                // Set synchronously during render cycle via closure-safe pattern
-                // Note: in strict mode this may run twice, but value equality guards it
-                setTimeout(() => setValue(initialValue), 0);
-            }
-            return null;
-        })()}
-
-        <EditorProvider>
-            <Editor 
-                value={value} 
-                onChange={(e)=>{
-                    const newValue = e.target.value;
-                    console.log('Editor onChange value:', newValue);
-                    setValue(newValue);
-                    onRichTextEditrChange({ target: { value: newValue } });
-                }}>
-                <Toolbar>
-                   {/* <BtnUndo />
+            <EditorProvider>
+                <Editor
+                    value={value}
+                    onChange={(e) => {
+                        const newValue = e.target.value;
+                        console.log('Editor onChange value:', newValue);
+                        setValue(newValue);
+                        onRichTextEditrChange({ target: { value: newValue } });
+                    }}>
+                    <Toolbar>
+                        {/* <BtnUndo />
             <BtnRedo /> */}
-            {/* <Separator /> */}
-            <BtnBold />
-            <BtnItalic />
-            <BtnUnderline />
-            <BtnStrikeThrough />
-            <Separator />
-            <BtnNumberedList />
-            <BtnBulletList />
-            <Separator />
-            <BtnLink />
-            {/* <BtnClearFormatting /> */}
-            {/* <HtmlButton /> */}
-            {/* <Separator /> */}
-            {/* <BtnStyles /> */}
-                </Toolbar>
+                        {/* <Separator /> */}
+                        <BtnBold />
+                        <BtnItalic />
+                        <BtnUnderline />
+                        <BtnStrikeThrough />
+                        <Separator />
+                        <BtnNumberedList />
+                        <BtnBulletList />
+                        <Separator />
+                        <BtnLink />
+                        {/* <BtnClearFormatting /> */}
+                        {/* <HtmlButton /> */}
+                        {/* <Separator /> */}
+                        {/* <BtnStyles /> */}
+                    </Toolbar>
 
-            </Editor>
-        </EditorProvider>
-    </div>
-  )
+                </Editor>
+            </EditorProvider>
+        </div>
+    )
 }
 
 export default RichTextEditor

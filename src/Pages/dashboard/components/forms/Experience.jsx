@@ -5,8 +5,9 @@ import RichTextEditor from "../RichTextEditor";
 import { ResumeInfoContext } from "../../../../context/ResumeInfoContext";
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Brain, Loader2Icon } from 'lucide-react';
 import GlobalApi from '../../../../../service/GlobalApi';
+import { sendMessage } from '../../../../../service/AIModal';
 
 // Helper to create a blank experience entry
 const createEmptyField = () => ({
@@ -28,6 +29,7 @@ const Experience = forwardRef(({ enableNext }, ref) => {
   const [experienceList, setExperienceList] = useState([createEmptyField()]);
   const [hasUserEdited, setHasUserEdited] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [aiGeneratingIndex, setAiGeneratingIndex] = useState(null);
   const params = useParams();
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
@@ -57,6 +59,42 @@ const Experience = forwardRef(({ enableNext }, ref) => {
   const RemoveNewExp = () => {
     setExperienceList((prev) => prev.slice(0, -1));
     setHasUserEdited(true);
+  };
+
+  // ---------------------------------------------------------------------------
+  // AI Generation for work summary
+  // ---------------------------------------------------------------------------
+  const GenerateWorkSummaryFromAI = async (index) => {
+    const position = experienceList[index]?.title;
+    const company = experienceList[index]?.companyName;
+
+    if (!position || position.trim() === '') {
+      toast('Please enter a position title first ⚠️');
+      return;
+    }
+
+    setAiGeneratingIndex(index);
+    const prompt = `Generate an ATS-optimized, professional work summary for the position "${position}"${company ? ` at ${company}` : ''}. The summary should score 10/10 for Applicant Tracking Systems, be keyword-rich, and include 3-5 bullet points highlighting key responsibilities and achievements. Format the output as HTML bullet points using <ul> and <li> tags. Focus on action verbs, quantifiable results, and industry-relevant keywords.`;
+
+    try {
+      const resultText = await sendMessage(prompt);
+      if (!resultText) {
+        throw new Error('Empty AI response');
+      }
+
+      // Update the work summary for this experience
+      const newEntries = [...experienceList];
+      newEntries[index] = { ...newEntries[index], workSummery: resultText.trim() };
+      setExperienceList(newEntries);
+      setHasUserEdited(true);
+      toast('Work summary generated successfully ✅');
+    } catch (e) {
+      console.error(e);
+      const msg = e?.message || 'Failed to generate work summary';
+      toast(`AI Generation: ${msg} ❌`);
+    } finally {
+      setAiGeneratingIndex(null);
+    }
   };
 
   // ---------------------------------------------------------------------------
@@ -279,6 +317,20 @@ const Experience = forwardRef(({ enableNext }, ref) => {
                 />
               </div>
               <div className="col-span-2 space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium text-gray-700">Work Summary</label>
+                  <Button
+                    className='btn-glass-outline flex gap-2'
+                    variant='outline'
+                    onClick={() => GenerateWorkSummaryFromAI(index)}
+                    size='sm'
+                    type='button'
+                    disabled={aiGeneratingIndex === index}
+                  >
+                    {aiGeneratingIndex === index ? <Loader2Icon className='h-4 w-4 animate-spin' /> : <Brain className='h-4 w-4' />}
+                    {aiGeneratingIndex === index ? 'Generating...' : 'Generate from AI'}
+                  </Button>
+                </div>
                 <RichTextEditor
                   onRichTextEditrChange={(e) => handleRichTextEditor(e, 'workSummery', index)}
                   index={index}

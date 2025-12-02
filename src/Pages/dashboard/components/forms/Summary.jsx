@@ -11,7 +11,7 @@ import { sendMessage, listAvailableModels } from '../../../../../service/AIModal
 const Summary = forwardRef(({ enableNext }, ref) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const [summery, setSummery] = useState('');
-  const prompt = 'Given the job title "{jobTitle}", generate EXACTLY 3 resume summary suggestions as a JSON array. Each array item must be an object with the fields: "ExperienceLevel" (one of "Fresher", "Mid Level", "Experienced") and "summery" (a 4-5 line professional summary tailored to the job title). Return ONLY valid JSON (no markdown, no code fences, no extra text). Order the items as: Fresher, Mid Level, Experienced.'
+  const prompt = 'Given the job title "{jobTitle}", generate EXACTLY 3 ATS-optimized resume summary suggestions that score 10/10 for Applicant Tracking Systems. Each summary must be keyword-rich, professionally written, and tailored for maximum ATS compatibility. Return a JSON array where each item has: "ExperienceLevel" (one of "Fresher", "Mid Level", "Experienced") and "summery" (a 4-5 line professional summary with relevant industry keywords and quantifiable achievements). Return ONLY valid JSON (no markdown, no code fences, no extra text). Order the items as: Fresher, Mid Level, Experienced.'
 
   const [aiLoading, setAiLoading] = useState(false);
   const [saving, setSaving] = useState(false);
