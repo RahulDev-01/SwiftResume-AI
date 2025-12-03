@@ -29,7 +29,7 @@ export function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-green-50">
       <Header />
 
       {/* Hero Section */}
@@ -37,7 +37,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Badge */}
-            <div className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-semibold mb-8 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01]">
+            <div className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-100 to-green-100 text-blue-800 text-sm font-semibold mb-8 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01]">
               <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
               AI-Powered Resume Builder
               <span className="ml-2 px-2 py-0.5 bg-blue-600 text-white text-xs rounded-full">NEW</span>
@@ -46,7 +46,7 @@ export function Home() {
             {/* Main Headline */}
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 mb-8 leading-tight">
               Create Your Perfect
-              <span className="block mt-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
+              <span className="block mt-2 bg-gradient-to-r from-blue-600 via-green-600 to-teal-600 bg-clip-text text-transparent animate-gradient">
                 Resume with AI
               </span>
             </h1>
@@ -54,13 +54,13 @@ export function Home() {
             {/* Subheadline */}
             <p className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-10 max-w-4xl mx-auto font-light leading-relaxed">
               Build professional, <span className="font-semibold text-blue-600">ATS-optimized resumes</span> in minutes.
-              Let AI help you craft the perfect resume that gets you <span className="font-semibold text-purple-600">noticed by employers</span>.
+              Let AI help you craft the perfect resume that gets you <span className="font-semibold text-green-600">noticed by employers</span>.
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-8">
               <Link to="/auth/sign-in">
-                <Button size="lg" className="group text-lg px-10 py-7 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-[1.01]">
+                <Button size="lg" className="group text-lg px-10 py-7 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-[1.01]">
                   Get Started Free
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -92,11 +92,11 @@ export function Home() {
         {/* Enhanced Background decoration */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob"></div>
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-green-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
 
           {/* Floating elements */}
           <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-lg opacity-20 animate-float"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-float animation-delay-2000"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-green-200 rounded-full opacity-20 animate-float animation-delay-2000"></div>
         </div>
       </section>
 
@@ -112,7 +112,7 @@ export function Home() {
               Why Choose Us
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Why Choose <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">SwiftResume AI?</span>
+              Why Choose <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">SwiftResume AI?</span>
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
               Our AI-powered platform makes resume building effortless and effective
@@ -149,15 +149,15 @@ export function Home() {
             </div>
 
             {/* Feature Card 3 */}
-            <div className="group p-8 rounded-3xl bg-gradient-to-br from-purple-50 via-purple-50 to-pink-100 hover:shadow-2xl hover:shadow-purple-200/50 transition-all duration-500 hover:-translate-y-2 border border-purple-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
+            <div className="group p-8 rounded-3xl bg-gradient-to-br from-cyan-50 via-teal-50 to-blue-100 hover:shadow-2xl hover:shadow-cyan-200/50 transition-all duration-500 hover:-translate-y-2 border border-cyan-100">
+              <div className="w-14 h-14 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-[1.01] group-hover:rotate-3 transition-all duration-300 shadow-lg">
                 <Clock className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">Save Time</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-cyan-600 transition-colors">Save Time</h3>
               <p className="text-gray-600 leading-relaxed">
                 Create a professional resume in minutes instead of hours. Focus on what matters most - landing your dream job.
               </p>
-              <div className="mt-6 flex items-center text-purple-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-6 flex items-center text-cyan-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                 Learn more <ArrowRight className="w-4 h-4 ml-2" />
               </div>
             </div>
@@ -246,7 +246,7 @@ export function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             {/* Connection Line */}
-            <div className="hidden md:block absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 -z-10"></div>
+            <div className="hidden md:block absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-green-200 to-teal-200 -z-10"></div>
 
             <div className="text-center relative">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
@@ -259,7 +259,7 @@ export function Home() {
             </div>
 
             <div className="text-center relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
+              <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-green-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl hover:scale-[1.01] transition-transform">
                 <span className="text-3xl font-bold text-white">2</span>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">AI-Powered Content Generation</h3>
@@ -344,7 +344,7 @@ export function Home() {
                 "I was skeptical about AI resume builders, but this one actually understands my industry and creates relevant content. Highly recommended!"
               </p>
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-600 to-cyan-700 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
                   E
                 </div>
                 <div>
@@ -362,7 +362,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div>
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">SwiftResume AI</h3>
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">SwiftResume AI</h3>
               <p className="text-gray-400 leading-relaxed">
                 AI-powered resume builder that helps you create professional resumes in minutes.
               </p>

@@ -121,7 +121,7 @@ function ResumeCardItem({ resume, refreshData }) {
               <Eye className='h-4 w-4 mr-2 text-green-500' /> View
             </DropdownMenuItem>
             <DropdownMenuItem className='cursor-pointer py-2 font-medium' onSelect={onDownload}>
-              <Download className='h-4 w-4 mr-2 text-purple-500' /> Download
+              <Download className='h-4 w-4 mr-2 text-blue-500' /> Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

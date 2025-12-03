@@ -46,9 +46,9 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
     return (
         <div className="w-full h-full bg-white flex flex-col overflow-y-auto">
             {/* Sidebar Header */}
-            <div className="px-6 py-5 border-b border-gray-200 sticky top-0 bg-white z-10">
-                <h2 className="text-xl font-bold text-gray-800">Resume Builder</h2>
-                <p className="text-sm text-gray-500 mt-1">Click sections to edit</p>
+            <div className="px-6 py-5 border-b border-gray-200 sticky top-0 bg-gradient-to-r from-blue-50 to-green-50 z-10">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">Resume Builder</h2>
+                <p className="text-sm text-gray-600 mt-1">Click sections to edit</p>
             </div>
 
             {/* Sections List with Forms */}
@@ -65,22 +65,22 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
                                 onClick={() => toggleSection(section.id)}
                                 className={`
                   w-full flex items-center justify-between px-6 py-4
-                  transition-all duration-300 ease-in-out hover:bg-gray-50
-                  ${isExpanded ? 'bg-purple-50 border-l-4 border-l-purple-500' : 'border-l-4 border-l-transparent'}
+                  transition-all duration-300 ease-in-out hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50 hover:scale-[1.02]
+                  ${isExpanded ? 'bg-gradient-to-r from-blue-50 to-green-50 border-l-4 border-l-blue-500 shadow-sm' : 'border-l-4 border-l-transparent'}
                 `}
                             >
                                 <div className="flex items-center gap-4">
                                     <Icon
                                         size={22}
-                                        className={`transition-colors duration-300 ${isExpanded ? 'text-purple-600' : 'text-gray-600'}`}
+                                        className={`transition-all duration-300 ${isExpanded ? 'text-blue-600 scale-110' : 'text-gray-600'}`}
                                     />
-                                    <span className={`text-base font-semibold transition-colors duration-300 ${isExpanded ? 'text-purple-700' : 'text-gray-700'}`}>
+                                    <span className={`text-base font-semibold transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent' : 'text-gray-700'}`}>
                                         {section.label}
                                     </span>
                                 </div>
                                 <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-0' : ''}`}>
                                     {isExpanded ? (
-                                        <ChevronDown size={20} className='text-purple-600' />
+                                        <ChevronDown size={20} className='text-blue-600' />
                                     ) : (
                                         <ChevronRight size={20} className='text-gray-500' />
                                     )}
@@ -92,7 +92,7 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
                                 className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                                     }`}
                             >
-                                <div className="px-6 py-6 bg-gradient-to-b from-purple-50/50 to-white">
+                                <div className="px-6 py-6 bg-gradient-to-b from-blue-50/30 via-green-50/20 to-white">
                                     <FormComponent
                                         enableNext={(v) => setEnableNext(v)}
                                     />

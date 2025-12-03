@@ -90,7 +90,7 @@ function Dashboard() {
       <div className='max-w-7xl mx-auto'>
         <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4 animate-fade-in-up'>
           <div>
-            <h2 className='font-bold text-4xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent inline-block' >My Resumes</h2>
+            <h2 className='font-bold text-4xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent inline-block' >My Resumes</h2>
             <p className='mt-2 text-muted-foreground text-lg'>Create and manage your AI-powered resumes.</p>
           </div>
         </div>

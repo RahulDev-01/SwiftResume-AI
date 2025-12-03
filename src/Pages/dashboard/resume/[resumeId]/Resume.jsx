@@ -51,7 +51,7 @@ function Resume() {
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100">
         {/* Top Bar with Enhanced UI */}
         <div className='sticky top-0 z-20 bg-white border-b border-gray-200 shadow-md'>
           <div className='mx-auto max-w-7xl px-6 py-3'>
@@ -61,7 +61,7 @@ function Resume() {
               <div className='flex items-center gap-3'>
                 <button
                   onClick={() => window.location.href = '/dashboard'}
-                  className='flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg'
+                  className='flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white hover:from-blue-600 hover:to-green-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' />
@@ -76,7 +76,7 @@ function Resume() {
                 <div className='relative'>
                   <label className='text-xs font-semibold text-gray-600 mb-1 block'>Template</label>
                   <select
-                    className='appearance-none px-4 py-2.5 pr-10 border-2 border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all cursor-pointer hover:border-purple-400 text-sm font-medium min-w-[140px] shadow-sm'
+                    className='appearance-none px-4 py-2.5 pr-10 border-2 border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-300 cursor-pointer hover:border-blue-400 hover:shadow-md text-sm font-medium min-w-[140px] shadow-sm'
                     value={resumeInfo?.templateId || '1'}
                     onChange={(e) => {
                       const newTemplateId = e.target.value;
@@ -97,7 +97,7 @@ function Resume() {
                 <div className='relative'>
                   <label className='text-xs font-semibold text-gray-600 mb-1 block'>Theme Color</label>
                   <div className='flex gap-2 p-2 border-2 border-gray-300 rounded-lg bg-white shadow-sm'>
-                    {['#FF5733', '#33FF57', '#3357FF', '#F033FF', '#FF33F0', '#33FFF0', '#000000', '#047857'].map((color, index) => (
+                    {['#2563eb', '#10b981', '#059669', '#0891b2', '#3b82f6', '#14b8a6', '#000000', '#047857'].map((color, index) => (
                       <button
                         key={index}
                         onClick={() => {
@@ -105,7 +105,7 @@ function Resume() {
                           GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } });
                           toast.success('Theme color updated!');
                         }}
-                        className={`w-8 h-8 rounded-full cursor-pointer transition-all hover:scale-110 ${resumeInfo?.themeColor === color ? 'ring-4 ring-purple-500 ring-offset-2' : 'hover:ring-2 hover:ring-gray-400'
+                        className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 ${resumeInfo?.themeColor === color ? 'ring-4 ring-blue-500 ring-offset-2' : 'hover:ring-2 hover:ring-gray-400'
                           }`}
                         style={{ backgroundColor: color }}
                         title={color}
@@ -119,7 +119,7 @@ function Resume() {
               <div className='flex items-center gap-3'>
                 <button
                   onClick={() => window.location.href = `/my-resume/${resumeId}/view`}
-                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border-2 border-purple-500 text-purple-600 hover:bg-purple-50 transition-all shadow-sm hover:shadow-md font-medium text-sm'
+                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-sm hover:scale-105'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 12a3 3 0 11-6 0 3 3 0 016 0z' />
@@ -129,7 +129,7 @@ function Resume() {
                 </button>
                 <button
                   onClick={() => window.location.href = `/my-resume/${resumeId}/view`}
-                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg font-medium text-sm'
+                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white hover:from-blue-600 hover:to-green-600 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm hover:scale-105'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' />
@@ -152,7 +152,7 @@ function Resume() {
           </div>
 
           {/* Section 2: Preview in A4 Size */}
-          <div className='flex-1 overflow-y-auto bg-gray-100 p-8'>
+          <div className='flex-1 overflow-y-auto bg-gradient-to-br from-blue-50 to-green-50 p-8'>
             <div className='mx-auto' style={{ width: '210mm', minHeight: '297mm' }}>
               <div className='bg-white shadow-2xl' style={{ width: '210mm', minHeight: '297mm' }}>
                 <ResumePreview enableEditMode={true} />
