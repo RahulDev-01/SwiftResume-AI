@@ -19,7 +19,7 @@ import Languages from '../../components/forms/Languages';
 import Certifications from '../../components/forms/Certifications';
 
 const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
-    const [expandedSection, setExpandedSection] = useState(null);
+    const [expandedSections, setExpandedSections] = useState([]);
     const [enableNext, setEnableNext] = useState(false);
 
     // Define sections based on template
@@ -40,67 +40,110 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
     }
 
     const toggleSection = (sectionId) => {
-        setExpandedSection(expandedSection === sectionId ? null : sectionId);
+        setExpandedSections(prev =>
+            prev.includes(sectionId)
+                ? prev.filter(id => id !== sectionId)
+                : [...prev, sectionId]
+        );
     };
 
     return (
-        <div className="w-full h-full bg-white flex flex-col overflow-y-auto">
-            {/* Sidebar Header */}
-            <div className="px-6 py-5 border-b border-gray-200 sticky top-0 bg-gradient-to-r from-blue-50 to-green-50 z-10">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">Resume Builder</h2>
-                <p className="text-sm text-gray-600 mt-1">Click sections to edit</p>
-            </div>
+        <div
+            className="w-full h-full bg-gray-50 flex flex-col overflow-x-hidden overflow-y-auto"
+            style={{
+                scrollbarWidth: 'none', /* Firefox */
+                msOverflowStyle: 'none'  /* IE and Edge */
+            }}
+        >
+            {/* Hide scrollbar for Chrome, Safari and Opera */}
+            <style>{`
+                div::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
 
-            {/* Sections List with Forms */}
-            <div className="flex-1 py-2">
-                {sections.map((section) => {
-                    const Icon = section.icon;
-                    const FormComponent = section.component;
-                    const isExpanded = expandedSection === section.id;
+            {/* Centered Container */}
+            <div className="w-full max-w-4xl mx-auto px-6 md:px-8 py-8">
+                {/* Professional Header */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Resume Builder</h2>
+                    <p className="text-sm text-gray-600 mt-1">Complete each section to build your professional resume</p>
+                </div>
 
-                    return (
-                        <div key={section.id} className="border-b border-gray-100 last:border-b-0">
-                            {/* Section Header - Clickable */}
-                            <button
-                                onClick={() => toggleSection(section.id)}
-                                className={`
-                  w-full flex items-center justify-between px-6 py-4
-                  transition-all duration-300 ease-in-out hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50 hover:scale-[1.02]
-                  ${isExpanded ? 'bg-gradient-to-r from-blue-50 to-green-50 shadow-sm' : ''}
-                `}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <Icon
-                                        size={22}
-                                        className={`transition-all duration-300 ${isExpanded ? 'text-blue-600 scale-110' : 'text-gray-600'}`}
-                                    />
-                                    <span className={`text-base font-semibold transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent' : 'text-gray-700'}`}>
-                                        {section.label}
-                                    </span>
-                                </div>
-                                <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-0' : ''}`}>
-                                    {isExpanded ? (
-                                        <ChevronDown size={20} className='text-blue-600' />
-                                    ) : (
-                                        <ChevronRight size={20} className='text-gray-500' />
-                                    )}
-                                </div>
-                            </button>
+                {/* Sections List */}
+                <div className="space-y-3">
+                    {sections.map((section) => {
+                        const Icon = section.icon;
+                        const FormComponent = section.component;
+                        const isExpanded = expandedSections.includes(section.id);
 
-                            {/* Section Content - Form with smooth height transition */}
+                        return (
                             <div
-                                className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
-                                    }`}
+                                key={section.id}
+                                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md"
                             >
-                                <div className="px-6 py-6 bg-gradient-to-b from-blue-50/30 via-green-50/20 to-white">
-                                    <FormComponent
-                                        enableNext={(v) => setEnableNext(v)}
-                                    />
+                                {/* Section Header */}
+                                <button
+                                    onClick={() => toggleSection(section.id)}
+                                    className={`
+                                        w-full flex items-center justify-between p-5
+                                        transition-colors duration-200
+                                        ${isExpanded ? 'bg-blue-50' : 'hover:bg-gray-50'}
+                                    `}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        {/* Icon */}
+                                        <div className={`
+                                            p-2.5 rounded-lg transition-colors duration-200
+                                            ${isExpanded
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                            }
+                                        `}>
+                                            <Icon size={20} />
+                                        </div>
+
+                                        {/* Label */}
+                                        <span className={`
+                                            text-base font-semibold transition-colors duration-200
+                                            ${isExpanded ? 'text-blue-600' : 'text-gray-900'}
+                                        `}>
+                                            {section.label}
+                                        </span>
+                                    </div>
+
+                                    {/* Chevron */}
+                                    <div className={`
+                                        transition-transform duration-200
+                                        ${isExpanded ? 'rotate-180' : 'rotate-0'}
+                                    `}>
+                                        <ChevronDown
+                                            size={20}
+                                            className={isExpanded ? 'text-blue-600' : 'text-gray-400'}
+                                        />
+                                    </div>
+                                </button>
+
+                                {/* Section Content */}
+                                <div
+                                    className={`
+                                        transition-all duration-300 ease-in-out
+                                        ${isExpanded ? 'max-h-[2500px] opacity-100' : 'max-h-0 opacity-0'}
+                                    `}
+                                >
+                                    <div className="px-6 pb-6 pt-2 border-t border-gray-100">
+                                        <FormComponent
+                                            enableNext={(v) => setEnableNext(v)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
+
+                {/* Bottom spacing */}
+                <div className="h-8"></div>
             </div>
         </div>
     );

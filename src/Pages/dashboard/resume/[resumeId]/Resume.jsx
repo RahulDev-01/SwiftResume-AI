@@ -79,9 +79,9 @@ function Resume() {
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100">
+      <div className="min-h-screen bg-gray-50">
         {/* Top Bar with Enhanced UI */}
-        <div className='sticky top-0 z-20 bg-white border-b border-gray-200 shadow-md'>
+        <div className='sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm'>
           <div className='mx-auto max-w-7xl px-6 py-3'>
             <div className='flex justify-between items-center gap-4'>
 
@@ -89,7 +89,7 @@ function Resume() {
               <div className='flex items-center gap-3'>
                 <button
                   onClick={() => window.location.href = '/dashboard'}
-                  className='flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white hover:from-blue-600 hover:to-green-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105'
+                  className='flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 shadow-sm'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' />
@@ -102,9 +102,9 @@ function Resume() {
               <div className='flex items-center gap-4 flex-1 justify-center'>
                 {/* Template Selector */}
                 <div className='relative'>
-                  <label className='text-xs font-semibold text-gray-600 mb-1 block'>Template</label>
+                  <label className='text-xs font-semibold text-gray-500 mb-1 block'>Template</label>
                   <select
-                    className='appearance-none px-4 py-2.5 pr-10 border-2 border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-300 cursor-pointer hover:border-blue-400 hover:shadow-md text-sm font-medium min-w-[140px] shadow-sm'
+                    className='appearance-none px-4 py-2.5 pr-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 cursor-pointer hover:border-blue-400 text-sm font-medium min-w-[140px] shadow-sm'
                     value={resumeInfo?.templateId || '1'}
                     onChange={(e) => {
                       const newTemplateId = e.target.value;
@@ -116,23 +116,30 @@ function Resume() {
                     <option value="1">Template 1</option>
                     <option value="2">Template 2</option>
                   </select>
-                  <svg className='absolute right-3 top-[30px] w-5 h-5 text-gray-500 pointer-events-none' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <svg className='absolute right-3 top-[30px] w-5 h-5 text-gray-400 pointer-events-none' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
                   </svg>
                 </div>
 
-                {/* Theme Color Picker - 24 Scrollable Colors */}
-                <div className='relative'>
-                  <label className='text-xs font-semibold text-gray-600 mb-1 block'>Theme Color · 24 Options</label>
-                  <div
-                    className='overflow-x-auto p-2 border-2 border-gray-300 rounded-lg bg-white shadow-sm hover:border-blue-400 transition-all'
-                    style={{
-                      maxWidth: '450px',
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#cbd5e1 #f1f5f9'
-                    }}
-                  >
-                    <div className='flex gap-2.5 pb-1'>
+                {/* Theme Color Picker - Dropdown Grid */}
+                <div className='relative group'>
+                  <button className='flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg bg-white hover:border-blue-400 hover:shadow-sm transition-all text-left min-w-[180px] justify-between'>
+                    <div className='flex items-center gap-2'>
+                      <div
+                        className='w-5 h-5 rounded-full border border-gray-200'
+                        style={{ backgroundColor: resumeInfo?.themeColor || '#2563eb' }}
+                      />
+                      <span className='text-sm font-medium text-gray-700'>Theme Color</span>
+                    </div>
+                    <svg className='w-4 h-4 text-gray-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Content */}
+                  <div className='absolute right-0 top-full mt-2 p-4 border border-gray-200 rounded-xl bg-white shadow-xl z-50 w-[320px] hidden group-hover:block hover:block animate-in fade-in slide-in-from-top-2 duration-200'>
+                    <label className='text-xs font-semibold text-gray-500 mb-3 block'>Select Theme Color</label>
+                    <div className='grid grid-cols-6 gap-3'>
                       {themeColors.map((color, index) => (
                         <button
                           key={index}
@@ -141,9 +148,9 @@ function Resume() {
                             GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } });
                             toast.success('Theme color updated!');
                           }}
-                          className={`w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 flex-shrink-0 ${resumeInfo?.themeColor === color
-                              ? 'ring-4 ring-blue-500 ring-offset-2 scale-110'
-                              : 'hover:ring-2 hover:ring-gray-400'
+                          className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md ${resumeInfo?.themeColor === color
+                            ? 'ring-2 ring-blue-500 ring-offset-2 scale-110'
+                            : 'hover:ring-2 hover:ring-gray-200'
                             }`}
                           style={{ backgroundColor: color }}
                           title={color}
@@ -158,7 +165,7 @@ function Resume() {
               <div className='flex items-center gap-3'>
                 <button
                   onClick={() => window.location.href = `/my-resume/${resumeId}/view`}
-                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 transition-all duration-300 shadow-sm hover:shadow-md font-medium text-sm hover:scale-105'
+                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 transition-all duration-200 shadow-sm font-medium text-sm'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 12a3 3 0 11-6 0 3 3 0 016 0z' />
@@ -168,7 +175,7 @@ function Resume() {
                 </button>
                 <button
                   onClick={() => window.location.href = `/my-resume/${resumeId}/view`}
-                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white hover:from-blue-600 hover:to-green-600 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm hover:scale-105'
+                  className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm'
                 >
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' />
@@ -183,7 +190,7 @@ function Resume() {
         {/* Main Content - 2 Sections Only */}
         <div className='flex' style={{ height: 'calc(100vh - 72px)' }}>
           {/* Section 1: Sidebar with Collapsible Forms */}
-          <div className='w-[500px] flex-shrink-0 shadow-lg overflow-y-auto'>
+          <div className='w-[500px] flex-shrink-0 border-r border-gray-200 bg-white overflow-y-auto'>
             <ResumeSidebarWithForms
               resumeInfo={resumeInfo}
               isTemplate2={isTemplate2}
@@ -191,9 +198,9 @@ function Resume() {
           </div>
 
           {/* Section 2: Preview in A4 Size */}
-          <div className='flex-1 overflow-y-auto bg-gradient-to-br from-blue-50 to-green-50 p-8'>
+          <div className='flex-1 overflow-y-auto bg-gray-100 p-8'>
             <div className='mx-auto' style={{ width: '210mm', minHeight: '297mm' }}>
-              <div className='bg-white shadow-2xl' style={{ width: '210mm', minHeight: '297mm' }}>
+              <div className='bg-white shadow-xl' style={{ width: '210mm', minHeight: '297mm' }}>
                 <ResumePreview enableEditMode={true} />
               </div>
             </div>
