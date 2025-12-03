@@ -66,7 +66,7 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
                                 className={`
                   w-full flex items-center justify-between px-6 py-4
                   transition-all duration-300 ease-in-out hover:bg-gradient-to-r hover:from-blue-50 hover:to-green-50 hover:scale-[1.02]
-                  ${isExpanded ? 'bg-gradient-to-r from-blue-50 to-green-50 border-l-4 border-l-blue-500 shadow-sm' : 'border-l-4 border-l-transparent'}
+                  ${isExpanded ? 'bg-gradient-to-r from-blue-50 to-green-50 shadow-sm' : ''}
                 `}
                             >
                                 <div className="flex items-center gap-4">

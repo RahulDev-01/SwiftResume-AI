@@ -49,6 +49,34 @@ function Resume() {
 
   const isTemplate2 = resumeInfo?.templateId === '2' || resumeInfo?.templateId === 2;
 
+  // 24 theme colors
+  const themeColors = [
+    '#2563eb', // Blue-600
+    '#10b981', // Emerald-500
+    '#059669', // Emerald-600
+    '#0891b2', // Cyan-600
+    '#3b82f6', // Blue-500
+    '#14b8a6', // Teal-500
+    '#6366f1', // Indigo-500
+    '#8b5cf6', // Violet-500
+    '#a855f7', // Purple-500
+    '#d946ef', // Fuchsia-500
+    '#ec4899', // Pink-500
+    '#f43f5e', // Rose-500
+    '#ef4444', // Red-500
+    '#f97316', // Orange-500
+    '#f59e0b', // Amber-500
+    '#eab308', // Yellow-500
+    '#84cc16', // Lime-500
+    '#22c55e', // Green-500
+    '#06b6d4', // Cyan-500
+    '#0ea5e9', // Sky-500
+    '#7c3aed', // Violet-600
+    '#000000', // Black
+    '#047857', // Emerald-700
+    '#dc2626'  // Red-600
+  ];
+
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-blue-100">
@@ -93,24 +121,35 @@ function Resume() {
                   </svg>
                 </div>
 
-                {/* Theme Color Picker */}
+                {/* Theme Color Picker - 24 Scrollable Colors */}
                 <div className='relative'>
-                  <label className='text-xs font-semibold text-gray-600 mb-1 block'>Theme Color</label>
-                  <div className='flex gap-2 p-2 border-2 border-gray-300 rounded-lg bg-white shadow-sm'>
-                    {['#2563eb', '#10b981', '#059669', '#0891b2', '#3b82f6', '#14b8a6', '#000000', '#047857'].map((color, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          setResumeInfo({ ...resumeInfo, themeColor: color });
-                          GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } });
-                          toast.success('Theme color updated!');
-                        }}
-                        className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 ${resumeInfo?.themeColor === color ? 'ring-4 ring-blue-500 ring-offset-2' : 'hover:ring-2 hover:ring-gray-400'
-                          }`}
-                        style={{ backgroundColor: color }}
-                        title={color}
-                      />
-                    ))}
+                  <label className='text-xs font-semibold text-gray-600 mb-1 block'>Theme Color · 24 Options</label>
+                  <div
+                    className='overflow-x-auto p-2 border-2 border-gray-300 rounded-lg bg-white shadow-sm hover:border-blue-400 transition-all'
+                    style={{
+                      maxWidth: '450px',
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#cbd5e1 #f1f5f9'
+                    }}
+                  >
+                    <div className='flex gap-2.5 pb-1'>
+                      {themeColors.map((color, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setResumeInfo({ ...resumeInfo, themeColor: color });
+                            GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } });
+                            toast.success('Theme color updated!');
+                          }}
+                          className={`w-10 h-10 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 flex-shrink-0 ${resumeInfo?.themeColor === color
+                              ? 'ring-4 ring-blue-500 ring-offset-2 scale-110'
+                              : 'hover:ring-2 hover:ring-gray-400'
+                            }`}
+                          style={{ backgroundColor: color }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
