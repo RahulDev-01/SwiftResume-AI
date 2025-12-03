@@ -8,12 +8,10 @@ import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
 import { toast } from 'sonner';
-import html2pdf from 'html2pdf.js';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
-  const [isDownloading, setIsDownloading] = useState(false);
   const { resumeId } = useParams()
 
   useEffect(() => {
@@ -53,45 +51,8 @@ function View() {
     GetResumeInfo();
   }, [resumeId])
 
-  const HandleDownload = async () => {
-    setIsDownloading(true);
-    try {
-      toast.info('Generating PDF... Please wait.');
-
-      const element = document.getElementById('print-area');
-      if (!element) {
-        toast.error('Print area not found. Please try again.');
-        setIsDownloading(false);
-        return;
-      }
-
-      const resumeTitle = `${(resumeInfo?.firstName || '').trim()}_${(resumeInfo?.lastName || '').trim()}_Resume`.trim() || 'Resume';
-
-      const options = {
-        margin: 0,
-        filename: `${resumeTitle}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: true,
-          letterRendering: true
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait'
-        }
-      };
-
-      await html2pdf().set(options).from(element).save();
-      toast.success('PDF downloaded successfully!');
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      toast.error('Failed to generate PDF. Please try again.');
-    } finally {
-      setIsDownloading(false);
-    }
+  const HandleDownload = () => {
+    window.print();
   }
 
   return (
@@ -116,24 +77,13 @@ function View() {
               <Button
                 onClick={HandleDownload}
                 className="w-full sm:w-auto px-8 py-6 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-xl"
-                disabled={isDownloading}
               >
-                {isDownloading ? (
-                  <div className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Generating PDF...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    <span>Download Resume</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  <span>Download Resume</span>
+                </div>
               </Button>
 
               <RWebShare

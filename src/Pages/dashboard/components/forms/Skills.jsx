@@ -180,7 +180,7 @@ const Skills = forwardRef(({ enableNext }, ref) => {
     <div className="glass-card mt-5">
       <h2 className="section-title">Skills</h2>
       <p className="section-subtitle">Add Your Professional Skills</p>
-      <div>
+      <div className="max-h-[300px] overflow-y-auto pr-2 mb-4 custom-scrollbar">
         {skills.map((skill, index) => (
           <div
             key={index}

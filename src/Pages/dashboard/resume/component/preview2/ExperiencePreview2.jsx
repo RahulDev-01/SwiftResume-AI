@@ -35,22 +35,21 @@ function ExperiencePreview2({ resumeInfo }) {
                                 <h3 className='font-bold text-base text-gray-800'>{exp?.title}</h3>
                                 <div className='flex items-center gap-2 mb-1'>
                                     {exp?.url ? (
-                                        <a href={ensureUrl(exp?.url)} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
-                                            <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
-                                                {exp?.companyName}
+                                        <a href={ensureUrl(exp?.url)} style={{ textDecoration: 'underline' }} className='flex items-center gap-2 hover:underline cursor-pointer'>
+                                            <span className='font-semibold text-sm flex items-center gap-1' style={{ color: resumeInfo?.themeColor }}>
+                                                <img src="/icons/company.png" alt="company" className="w-4 h-4" /> {exp?.companyName}
                                             </span>
-                                            <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
                                         </a>
                                     ) : (
                                         <>
-                                            <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
-                                                {exp?.companyName}
+                                            <span className='font-semibold text-sm flex items-center gap-1' style={{ color: resumeInfo?.themeColor }}>
+                                                <img src="/icons/company.png" alt="company" className="w-4 h-4" /> {exp?.companyName}
                                             </span>
-                                            <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
                                         </>
                                     )}
                                 </div>
-                                <div className='text-xs text-gray-500 italic mb-2'>
+                                <div className='text-xs text-gray-500 italic mb-2 flex items-center gap-1'>
+                                    <img src="/icons/date.png" alt="date" className="w-4 h-4" />
                                     {exp?.startDate} - {exp?.currentlyWorking ? 'Present' : exp?.endDate}
                                     {(exp?.city || exp?.state) && (
                                         <span className='ml-4'>{exp?.city}{exp?.city && exp?.state ? ', ' : ''}{exp?.state}</span>
