@@ -78,6 +78,13 @@ const UpdateResumeByDocumentId = async (documentId, data) => {
 const  GetId =(id)=>axiousClient.get('user-resumes/'+id+"?populate=*")
 // Delete resume by Strapi documentId
 const DeleteResumeByDocumentId = (documentId) => axiousClient.delete('user-resumes/'+documentId)
+
+/**
+ * Simple ping to wake up the backend (e.g. Render/Heroku free tier).
+ * We use a lightweight request (e.g. fetching 1 item or just the endpoint).
+ */
+const Ping = () => axiousClient.get('user-resumes?pagination[pageSize]=1');
+
 export default{
     CreateNewResume,
     GetUserResumes,
@@ -89,4 +96,5 @@ export default{
     UpdateResumeByDocumentId,
     GetId,
     DeleteResumeByDocumentId,
+    Ping,
 }
