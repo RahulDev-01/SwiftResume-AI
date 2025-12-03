@@ -12,22 +12,28 @@ function ExperiencePreview({ resumeInfo }) {
       <hr className='border-[2px]' style={{ borderColor: resumeInfo?.themeColor }} />
 
       {list.map((exp, index) => (
-        { exp?.startDate} To {exp?.currentlyWorking ? 'Present' : exp?.endDate}
-    </span>
-          </h2 >
-    <div
-      className="text-xs py-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1 break-words"
-      dangerouslySetInnerHTML={{ __html: exp?.workSummery || '' }}
-    />
-  {/* Debug output */ }
-  {
-    import.meta.env.DEV && (
-      <div className="hidden">Debug workSummery: {JSON.stringify(exp?.workSummery)}</div>
-    )
-  }
-        </div >
-      ))
-}
+        <div key={index} className='my-5'>
+          <h2 className='text-sm font-bold' style={{ color: resumeInfo?.themeColor }}>{exp?.title}</h2>
+          <h2 className='text-xs flex justify-between items-center font-medium'>
+            {exp?.url ? (
+              <a href={ensureUrl(exp?.url)} style={{ textDecoration: 'underline' }} className='flex items-center gap-1 hover:underline cursor-pointer'>
+                <img src="/icons/company.png" alt="company" className="w-4 h-4" />
+                {exp?.companyName}, {exp?.city}, {exp?.state}
+              </a>
+            ) : (
+              <span className='flex items-center gap-1'>
+                <img src="/icons/company.png" alt="company" className="w-4 h-4" />
+                {exp?.companyName}, {exp?.city}, {exp?.state}
+              </span>
+            )}
+            <span className='flex items-center gap-1'>
+              <img src="/icons/date.png" alt="date" className="w-4 h-4" />
+              {exp?.startDate} To {exp?.currentlyWorking ? 'Present' : exp?.endDate}
+            </span>
+          </h2>
+          <div className='text-xs my-2 text-gray-700 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mb-1 break-words' dangerouslySetInnerHTML={{ __html: exp?.workSummery }} />
+        </div>
+      ))}
     </div >
   )
 }
