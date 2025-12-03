@@ -51,12 +51,13 @@ const ResumeSidebar = ({ activeSection, onSectionChange, isTemplate2 }) => {
     };
 
     const handleSectionClick = (sectionId, key) => {
-        onSectionChange(sectionId);
-        // Auto-expand clicked section
+        // Toggle expansion
         setExpandedSections(prev => ({
             ...prev,
-            [key]: true
+            [key]: !prev[key]
         }));
+        // Also change active section
+        onSectionChange(sectionId);
     };
 
     return (

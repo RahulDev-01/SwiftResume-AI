@@ -7,10 +7,12 @@ import GlobalApi from '../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
+import { toast } from 'sonner';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { resumeId } = useParams()
 
   useEffect(() => {
@@ -51,13 +53,18 @@ function View() {
   }, [resumeId])
 
   const HandleDownload = async () => {
+    setIsDownloading(true);
     try {
+      toast.info('Generating PDF... Please wait.');
+
       // Dynamically import html2pdf to avoid SSR issues
       const html2pdf = (await import('html2pdf.js')).default;
 
       const element = document.getElementById('print-area');
       if (!element) {
+        toast.error('Print area not found. Please try again.');
         console.error('Print area not found');
+        setIsDownloading(false);
         return;
       }
 
@@ -85,11 +92,14 @@ function View() {
       };
 
       await html2pdf().set(options).from(element).save();
+      toast.success('PDF downloaded successfully!');
     } catch (error) {
       console.error('Error generating PDF:', error);
+      toast.error('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsDownloading(false);
     }
   }
-
 
 
 
@@ -102,7 +112,23 @@ function View() {
             <h2 className='text-2xl font-bold text-gray-900'>Congrats 🎉 Your Ultimate AI Generated Resume Is Ready 📝</h2>
             <p className='text-gray-500 mt-4 mb-8'>Now you are ready to download your resume and share your unique URL with friends and family.</p>
             <div className='flex items-center justify-center gap-4'>
-              <Button onClick={HandleDownload} className="btn-glass">Download</Button>
+              <Button
+                onClick={HandleDownload}
+                className="btn-glass"
+                disabled={isDownloading}
+              >
+                {isDownloading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generating...
+                  </>
+                ) : (
+                  'Download'
+                )}
+              </Button>
               <RWebShare
                 data={{
                   text: "Hello! This is my resume. Open this link to view it.",
