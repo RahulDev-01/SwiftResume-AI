@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
 import { toast } from 'sonner';
+import html2pdf from 'html2pdf.js';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
@@ -57,13 +58,9 @@ function View() {
     try {
       toast.info('Generating PDF... Please wait.');
 
-      // Dynamically import html2pdf to avoid SSR issues
-      const html2pdf = (await import('html2pdf.js')).default;
-
       const element = document.getElementById('print-area');
       if (!element) {
         toast.error('Print area not found. Please try again.');
-        console.error('Print area not found');
         setIsDownloading(false);
         return;
       }
@@ -71,23 +68,19 @@ function View() {
       const resumeTitle = `${(resumeInfo?.firstName || '').trim()}_${(resumeInfo?.lastName || '').trim()}_Resume`.trim() || 'Resume';
 
       const options = {
-        margin: [10, 10, 10, 10],
+        margin: 0,
         filename: `${resumeTitle}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
-          letterRendering: true,
-          logging: false
+          logging: true,
+          letterRendering: true
         },
         jsPDF: {
           unit: 'mm',
-          format: 'a4', // A4 format: 210mm x 297mm
-          orientation: 'portrait',
-          compress: true
-        },
-        pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy']
+          format: 'a4',
+          orientation: 'portrait'
         }
       };
 
@@ -101,42 +94,63 @@ function View() {
     }
   }
 
-
-
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
-      <div id='no-print'>
+      <div id='no-print' className="min-h-screen bg-gray-50">
         <Header />
-        <div className='my-10 mx-10 md:mx-20 lg:mx-36'>
-          <div className='glass-card text-center'>
-            <h2 className='text-2xl font-bold text-gray-900'>Congrats 🎉 Your Ultimate AI Generated Resume Is Ready 📝</h2>
-            <p className='text-gray-500 mt-4 mb-8'>Now you are ready to download your resume and share your unique URL with friends and family.</p>
-            <div className='flex items-center justify-center gap-4'>
+        <div className='my-10 mx-auto max-w-3xl px-6'>
+          <div className='bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center'>
+            <div className='mb-6 flex justify-center'>
+              <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center'>
+                <span className='text-3xl'>🎉</span>
+              </div>
+            </div>
+            <h2 className='text-2xl md:text-3xl font-bold text-gray-900 mb-3'>
+              Your Resume is Ready!
+            </h2>
+            <p className='text-gray-600 mb-8 max-w-lg mx-auto'>
+              Your professional resume has been generated successfully. You can now download it as a PDF or share the unique link with recruiters.
+            </p>
+
+            <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
               <Button
                 onClick={HandleDownload}
-                className="btn-glass"
+                className="w-full sm:w-auto px-8 py-6 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-xl"
                 disabled={isDownloading}
               >
                 {isDownloading ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                  <div className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Generating...
-                  </>
+                    <span>Generating PDF...</span>
+                  </div>
                 ) : (
-                  'Download'
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Download Resume</span>
+                  </div>
                 )}
               </Button>
+
               <RWebShare
                 data={{
-                  text: "Hello! This is my resume. Open this link to view it.",
+                  text: "Check out my professional resume created with SwiftResume AI!",
                   url: `${import.meta.env.VITE_URL}/my-resume/${resumeId}/view`,
-                  title: `${(resumeInfo?.firstName || '').trim()} ${(resumeInfo?.lastName || '').trim()} Resume`.trim(),
+                  title: `${(resumeInfo?.firstName || '').trim()} ${(resumeInfo?.lastName || '').trim()} - Resume`,
                 }}
               >
-                <Button variant="outline" className='btn-glass-outline'>Share 🔗</Button>
+                <Button variant="outline" className='w-full sm:w-auto px-8 py-6 text-base font-medium border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-all duration-200 rounded-xl'>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    <span>Share Link</span>
+                  </div>
+                </Button>
               </RWebShare>
             </div>
           </div>
