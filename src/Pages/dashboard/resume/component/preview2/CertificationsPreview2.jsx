@@ -15,7 +15,7 @@ function CertificationsPreview2({ resumeInfo }) {
     return (
         <div className='my-6'>
             <h2 className='text-xl font-bold text-gray-800 mb-4 pb-2 border-b-2' style={{ borderColor: resumeInfo?.themeColor }}>
-                TRAINING AND CERTIFICATIONS
+                PROJECTS
             </h2>
             <div className='relative'>
                 {/* Vertical timeline line */}

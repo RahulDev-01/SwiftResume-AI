@@ -129,26 +129,26 @@ const Certifications = forwardRef(({ enableNext }, ref) => {
 
     return (
         <div className="glass-card mt-5">
-            <h2 className="section-title">Training & Certifications</h2>
-            <p className="section-subtitle">Add Your Professional Certifications</p>
+            <h2 className="section-title">Projects</h2>
+            <p className="section-subtitle">Add Your Professional Projects</p>
             <div>
                 {certifications.map((cert, index) => (
                     <div key={index} className="grid grid-cols-2 gap-3 mt-4 p-4 border border-white/30 rounded-xl bg-white/40 backdrop-blur-sm hover:shadow-md transition-all duration-300">
                         <div>
-                            <label className="text-xs font-medium text-gray-700">Certification Title</label>
-                            <Input className="input-glass w-full" value={cert.title || ''} onChange={(e) => handleChange(index, "title", e.target.value)} placeholder="e.g. PMP Certification" />
+                            <label className="text-xs font-medium text-gray-700">Project Title</label>
+                            <Input className="input-glass w-full" value={cert.title || ''} onChange={(e) => handleChange(index, "title", e.target.value)} placeholder="e.g. E-commerce Website" />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-gray-700">Issuing Organization</label>
-                            <Input className="input-glass w-full" value={cert.issuer || ''} onChange={(e) => handleChange(index, "issuer", e.target.value)} placeholder="e.g. PMI" />
+                            <label className="text-xs font-medium text-gray-700">Technologies Used</label>
+                            <Input className="input-glass w-full" value={cert.issuer || ''} onChange={(e) => handleChange(index, "issuer", e.target.value)} placeholder="e.g. React, Node.js" />
                         </div>
                         <div>
                             <label className="text-xs font-medium text-gray-700">Date</label>
-                            <Input className="input-glass w-full" value={cert.date || ''} onChange={(e) => handleChange(index, "date", e.target.value)} placeholder="e.g. 2019" />
+                            <Input className="input-glass w-full" value={cert.date || ''} onChange={(e) => handleChange(index, "date", e.target.value)} placeholder="e.g. 2023" />
                         </div>
                         <div>
-                            <label className="text-xs font-medium text-gray-700">URL (Optional)</label>
-                            <Input className="input-glass w-full" value={cert.url || ''} onChange={(e) => handleChange(index, "url", e.target.value)} placeholder="https://..." />
+                            <label className="text-xs font-medium text-gray-700">Project URL (Optional)</label>
+                            <Input className="input-glass w-full" value={cert.url || ''} onChange={(e) => handleChange(index, "url", e.target.value)} placeholder="https://github.com/..." />
                         </div>
                     </div>
                 ))}
@@ -156,7 +156,7 @@ const Certifications = forwardRef(({ enableNext }, ref) => {
             <div className="flex justify-between mt-6">
                 <div className="flex gap-3">
                     <Button variant="outline" onClick={AddNewCertification} className="btn-glass-outline">
-                        + Add More Certification
+                        + Add More Project
                     </Button>
                     {certifications.length > 1 && (
                         <Button variant="outline" onClick={RemoveCertification} className="border-red-500 text-red-500 hover:bg-red-50 transition-all duration-200">

@@ -34,7 +34,7 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
     // Add template 2 specific sections
     if (isTemplate2) {
         sections.push(
-            { id: 6, key: 'certifications', label: 'Certificates', icon: Award, component: Certifications },
+            { id: 6, key: 'certifications', label: 'Projects', icon: Award, component: Certifications },
             { id: 7, key: 'languages', label: 'Languages', icon: LanguagesIcon, component: Languages }
         );
     }
