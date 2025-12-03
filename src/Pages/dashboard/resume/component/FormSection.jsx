@@ -1,22 +1,16 @@
 import React, { useState, useRef, useContext } from 'react'
 import PersonalDetails from '../../components/forms/PersonalDetails'
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Home, LayoutGrid } from 'lucide-react';
 import Summary from '../../components/forms/Summary';
 import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
 import Languages from '../../components/forms/Languages';
 import Certifications from '../../components/forms/Certifications';
-import { Link, Navigate, useParams } from 'react-router-dom';
-import ThemeColor from '../../components/ThemeColor';
 import { ResumeInfoContext } from '@/context/ResumeInfoContext.jsx';
 
-function FormSection() {
-  const [activeFormIndex, setActiveFormIndex] = useState(1);
+function FormSection({ activeSection, onSectionChange }) {
   const [enableNext, setEnableNext] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { resumeId } = useParams();
   const { resumeInfo } = useContext(ResumeInfoContext) || {};
 
   // Refs to access form components
@@ -31,20 +25,14 @@ function FormSection() {
   // Check if Template 2 is selected
   const isTemplate2 = resumeInfo?.templateId === '2' || resumeInfo?.templateId === 2;
 
-  // Reset enableNext when changing form
-  const goToForm = (index) => {
-    setActiveFormIndex(index);
-    setEnableNext(false);
-  }
-
-  // Handle Next button click - auto-save before moving to next form
-  const handleNext = async () => {
+  // Auto-save when section changes
+  const handleSectionChange = async (newSection) => {
     setIsSaving(true);
 
     try {
-      // Get the current form ref based on activeFormIndex
+      // Get the current form ref based on activeSection
       let currentFormRef = null;
-      switch (activeFormIndex) {
+      switch (activeSection) {
         case 1:
           currentFormRef = personalDetailsRef;
           break;
@@ -75,8 +63,10 @@ function FormSection() {
         await currentFormRef.current.handleSave();
       }
 
-      // Move to next form after successful save
-      goToForm(activeFormIndex + 1);
+      // Move to new section after successful save
+      if (onSectionChange) {
+        onSectionChange(newSection);
+      }
     } catch (error) {
       console.error('Error saving form:', error);
     } finally {
@@ -85,57 +75,51 @@ function FormSection() {
   }
 
   return (
-    <div>
-      <div className='flex justify-between mb-3'>
-        <div className='flex gap-5'>
-          <Link to={"/dashboard"}>
-            <Button className='mb-1 btn-glass-outline' size="sm"><Home className='inline' /></Button>
-          </Link>
-          <ThemeColor />
-        </div>
-        <div className='flex gap-2'>
-          {activeFormIndex > 1 &&
-            <Button size='sm'
-              onClick={() => goToForm(activeFormIndex - 1)}
-              disabled={isSaving}
-              className="btn-glass-outline"
-            >
-              <ArrowLeft />
-            </Button>}
-          <Button
-            className='flex gap-2 btn-glass'
-            size='sm'
-            onClick={handleNext}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving...' : 'Next'} <ArrowRight />
-          </Button>
-        </div>
+    <div className='glass-card'>
+      {/* Section Title */}
+      <div className='mb-6'>
+        <h2 className='text-2xl font-bold text-gray-800'>
+          {activeSection === 1 && 'Basic Details'}
+          {activeSection === 2 && 'Summary'}
+          {activeSection === 3 && 'Experience'}
+          {activeSection === 4 && 'Education'}
+          {activeSection === 5 && 'Skills & Expertise'}
+          {activeSection === 6 && 'Certificates'}
+          {activeSection === 7 && 'Languages'}
+        </h2>
+        <p className='text-sm text-gray-500 mt-1'>
+          Fill in the information below. Changes are saved automatically.
+        </p>
       </div>
 
+      {/* Saving indicator */}
+      {isSaving && (
+        <div className='mb-4 p-2 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 flex items-center gap-2'>
+          <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600'></div>
+          Saving changes...
+        </div>
+      )}
+
       {/* Personal Detail */}
-      {activeFormIndex == 1 ? <PersonalDetails ref={personalDetailsRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {activeSection === 1 && <PersonalDetails ref={personalDetailsRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Summary */}
-      {activeFormIndex == 2 ? <Summary ref={summaryRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {activeSection === 2 && <Summary ref={summaryRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Experience */}
-      {activeFormIndex == 3 ? <Experience ref={experienceRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {activeSection === 3 && <Experience ref={experienceRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Educational Details */}
-      {activeFormIndex == 4 ? <Education ref={educationRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {activeSection === 4 && <Education ref={educationRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Skills */}
-      {activeFormIndex == 5 ? <Skills ref={skillsRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {activeSection === 5 && <Skills ref={skillsRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Certifications - Only for Template 2 */}
-      {isTemplate2 && activeFormIndex == 6 ? <Certifications ref={certificationsRef} enableNext={(v) => setEnableNext(v)} /> : null}
+      {isTemplate2 && activeSection === 6 && <Certifications ref={certificationsRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Languages - Only for Template 2 */}
-      {isTemplate2 && activeFormIndex == 7 ? <Languages ref={languagesRef} enableNext={(v) => setEnableNext(v)} /> : null}
-
-      {/* Navigate to view page */}
-      {(isTemplate2 && activeFormIndex == 8) || (!isTemplate2 && activeFormIndex == 6) ? <Navigate to={'/my-resume/' + resumeId + "/view"} /> : null}
+      {isTemplate2 && activeSection === 7 && <Languages ref={languagesRef} enableNext={(v) => setEnableNext(v)} />}
     </div>
   )
 }

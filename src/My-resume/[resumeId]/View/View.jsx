@@ -49,9 +49,47 @@ function View() {
     }
     GetResumeInfo();
   }, [resumeId])
-  const HandleDownload = () => {
-    window.print()
+
+  const HandleDownload = async () => {
+    try {
+      // Dynamically import html2pdf to avoid SSR issues
+      const html2pdf = (await import('html2pdf.js')).default;
+
+      const element = document.getElementById('print-area');
+      if (!element) {
+        console.error('Print area not found');
+        return;
+      }
+
+      const resumeTitle = `${(resumeInfo?.firstName || '').trim()}_${(resumeInfo?.lastName || '').trim()}_Resume`.trim() || 'Resume';
+
+      const options = {
+        margin: [10, 10, 10, 10],
+        filename: `${resumeTitle}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4', // A4 format: 210mm x 297mm
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: {
+          mode: ['avoid-all', 'css', 'legacy']
+        }
+      };
+
+      await html2pdf().set(options).from(element).save();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
   }
+
 
 
 
