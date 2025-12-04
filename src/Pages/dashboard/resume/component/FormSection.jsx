@@ -5,7 +5,7 @@ import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
 import Languages from '../../components/forms/Languages';
-import Certifications from '../../components/forms/Certifications';
+import Projects from '../../components/forms/Projects';
 import { ResumeInfoContext } from '@/context/ResumeInfoContext.jsx';
 
 function FormSection({ activeSection, onSectionChange }) {
@@ -19,7 +19,7 @@ function FormSection({ activeSection, onSectionChange }) {
   const experienceRef = useRef(null);
   const educationRef = useRef(null);
   const skillsRef = useRef(null);
-  const certificationsRef = useRef(null);
+  const projectsRef = useRef(null);
   const languagesRef = useRef(null);
 
   // Check if Template 2 is selected
@@ -49,7 +49,7 @@ function FormSection({ activeSection, onSectionChange }) {
           currentFormRef = skillsRef;
           break;
         case 6:
-          currentFormRef = certificationsRef;
+          currentFormRef = projectsRef;
           break;
         case 7:
           currentFormRef = languagesRef;
@@ -84,7 +84,7 @@ function FormSection({ activeSection, onSectionChange }) {
           {activeSection === 3 && 'Experience'}
           {activeSection === 4 && 'Education'}
           {activeSection === 5 && 'Skills & Expertise'}
-          {activeSection === 6 && 'Certificates'}
+          {activeSection === 6 && 'Projects'}
           {activeSection === 7 && 'Languages'}
         </h2>
         <p className='text-sm text-gray-500 mt-1'>
@@ -115,8 +115,8 @@ function FormSection({ activeSection, onSectionChange }) {
       {/* Skills */}
       {activeSection === 5 && <Skills ref={skillsRef} enableNext={(v) => setEnableNext(v)} />}
 
-      {/* Certifications - Only for Template 2 */}
-      {isTemplate2 && activeSection === 6 && <Certifications ref={certificationsRef} enableNext={(v) => setEnableNext(v)} />}
+      {/* Projects - Only for Template 2 */}
+      {isTemplate2 && activeSection === 6 && <Projects ref={projectsRef} enableNext={(v) => setEnableNext(v)} />}
 
       {/* Languages - Only for Template 2 */}
       {isTemplate2 && activeSection === 7 && <Languages ref={languagesRef} enableNext={(v) => setEnableNext(v)} />}

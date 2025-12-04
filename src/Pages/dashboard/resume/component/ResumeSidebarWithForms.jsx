@@ -16,7 +16,7 @@ import Experience from '../../components/forms/Experience';
 import Education from '../../components/forms/Education';
 import Skills from '../../components/forms/Skills';
 import Languages from '../../components/forms/Languages';
-import Certifications from '../../components/forms/Certifications';
+import Projects from '../../components/forms/Projects';
 
 const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
     const [expandedSections, setExpandedSections] = useState([]);
@@ -34,7 +34,7 @@ const ResumeSidebarWithForms = ({ resumeInfo, isTemplate2 }) => {
     // Add template 2 specific sections
     if (isTemplate2) {
         sections.push(
-            { id: 6, key: 'certifications', label: 'Projects', icon: Award, component: Certifications },
+            { id: 6, key: 'projects', label: 'Projects', icon: Award, component: Projects },
             { id: 7, key: 'languages', label: 'Languages', icon: LanguagesIcon, component: Languages }
         );
     }

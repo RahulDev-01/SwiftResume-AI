@@ -5,7 +5,7 @@ import ExperiencePreview2 from './preview2/ExperiencePreview2'
 import EducationPreview2 from './preview2/EducationPreview2'
 import SkillPreview2 from './preview2/SkillPreview2'
 import LanguagesPreview2 from './preview2/LanguagesPreview2'
-import CertificationsPreview2 from './preview2/CertificationsPreview2'
+import ProjectsPreview2 from './preview2/ProjectsPreview2'
 
 function ResumePreview2({ resumeInfo, enableEditMode }) {
     return (
@@ -20,7 +20,7 @@ function ResumePreview2({ resumeInfo, enableEditMode }) {
                 {/* Left Column: Experience (2/3 width) */}
                 <div className='col-span-2'>
                     <ExperiencePreview2 resumeInfo={resumeInfo} />
-                    <CertificationsPreview2 resumeInfo={resumeInfo} />
+                    <ProjectsPreview2 resumeInfo={resumeInfo} />
                 </div>
 
                 {/* Right Column: Skills, Certifications, Education, Languages (1/3 width) */}

@@ -4,6 +4,7 @@ import { useUser } from '@clerk/clerk-react'
 import GlobalApi from '../../../service/GlobalApi';
 import ResumeCardItem from './components/ResumeCardItem';
 import { Loader2 } from 'lucide-react';
+import Header from '../../components/custom/Header';
 
 // Cache key for localStorage
 const CACHE_KEY = 'dashboard_resumes_cache';
@@ -81,13 +82,15 @@ function Dashboard() {
 
 
   return (
-    <div className='min-h-screen p-10 md:px-20 lg:px-32 relative'>
+    <div className='min-h-screen relative'>
       {/* Background Pattern */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]">
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 opacity-20 blur-[100px]"></div>
       </div>
 
-      <div className='max-w-7xl mx-auto'>
+      <Header />
+
+      <div className='p-10 md:px-20 lg:px-32 max-w-7xl mx-auto'>
         <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4 animate-fade-in-up'>
           <div>
             <h2 className='font-bold text-4xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent inline-block' >My Resumes</h2>
