@@ -37,13 +37,14 @@ function ProjectsPreview2({ resumeInfo }) {
                                 <div className='flex items-center gap-2 mb-1'>
                                     {proj?.url ? (
                                         <a href={ensureUrl(proj?.url)} target="_blank" rel="noreferrer" className='flex items-center gap-2 hover:underline cursor-pointer'>
-                                            <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
+                                            <span className='font-semibold text-sm flex items-center gap-1' style={{ color: resumeInfo?.themeColor }}>
+                                                <ExternalLink className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
                                                 {proj?.linkDisplay || proj?.url}
                                             </span>
-                                            <ExternalLink className='w-3 h-3' style={{ color: resumeInfo?.themeColor }} />
                                         </a>
                                     ) : (
-                                        <span className='font-semibold text-sm' style={{ color: resumeInfo?.themeColor }}>
+                                        <span className='font-semibold text-sm flex items-center gap-1' style={{ color: resumeInfo?.themeColor }}>
+                                            <ExternalLink className='w-4 h-4' style={{ color: resumeInfo?.themeColor }} />
                                             {proj?.linkDisplay}
                                         </span>
                                     )}
