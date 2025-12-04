@@ -6,7 +6,7 @@ import { ensureUrl } from '../../../../../utils/urlHelper';
 function ProjectsPreview2({ resumeInfo }) {
     const projects = (() => {
         const raw = resumeInfo?.Projects || resumeInfo?.certifications;
-        if (raw === undefined || raw === null) return Dummy.certifications; // Fallback to dummy if needed, or create dummy projects
+        if (raw === undefined || raw === null) return Dummy.Projects; // Fallback to dummy if needed, or create dummy projects
         return raw.filter((c) => c?.title?.trim());
     })();
 

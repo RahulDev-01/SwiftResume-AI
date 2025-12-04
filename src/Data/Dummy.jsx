@@ -89,6 +89,22 @@ export default {
       rating: 100,
     },
   ],
+  Projects: [
+    {
+      id: 1,
+      title: "Personal Portfolio Website",
+      linkDisplay: "Live Demo",
+      url: "https://portfolio.example.com",
+      description: "Designed and developed a responsive personal portfolio using React and Tailwind CSS. Implemented dark mode and smooth scrolling animations.",
+    },
+    {
+      id: 2,
+      title: "E-commerce Platform",
+      linkDisplay: "GitHub Repo",
+      url: "https://github.com/example/ecommerce",
+      description: "Built a full-stack e-commerce application with Node.js backend and MongoDB. Features include user authentication, product search, and payment gateway integration.",
+    },
+  ],
   certifications: [
     {
       id: 1,
