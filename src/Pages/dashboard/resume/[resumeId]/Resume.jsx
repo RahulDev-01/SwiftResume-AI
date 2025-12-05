@@ -10,12 +10,30 @@ import { toast } from 'sonner';
 function Resume() {
 
   const { resumeId } = useParams();
-  const [resumeInfo, setResumeInfo] = useState()
+  const [resumeInfo, setResumeInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const GetResumeInfo = () => {
-      GlobalApi.GetId(resumeId).then(resp => {
+    if (!resumeId) {
+      setError('Resume ID is missing');
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const GetResumeInfo = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const resp = await GlobalApi.GetId(resumeId);
         const payload = resp?.data?.data;
+        
+        if (!payload) {
+          throw new Error('Resume not found');
+        }
+
         const attrs = payload?.attributes || payload || {};
 
         const pickArray = (obj, keys) => {
@@ -41,12 +59,28 @@ function Resume() {
           templateId: attrs.templateId || '1'
         };
 
-        setResumeInfo(normalized)
-      }).catch(err => {
-        console.error('Failed to load resume:', err);
-      })
-    }
-    GetResumeInfo()
+        if (isMounted) {
+          setResumeInfo(normalized);
+          setError(null);
+        }
+      } catch (err) {
+        if (isMounted) {
+          const errorMessage = err?.response?.data?.error?.message || err?.message || 'Failed to load resume';
+          setError(errorMessage);
+          toast.error(`Failed to load resume: ${errorMessage}`);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    GetResumeInfo();
+
+    return () => {
+      isMounted = false;
+    };
   }, [resumeId])
 
   const isTemplate2 = resumeInfo?.templateId === '2' || resumeInfo?.templateId === 2;
@@ -78,6 +112,41 @@ function Resume() {
     '#047857', // Emerald-700
     '#dc2626'  // Red-600
   ];
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading resume...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="text-red-600 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Failed to Load Resume</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.href = '/dashboard'}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
@@ -111,9 +180,15 @@ function Resume() {
                     onChange={(e) => {
                       const newTemplateId = e.target.value;
                       setResumeInfo({ ...resumeInfo, templateId: newTemplateId });
-                      GlobalApi.UpdateResumeDetail(resumeId, { data: { templateId: newTemplateId } });
+                      GlobalApi.UpdateResumeDetail(resumeId, { data: { templateId: newTemplateId } })
+                        .catch(err => {
+                          toast.error('Failed to update template. Please try again.');
+                          // Revert on error
+                          setResumeInfo({ ...resumeInfo, templateId: resumeInfo?.templateId || '1' });
+                        });
                       toast.success(`Switched to Template ${newTemplateId}`);
                     }}
+                    disabled={!resumeInfo || loading}
                   >
                     <option value="1">Template 1</option>
                     <option value="2">Template 2</option>
@@ -159,8 +234,14 @@ function Resume() {
                       <button
                         key={index}
                         onClick={() => {
+                          const previousColor = resumeInfo?.themeColor;
                           setResumeInfo({ ...resumeInfo, themeColor: color });
-                          GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } });
+                          GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } })
+                            .catch(err => {
+                              toast.error('Failed to update theme color. Please try again.');
+                              // Revert on error
+                              setResumeInfo({ ...resumeInfo, themeColor: previousColor });
+                            });
                           toast.success('Theme color updated!');
                         }}
                         className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 flex-shrink-0 border border-gray-100 shadow-sm ${resumeInfo?.themeColor === color
@@ -169,6 +250,7 @@ function Resume() {
                           }`}
                         style={{ backgroundColor: color }}
                         title={color}
+                        disabled={!resumeInfo || loading}
                       />
                     ))}
                   </div>
@@ -232,16 +314,6 @@ function Resume() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Debug Section - Temporary */}
-        <div className="p-4 bg-gray-200 text-xs font-mono overflow-auto border-t border-gray-400">
-          <h3 className="font-bold">Debug Info</h3>
-          <p><strong>Resume ID:</strong> {resumeId}</p>
-          <p><strong>Keys in resumeInfo:</strong> {Object.keys(resumeInfo || {}).join(', ')}</p>
-          <p><strong>Projects Data:</strong> {JSON.stringify(resumeInfo?.Projects || 'N/A').substring(0, 100)}...</p>
-          <p><strong>Languages Data:</strong> {JSON.stringify(resumeInfo?.Languages || 'N/A').substring(0, 100)}...</p>
-          <p><strong>Experience Data:</strong> {JSON.stringify(resumeInfo?.Experience || 'N/A').substring(0, 100)}...</p>
         </div>
       </div>
     </ResumeInfoContext.Provider>

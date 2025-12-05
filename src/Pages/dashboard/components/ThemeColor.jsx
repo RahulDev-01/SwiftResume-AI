@@ -30,11 +30,18 @@ function ThemeColor() {
         themeColor: color
       }
     }
-    GlobalApi.UpdateResumeDetail(resumeId, data).then(resp => {
-      console.log(resp);
-      toast('Theme Color Updated')
-
-    })
+    GlobalApi.UpdateResumeDetail(resumeId, data)
+      .then(resp => {
+        toast('Theme Color Updated')
+      })
+      .catch(err => {
+        toast.error('Failed to update theme color. Please try again.');
+        // Revert on error
+        setResumeInfo((prev) => ({
+          ...prev,
+          themeColor: resumeInfo?.themeColor
+        }));
+      })
   }
   return (
     <Popover>

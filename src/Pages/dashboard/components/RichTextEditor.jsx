@@ -42,7 +42,6 @@ function RichTextEditor({ onRichTextEditrChange, index, initialValue = '' }) {
 
             // Send the computed prompt and get the AI response.
             const resultText = await sendMessage(prompt);
-            console.log('AI raw response:', resultText);
 
             // Extract only the bullet points and clean the response
             let resp = '';
@@ -76,7 +75,9 @@ function RichTextEditor({ onRichTextEditrChange, index, initialValue = '' }) {
             // Manually trigger the onChange to update parent
             onRichTextEditrChange({ target: { value: resp } });
         } catch (error) {
-            console.error('AI generation error:', error);
+            if (import.meta.env.DEV) {
+                console.error('AI generation error:', error);
+            }
             toast.error('Failed to generate content. Please try again.');
         } finally {
             setAiLoading(false);
@@ -119,7 +120,6 @@ function RichTextEditor({ onRichTextEditrChange, index, initialValue = '' }) {
                     value={value}
                     onChange={(e) => {
                         const newValue = e.target.value;
-                        console.log('Editor onChange value:', newValue);
                         setValue(newValue);
                         onRichTextEditrChange({ target: { value: newValue } });
                     }}>

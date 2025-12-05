@@ -56,11 +56,13 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
         setloading(true)
         const data = { data: formData }
         GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(resp => {
-            console.log(resp);
             enableNext(true)
             setloading(false);
             toast("Personal Details: Details updated ✅")
-        }, (error) => { setloading(false); toast("Personal Details: Server error, please try again ❌") })
+        }, (error) => { 
+            setloading(false); 
+            toast("Personal Details: Server error, please try again ❌") 
+        })
     }
 
     // Expose handleSave method to parent component
@@ -71,7 +73,6 @@ const PersonalDetails = forwardRef(({ enableNext }, ref) => {
                 const data = { data: formData };
                 GlobalApi.UpdateResumeDetail(params?.resumeId, data)
                     .then(resp => {
-                        console.log(resp);
                         enableNext(true);
                         setloading(false);
                         toast("Personal Details: Details updated ✅");

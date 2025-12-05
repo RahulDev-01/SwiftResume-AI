@@ -38,7 +38,6 @@ const Summary = forwardRef(({ enableNext }, ref) => {
     const PROMPT = prompt.replace('{jobTitle}', resumeInfo?.jobTitle || '');
     try {
       const resultText = await sendMessage(PROMPT);
-      console.log(resultText);
       if (!resultText) {
         throw new Error('Empty AI response');
       }
@@ -60,7 +59,9 @@ const Summary = forwardRef(({ enableNext }, ref) => {
       });
       setAiGeneratedSummeryList(normalized);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) {
+        console.error(e);
+      }
       const msg = e?.message || 'Failed to generate summary';
       toast(`Summary: ${msg} ❌`);
     } finally {
@@ -79,14 +80,15 @@ const Summary = forwardRef(({ enableNext }, ref) => {
     const data = { data: { summery: summery } };
     GlobalApi.UpdateResumeDetail(params?.resumeId, data)
       .then(resp => {
-        console.log(resp);
         enableNext(true)
         toast("Summary: Details updated ✅")
       })
       .catch(err => {
         const status = err?.response?.status;
         const msg = err?.message || 'Failed to update details';
-        console.error('Save error:', status, err);
+        if (import.meta.env.DEV) {
+          console.error('Save error:', status, err);
+        }
         toast(`Summary: Save failed${status ? ` (${status})` : ''}: ${msg} ❌`);
       })
       .finally(() => setSaving(false));
@@ -100,7 +102,6 @@ const Summary = forwardRef(({ enableNext }, ref) => {
         const data = { data: { summery: summery } };
         GlobalApi.UpdateResumeDetail(params?.resumeId, data)
           .then(resp => {
-            console.log(resp);
             enableNext(true);
             toast("Summary: Details updated ✅");
             resolve(resp);
@@ -108,7 +109,9 @@ const Summary = forwardRef(({ enableNext }, ref) => {
           .catch(err => {
             const status = err?.response?.status;
             const msg = err?.message || 'Failed to update details';
-            console.error('Save error:', status, err);
+            if (import.meta.env.DEV) {
+              console.error('Save error:', status, err);
+            }
             toast(`Summary: Save failed${status ? ` (${status})` : ''}: ${msg} ❌`);
             reject(err);
           })
