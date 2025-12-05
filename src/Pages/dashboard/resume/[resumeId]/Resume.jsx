@@ -16,6 +16,7 @@ function Resume() {
     const GetResumeInfo = () => {
       GlobalApi.GetId(resumeId).then(resp => {
         const payload = resp?.data?.data;
+        console.log('[Resume] Raw GetId response:', resp.data);
         const attrs = payload?.attributes || payload || {};
 
         const pickArray = (obj, keys) => {
@@ -41,6 +42,8 @@ function Resume() {
           Projects: pickArray(attrs, ['Projects', 'projects', 'Project', 'project']),
           templateId: attrs.templateId || '1'
         };
+
+        console.log('[Resume] Normalized Resume Data:', normalized);
 
         setResumeInfo(normalized)
       })

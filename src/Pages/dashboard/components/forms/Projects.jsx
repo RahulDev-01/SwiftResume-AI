@@ -35,12 +35,20 @@ const Projects = forwardRef(({ enableNext }, ref) => {
     };
 
     useEffect(() => {
-        // Check for 'Projects' or 'projects'
-        const incoming = resumeInfo?.Projects || resumeInfo?.projects;
+        // Check for 'Projects' or 'projects' or fallback to 'certifications' (due to schema mapping)
+        const incoming = resumeInfo?.Projects || resumeInfo?.projects || resumeInfo?.certifications;
+        console.log('[Projects] Incoming data check:', {
+            resumeInfoKeys: Object.keys(resumeInfo || {}),
+            Projects: resumeInfo?.Projects,
+            projects: resumeInfo?.projects,
+            certifications: resumeInfo?.certifications,
+            RESULT: incoming
+        });
+
         if (Array.isArray(incoming) && incoming.length) {
             setProjects(incoming);
         }
-    }, [resumeInfo?.Projects, resumeInfo?.projects]);
+    }, [resumeInfo?.Projects, resumeInfo?.projects, resumeInfo?.certifications]);
 
     useEffect(() => {
         if (!hasUserEdited || typeof setResumeInfo !== 'function') return;
@@ -62,6 +70,9 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // 1️⃣ Fetch the freshest resume data (fallback to context if present)
                 // ---------------------------------------------------------------
                 let current = resumeInfo?.attributes || {};
+
+                console.log('[Projects] onSave - Context resumeInfo:', resumeInfo);
+
                 if (!resumeInfo?.attributes) {
                     try {
                         if (isNumericId) {
@@ -71,6 +82,7 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                             const resp = await GlobalApi.GetResumeByDocumentId(paramId);
                             current = resp?.data?.data || {};
                         }
+                        console.log('[Projects] onSave - Fetched fresh current:', current);
                     } catch (err) {
                         console.warn('Could not fetch current resume', err);
                         current = {};
