@@ -169,34 +169,65 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     throw new Error('Invalid response from server - no data returned');
                 }
 
-                // Verify Projects are in the response
-                const responseProjects = resp?.data?.data?.attributes?.Projects || resp?.data?.data?.Projects;
-                if (!responseProjects || !Array.isArray(responseProjects)) {
-                    console.warn('[Projects Save] Response does not contain Projects array:', {
-                        responseKeys: Object.keys(resp?.data?.data || {}),
-                        attributesKeys: Object.keys(resp?.data?.data?.attributes || {})
-                    });
-                } else {
-                    console.log('[Projects Save] Success - Projects saved:', responseProjects.length);
-                }
+                // Strapi update response might not include populated Projects, so we check if response exists
+                // The data is saved if we get a 200 response
+                const responseData = resp?.data?.data || {};
+                const responseProjects = responseData?.attributes?.Projects || responseData?.Projects;
+                
+                console.log('[Projects Save] Response received:', {
+                    hasData: !!resp?.data,
+                    hasResponseData: !!responseData,
+                    responseHasProjects: !!responseProjects,
+                    responseKeys: Object.keys(responseData),
+                    status: resp?.status
+                });
 
                 setLoading(false);
                 toast("Projects Updated Successfully ✅");
 
-                // Optimistically update context with saved data (no extra API call)
-                // The update response should contain the updated data
-                const updatedData = resp?.data?.data?.attributes || resp?.data?.data || {};
-                setResumeInfo(prev => ({
-                    ...prev,
-                    ...updatedData,
-                    Projects: normalizedProjects,
-                    projects: normalizedProjects,
-                    attributes: {
-                        ...(prev?.attributes || {}),
-                        ...updatedData,
-                        Projects: normalizedProjects,
+                // Refresh data from server to get the latest Projects (since update response might not populate them)
+                try {
+                    let freshData;
+                    if (isNumericId) {
+                        const freshResp = await GlobalApi.GetResumeById(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
+                    } else {
+                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
                     }
-                }));
+                    
+                    // Use fresh Projects from server if available, otherwise use normalizedProjects
+                    const savedProjects = freshData?.Projects || normalizedProjects;
+                    
+                    console.log('[Projects Save] Refreshed data:', {
+                        hasFreshProjects: !!freshData?.Projects,
+                        projectsCount: savedProjects?.length
+                    });
+
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        ...freshData,
+                        Projects: savedProjects,
+                        projects: savedProjects,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            ...freshData,
+                            Projects: savedProjects,
+                        }
+                    }));
+                } catch (refreshErr) {
+                    // If refresh fails, use optimistic update
+                    console.warn('[Projects Save] Could not refresh, using optimistic update:', refreshErr);
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        Projects: normalizedProjects,
+                        projects: normalizedProjects,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            Projects: normalizedProjects,
+                        }
+                    }));
+                }
 
                 if (enableNext) enableNext(true);
                 resolve(resp);

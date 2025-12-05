@@ -167,34 +167,65 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                     throw new Error('Invalid response from server - no data returned');
                 }
 
-                // Verify Languages are in the response
-                const responseLanguages = resp?.data?.data?.attributes?.Languages || resp?.data?.data?.Languages;
-                if (!responseLanguages || !Array.isArray(responseLanguages)) {
-                    console.warn('[Languages Save] Response does not contain Languages array:', {
-                        responseKeys: Object.keys(resp?.data?.data || {}),
-                        attributesKeys: Object.keys(resp?.data?.data?.attributes || {})
-                    });
-                } else {
-                    console.log('[Languages Save] Success - Languages saved:', responseLanguages.length);
-                }
+                // Strapi update response might not include populated Languages, so we check if response exists
+                // The data is saved if we get a 200 response
+                const responseData = resp?.data?.data || {};
+                const responseLanguages = responseData?.attributes?.Languages || responseData?.Languages;
+                
+                console.log('[Languages Save] Response received:', {
+                    hasData: !!resp?.data,
+                    hasResponseData: !!responseData,
+                    responseHasLanguages: !!responseLanguages,
+                    responseKeys: Object.keys(responseData),
+                    status: resp?.status
+                });
 
                 setLoading(false);
                 toast("Languages Updated Successfully ✅");
 
-                // Optimistically update context with saved data (no extra API call)
-                // The update response should contain the updated data
-                const updatedData = resp?.data?.data?.attributes || resp?.data?.data || {};
-                setResumeInfo(prev => ({
-                    ...prev,
-                    ...updatedData,
-                    Languages: normalizedLanguages,
-                    languages: normalizedLanguages,
-                    attributes: {
-                        ...(prev?.attributes || {}),
-                        ...updatedData,
-                        Languages: normalizedLanguages,
+                // Refresh data from server to get the latest Languages (since update response might not populate them)
+                try {
+                    let freshData;
+                    if (isNumericId) {
+                        const freshResp = await GlobalApi.GetResumeById(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
+                    } else {
+                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
                     }
-                }));
+                    
+                    // Use fresh Languages from server if available, otherwise use normalizedLanguages
+                    const savedLanguages = freshData?.Languages || normalizedLanguages;
+                    
+                    console.log('[Languages Save] Refreshed data:', {
+                        hasFreshLanguages: !!freshData?.Languages,
+                        languagesCount: savedLanguages?.length
+                    });
+
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        ...freshData,
+                        Languages: savedLanguages,
+                        languages: savedLanguages,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            ...freshData,
+                            Languages: savedLanguages,
+                        }
+                    }));
+                } catch (refreshErr) {
+                    // If refresh fails, use optimistic update
+                    console.warn('[Languages Save] Could not refresh, using optimistic update:', refreshErr);
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        Languages: normalizedLanguages,
+                        languages: normalizedLanguages,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            Languages: normalizedLanguages,
+                        }
+                    }));
+                }
 
                 if (enableNext) enableNext(true);
                 resolve(resp);
