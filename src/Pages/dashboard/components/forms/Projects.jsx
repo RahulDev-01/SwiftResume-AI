@@ -155,12 +155,38 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 setLoading(false);
                 toast("Projects Updated Successfully ✅");
 
-                // Update context
-                setResumeInfo(prev => ({
-                    ...prev,
-                    Projects: normalizedProjects,
-                    projects: normalizedProjects,
-                }));
+                // Fetch fresh data from server to ensure preview shows updated data
+                try {
+                    let freshData;
+                    if (isNumericId) {
+                        const freshResp = await GlobalApi.GetResumeById(paramId);
+                        freshData = freshResp?.data?.data?.attributes || {};
+                    } else {
+                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
+                    }
+                    
+                    // Update context with fresh data from server
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        ...freshData,
+                        Projects: freshData.Projects || normalizedProjects,
+                        projects: freshData.Projects || normalizedProjects,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            ...freshData,
+                            Projects: freshData.Projects || normalizedProjects,
+                        }
+                    }));
+                } catch (refreshErr) {
+                    console.warn('Could not refresh data after save, using local update', refreshErr);
+                    // Fallback to local update if refresh fails
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        Projects: normalizedProjects,
+                        projects: normalizedProjects,
+                    }));
+                }
 
                 if (enableNext) enableNext(true);
                 resolve(resp);

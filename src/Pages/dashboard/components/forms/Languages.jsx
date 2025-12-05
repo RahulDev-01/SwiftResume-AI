@@ -141,12 +141,38 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 setLoading(false);
                 toast("Languages Updated Successfully ✅");
 
-                // Update global context immediately
-                setResumeInfo(prev => ({
-                    ...prev,
-                    Languages: normalizedLanguages,
-                    languages: normalizedLanguages,
-                }));
+                // Fetch fresh data from server to ensure preview shows updated data
+                try {
+                    let freshData;
+                    if (isNumericId) {
+                        const freshResp = await GlobalApi.GetResumeById(paramId);
+                        freshData = freshResp?.data?.data?.attributes || {};
+                    } else {
+                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
+                    }
+                    
+                    // Update context with fresh data from server
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        ...freshData,
+                        Languages: freshData.Languages || normalizedLanguages,
+                        languages: freshData.Languages || normalizedLanguages,
+                        attributes: {
+                            ...(prev?.attributes || {}),
+                            ...freshData,
+                            Languages: freshData.Languages || normalizedLanguages,
+                        }
+                    }));
+                } catch (refreshErr) {
+                    console.warn('Could not refresh data after save, using local update', refreshErr);
+                    // Fallback to local update if refresh fails
+                    setResumeInfo(prev => ({
+                        ...prev,
+                        Languages: normalizedLanguages,
+                        languages: normalizedLanguages,
+                    }));
+                }
 
                 if (enableNext) enableNext(true);
                 resolve(resp);
