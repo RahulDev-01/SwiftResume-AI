@@ -128,15 +128,12 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // Explicitly valid key is 'Projects'. Remove 'projects' to avoid duplicates/confusion.
                 delete base.projects;
 
-                // Ensure we're sending valid data structure
-                if (import.meta.env.DEV) {
-                    console.log('Saving Projects payload:', {
-                        Projects: base.Projects,
-                        ProjectsCount: base.Projects?.length,
-                        hasTitle: base.title,
-                        baseKeys: Object.keys(base)
-                    });
-                }
+                // Log data structure being sent
+                console.log('[Projects Save] Preparing payload:', {
+                    ProjectsCount: base.Projects?.length,
+                    hasTitle: !!base.title,
+                    baseKeys: Object.keys(base)
+                });
 
                 // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
@@ -149,38 +146,42 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     return;
                 }
 
+                // Log payload in production for debugging (remove sensitive data)
+                const payloadForLog = {
+                    ProjectsCount: base.Projects?.length,
+                    hasTitle: !!base.title,
+                    baseKeys: Object.keys(base),
+                    firstProject: base.Projects?.[0] ? { title: base.Projects[0].title } : null
+                };
+                console.log('[Projects Save] Payload:', payloadForLog);
+
                 let resp;
-                try {
-                    if (isNumericId) {
-                        // Use locale from current data if available, otherwise undefined
-                        const locale = current?.locale;
-                        resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
-                    } else {
-                        resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
-                    }
-
-                    // Verify the response contains the updated data
-                    if (!resp?.data) {
-                        throw new Error('Invalid response from server');
-                    }
-
-                    setLoading(false);
-                    toast("Projects Updated Successfully ✅");
-                } catch (updateErr) {
-                    setLoading(false);
-                    const errorMsg = updateErr?.response?.data?.error?.message || updateErr?.message || 'Failed to update projects';
-                    toast.error(`Projects Update Failed: ${errorMsg}`);
-                    if (import.meta.env.DEV) {
-                        console.error('Update error details:', {
-                            error: updateErr,
-                            payload: base,
-                            status: updateErr?.response?.status,
-                            data: updateErr?.response?.data
-                        });
-                    }
-                    reject(updateErr);
-                    return;
+                if (isNumericId) {
+                    // Use locale from current data if available, otherwise undefined
+                    const locale = current?.locale;
+                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
+                } else {
+                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
                 }
+
+                // Verify the response
+                if (!resp?.data) {
+                    throw new Error('Invalid response from server - no data returned');
+                }
+
+                // Verify Projects are in the response
+                const responseProjects = resp?.data?.data?.attributes?.Projects || resp?.data?.data?.Projects;
+                if (!responseProjects || !Array.isArray(responseProjects)) {
+                    console.warn('[Projects Save] Response does not contain Projects array:', {
+                        responseKeys: Object.keys(resp?.data?.data || {}),
+                        attributesKeys: Object.keys(resp?.data?.data?.attributes || {})
+                    });
+                } else {
+                    console.log('[Projects Save] Success - Projects saved:', responseProjects.length);
+                }
+
+                setLoading(false);
+                toast("Projects Updated Successfully ✅");
 
                 // Optimistically update context with saved data (no extra API call)
                 // The update response should contain the updated data
@@ -202,14 +203,21 @@ const Projects = forwardRef(({ enableNext }, ref) => {
             } catch (err) {
                 setLoading(false);
                 const errorMsg = err?.response?.data?.error?.message || err?.message || 'Failed to update projects';
-                toast.error(`Projects Update Failed: ${errorMsg}`);
-                if (import.meta.env.DEV) {
-                    console.error('Failed to update projects', {
-                        err,
-                        status: err?.response?.status,
-                        data: err?.response?.data,
-                    });
-                }
+                const status = err?.response?.status;
+                
+                // Always log errors in production for debugging
+                console.error('[Projects Save] Failed:', {
+                    error: errorMsg,
+                    status: status,
+                    statusText: err?.response?.statusText,
+                    errorDetails: err?.response?.data,
+                    payloadSent: {
+                        ProjectsCount: base?.Projects?.length,
+                        hasTitle: !!base?.title
+                    }
+                });
+                
+                toast.error(`Projects Update Failed: ${errorMsg}${status ? ` (${status})` : ''}`);
                 reject(err);
             }
         });

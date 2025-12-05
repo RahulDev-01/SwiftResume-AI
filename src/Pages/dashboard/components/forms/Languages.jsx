@@ -126,15 +126,12 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 // Explicitly valid key is 'Languages'. Remove 'languages' to avoid duplicates/confusion.
                 delete base.languages;
 
-                // Ensure we're sending valid data structure
-                if (import.meta.env.DEV) {
-                    console.log('Saving Languages payload:', {
-                        Languages: base.Languages,
-                        LanguagesCount: base.Languages?.length,
-                        hasTitle: base.title,
-                        baseKeys: Object.keys(base)
-                    });
-                }
+                // Log data structure being sent
+                console.log('[Languages Save] Preparing payload:', {
+                    LanguagesCount: base.Languages?.length,
+                    hasTitle: !!base.title,
+                    baseKeys: Object.keys(base)
+                });
 
                 // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
@@ -147,38 +144,42 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                     return;
                 }
 
+                // Log payload in production for debugging
+                const payloadForLog = {
+                    LanguagesCount: base.Languages?.length,
+                    hasTitle: !!base.title,
+                    baseKeys: Object.keys(base),
+                    firstLanguage: base.Languages?.[0] ? { name: base.Languages[0].name } : null
+                };
+                console.log('[Languages Save] Payload:', payloadForLog);
+
                 let resp;
-                try {
-                    if (isNumericId) {
-                        // Use locale from current data if available, otherwise undefined
-                        const locale = current?.locale;
-                        resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
-                    } else {
-                        resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
-                    }
-
-                    // Verify the response contains the updated data
-                    if (!resp?.data) {
-                        throw new Error('Invalid response from server');
-                    }
-
-                    setLoading(false);
-                    toast("Languages Updated Successfully ✅");
-                } catch (updateErr) {
-                    setLoading(false);
-                    const errorMsg = updateErr?.response?.data?.error?.message || updateErr?.message || 'Failed to update languages';
-                    toast.error(`Languages Update Failed: ${errorMsg}`);
-                    if (import.meta.env.DEV) {
-                        console.error('Update error details:', {
-                            error: updateErr,
-                            payload: base,
-                            status: updateErr?.response?.status,
-                            data: updateErr?.response?.data
-                        });
-                    }
-                    reject(updateErr);
-                    return;
+                if (isNumericId) {
+                    // Use locale from current data if available, otherwise undefined
+                    const locale = current?.locale;
+                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
+                } else {
+                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
                 }
+
+                // Verify the response
+                if (!resp?.data) {
+                    throw new Error('Invalid response from server - no data returned');
+                }
+
+                // Verify Languages are in the response
+                const responseLanguages = resp?.data?.data?.attributes?.Languages || resp?.data?.data?.Languages;
+                if (!responseLanguages || !Array.isArray(responseLanguages)) {
+                    console.warn('[Languages Save] Response does not contain Languages array:', {
+                        responseKeys: Object.keys(resp?.data?.data || {}),
+                        attributesKeys: Object.keys(resp?.data?.data?.attributes || {})
+                    });
+                } else {
+                    console.log('[Languages Save] Success - Languages saved:', responseLanguages.length);
+                }
+
+                setLoading(false);
+                toast("Languages Updated Successfully ✅");
 
                 // Optimistically update context with saved data (no extra API call)
                 // The update response should contain the updated data
@@ -200,14 +201,21 @@ const Languages = forwardRef(({ enableNext }, ref) => {
             } catch (err) {
                 setLoading(false);
                 const errorMsg = err?.response?.data?.error?.message || err?.message || 'Failed to update languages';
-                toast.error(`Languages Update Failed: ${errorMsg}`);
-                if (import.meta.env.DEV) {
-                    console.error('Failed to update languages', {
-                        err,
-                        status: err?.response?.status,
-                        data: err?.response?.data,
-                    });
-                }
+                const status = err?.response?.status;
+                
+                // Always log errors in production for debugging
+                console.error('[Languages Save] Failed:', {
+                    error: errorMsg,
+                    status: status,
+                    statusText: err?.response?.statusText,
+                    errorDetails: err?.response?.data,
+                    payloadSent: {
+                        LanguagesCount: base?.Languages?.length,
+                        hasTitle: !!base?.title
+                    }
+                });
+                
+                toast.error(`Languages Update Failed: ${errorMsg}${status ? ` (${status})` : ''}`);
                 reject(err);
             }
         });
