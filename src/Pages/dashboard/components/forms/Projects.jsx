@@ -36,15 +36,7 @@ const Projects = forwardRef(({ enableNext }, ref) => {
 
     useEffect(() => {
         // Check for 'Projects' or 'projects'
-        // Removed 'certifications' fallback as per backend schema fix
         const incoming = resumeInfo?.Projects || resumeInfo?.projects;
-        console.log('[Projects] Incoming data check:', {
-            resumeInfoKeys: Object.keys(resumeInfo || {}),
-            Projects: resumeInfo?.Projects,
-            projects: resumeInfo?.projects,
-            RESULT: incoming
-        });
-
         if (Array.isArray(incoming) && incoming.length) {
             setProjects(incoming);
         }
@@ -70,8 +62,8 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // 1️⃣ Fetch the freshest resume data (fallback to context if present)
                 // ---------------------------------------------------------------
                 let current = resumeInfo?.attributes || {};
-                console.log('[Projects] onSave - Context resumeInfo:', resumeInfo);
 
+                // Only fetch if we don't have current data in context
                 if (!resumeInfo?.attributes) {
                     try {
                         if (isNumericId) {
@@ -81,9 +73,8 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                             const resp = await GlobalApi.GetResumeByDocumentId(paramId);
                             current = resp?.data?.data || {};
                         }
-                        console.log('[Projects] onSave - Fetched fresh current:', current);
                     } catch (err) {
-                        console.warn('Could not fetch current resume', err);
+                        // Use empty object if fetch fails
                         current = {};
                     }
                 }
@@ -141,12 +132,8 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // ---------------------------------------------------------------
                 let resp;
                 if (isNumericId) {
-                    let locale;
-                    try {
-                        const r = await GlobalApi.GetResumeById(paramId);
-                        locale = r?.data?.data?.attributes?.locale;
-                    } catch (e) { }
-
+                    // Use locale from current data if available, otherwise undefined
+                    const locale = current?.locale;
                     resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
                 } else {
                     resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
@@ -155,38 +142,20 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 setLoading(false);
                 toast("Projects Updated Successfully ✅");
 
-                // Fetch fresh data from server to ensure preview shows updated data
-                try {
-                    let freshData;
-                    if (isNumericId) {
-                        const freshResp = await GlobalApi.GetResumeById(paramId);
-                        freshData = freshResp?.data?.data?.attributes || {};
-                    } else {
-                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
-                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
-                    }
-                    
-                    // Update context with fresh data from server
-                    setResumeInfo(prev => ({
-                        ...prev,
-                        ...freshData,
-                        Projects: freshData.Projects || normalizedProjects,
-                        projects: freshData.Projects || normalizedProjects,
-                        attributes: {
-                            ...(prev?.attributes || {}),
-                            ...freshData,
-                            Projects: freshData.Projects || normalizedProjects,
-                        }
-                    }));
-                } catch (refreshErr) {
-                    console.warn('Could not refresh data after save, using local update', refreshErr);
-                    // Fallback to local update if refresh fails
-                    setResumeInfo(prev => ({
-                        ...prev,
+                // Optimistically update context with saved data (no extra API call)
+                // The update response should contain the updated data
+                const updatedData = resp?.data?.data?.attributes || resp?.data?.data || {};
+                setResumeInfo(prev => ({
+                    ...prev,
+                    ...updatedData,
+                    Projects: normalizedProjects,
+                    projects: normalizedProjects,
+                    attributes: {
+                        ...(prev?.attributes || {}),
+                        ...updatedData,
                         Projects: normalizedProjects,
-                        projects: normalizedProjects,
-                    }));
-                }
+                    }
+                }));
 
                 if (enableNext) enableNext(true);
                 resolve(resp);

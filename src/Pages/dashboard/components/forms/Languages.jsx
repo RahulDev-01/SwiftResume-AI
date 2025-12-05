@@ -127,12 +127,8 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 // ---------------------------------------------------------------
                 let resp;
                 if (isNumericId) {
-                    let locale;
-                    try {
-                        const r = await GlobalApi.GetResumeById(paramId);
-                        locale = r?.data?.data?.attributes?.locale;
-                    } catch (e) { }
-
+                    // Use locale from current data if available, otherwise undefined
+                    const locale = current?.locale;
                     resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
                 } else {
                     resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
@@ -141,38 +137,20 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 setLoading(false);
                 toast("Languages Updated Successfully ✅");
 
-                // Fetch fresh data from server to ensure preview shows updated data
-                try {
-                    let freshData;
-                    if (isNumericId) {
-                        const freshResp = await GlobalApi.GetResumeById(paramId);
-                        freshData = freshResp?.data?.data?.attributes || {};
-                    } else {
-                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
-                        freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
-                    }
-                    
-                    // Update context with fresh data from server
-                    setResumeInfo(prev => ({
-                        ...prev,
-                        ...freshData,
-                        Languages: freshData.Languages || normalizedLanguages,
-                        languages: freshData.Languages || normalizedLanguages,
-                        attributes: {
-                            ...(prev?.attributes || {}),
-                            ...freshData,
-                            Languages: freshData.Languages || normalizedLanguages,
-                        }
-                    }));
-                } catch (refreshErr) {
-                    console.warn('Could not refresh data after save, using local update', refreshErr);
-                    // Fallback to local update if refresh fails
-                    setResumeInfo(prev => ({
-                        ...prev,
+                // Optimistically update context with saved data (no extra API call)
+                // The update response should contain the updated data
+                const updatedData = resp?.data?.data?.attributes || resp?.data?.data || {};
+                setResumeInfo(prev => ({
+                    ...prev,
+                    ...updatedData,
+                    Languages: normalizedLanguages,
+                    languages: normalizedLanguages,
+                    attributes: {
+                        ...(prev?.attributes || {}),
+                        ...updatedData,
                         Languages: normalizedLanguages,
-                        languages: normalizedLanguages,
-                    }));
-                }
+                    }
+                }));
 
                 if (enableNext) enableNext(true);
                 resolve(resp);

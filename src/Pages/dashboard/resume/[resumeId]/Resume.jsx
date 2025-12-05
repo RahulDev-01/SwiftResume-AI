@@ -16,7 +16,6 @@ function Resume() {
     const GetResumeInfo = () => {
       GlobalApi.GetId(resumeId).then(resp => {
         const payload = resp?.data?.data;
-        console.log('[Resume] Raw GetId response:', resp.data);
         const attrs = payload?.attributes || payload || {};
 
         const pickArray = (obj, keys) => {
@@ -42,9 +41,9 @@ function Resume() {
           templateId: attrs.templateId || '1'
         };
 
-        console.log('[Resume] Normalized Resume Data:', normalized);
-
         setResumeInfo(normalized)
+      }).catch(err => {
+        console.error('Failed to load resume:', err);
       })
     }
     GetResumeInfo()

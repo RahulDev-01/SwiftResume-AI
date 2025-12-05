@@ -9,7 +9,8 @@ const axiousClient = axios.create({
     headers :{
         'Content-Type':'application/json',
         'Authorization':`Bearer ${API_KEY}`
-    }
+    },
+    timeout: 30000, // 30 seconds timeout for Vercel serverless functions
 })
 
 // Basic logging interceptors
@@ -41,13 +42,7 @@ const  UpdateResumeDetailWithLocale =(id,data,locale)=>{
 
 // Fetch resume by Strapi documentId (direct endpoint for v5)
 const GetResumeByDocumentId = async (documentId) => {
-    const response = await axiousClient.get('user-resumes/'+documentId+'?populate=*');
-    console.log('GetResumeByDocumentId response for', documentId, ':', {
-        status: response.status,
-        dataKeys: Object.keys(response.data || {}),
-        data: response.data
-    });
-    return response;
+    return await axiousClient.get('user-resumes/'+documentId+'?populate=*');
 }
 
 // Alternate: fetch by custom resumeId field
@@ -56,20 +51,16 @@ const GetResumeByResumeId = (resumeId) =>
 
 // Update resume by Strapi documentId
 const UpdateResumeByDocumentId = async (documentId, data) => {
-    console.log('UpdateResumeByDocumentId called with documentId:', documentId);
-    console.log('Payload being sent:', JSON.stringify(data, null, 2));
     try {
         // In Strapi v5, documentId can be used directly in the URL
         const locale = data?.data?.locale;
         const config = locale ? { params: { locale } } : undefined;
-        const response = await axiousClient.put('user-resumes/'+documentId, data, config);
-        console.log('Update successful:', response.data);
-        return response;
+        return await axiousClient.put('user-resumes/'+documentId, data, config);
     } catch (err) {
-        console.error('UpdateResumeByDocumentId failed for:', documentId);
-        console.error('Error response:', err.response?.data);
-        console.error('Error status:', err.response?.status);
-        console.error('Error details:', err.response?.data?.error);
+        // Only log errors in development
+        if (import.meta.env.DEV) {
+            console.error('UpdateResumeByDocumentId failed:', err.response?.data || err.message);
+        }
         throw err;
     }
 }
