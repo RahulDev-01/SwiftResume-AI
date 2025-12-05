@@ -60,63 +60,127 @@ const Projects = forwardRef(({ enableNext }, ref) => {
     }, [projects, hasUserEdited, setResumeInfo]);
 
     const onSave = async () => {
-        setLoading(true);
-        const paramId = params.resumeId;
-        const isNumericId = /^\d+$/.test(String(paramId));
+        return new Promise(async (resolve, reject) => {
+            try {
+                setLoading(true);
+                const paramId = params.resumeId;
+                const isNumericId = /^\d+$/.test(String(paramId));
 
-        // Normalise Projects - strip stray `id` fields
-        const normalizedProjects = projects
-            .map((e) => {
-                const { id, ...rest } = e;
-                return {
-                    title: rest.title?.trim() || '',
-                    linkDisplay: rest.linkDisplay?.trim() || '',
-                    url: rest.url?.trim() || '',
-                    description: rest.description?.trim() || '',
-                };
-            })
-            .filter((e) => e.title && e.title.trim() !== '');
+                // ---------------------------------------------------------------
+                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
+                // ---------------------------------------------------------------
+                let current = resumeInfo?.attributes || {};
+                console.log('[Projects] onSave - Context resumeInfo:', resumeInfo);
 
-        // Construct payload - Partial Update to match confirmed schema key 'Projects'
-        const payload = {
-            Projects: normalizedProjects
-        };
+                if (!resumeInfo?.attributes) {
+                    try {
+                        if (isNumericId) {
+                            const resp = await GlobalApi.GetResumeById(paramId);
+                            current = resp?.data?.data?.attributes || {};
+                        } else {
+                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
+                            current = resp?.data?.data || {};
+                        }
+                        console.log('[Projects] onSave - Fetched fresh current:', current);
+                    } catch (err) {
+                        console.warn('Could not fetch current resume', err);
+                        current = {};
+                    }
+                }
 
-        try {
-            let resp;
-            if (isNumericId) {
-                // Try to get locale if needed
-                let locale;
-                try {
-                    const r = await GlobalApi.GetResumeById(paramId);
-                    locale = r?.data?.data?.attributes?.locale;
-                } catch (e) { }
+                // ---------------------------------------------------------------
+                // 2️⃣ Normalise Projects - strip stray `id` fields
+                // ---------------------------------------------------------------
+                const normalizedProjects = projects
+                    .map((e) => {
+                        const { id, ...rest } = e;
+                        return {
+                            title: rest.title?.trim() || '',
+                            linkDisplay: rest.linkDisplay?.trim() || '',
+                            url: rest.url?.trim() || '',
+                            description: rest.description?.trim() || '',
+                        };
+                    })
+                    .filter((e) => e.title && e.title.trim() !== '');
 
-                resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: payload }, locale);
-            } else {
-                resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: payload });
+                // ---------------------------------------------------------------
+                // 3️⃣ Build a clean base object – remove system keys & strip ids from
+                //    *all* other repeatable component arrays
+                // ---------------------------------------------------------------
+                const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+                const base = Object.fromEntries(
+                    Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+                );
+
+                // Ensure a title exists (Strapi requires it)
+                if (!base.title) base.title = 'My Resume';
+
+                const componentKeys = [
+                    'education', 'Education',
+                    'skills', 'Skills',
+                    'languages', 'Languages',
+                    'certifications', 'Certifications',
+                    'Projects', 'projects',
+                    'experience', 'Experience'
+                ];
+                componentKeys.forEach((key) => {
+                    if (Array.isArray(base[key])) {
+                        base[key] = base[key].map(({ id, ...rest }) => rest);
+                    }
+                });
+
+                // ---------------------------------------------------------------
+                // 4️⃣ Attach the cleaned projects data using the exact Strapi field name
+                // ---------------------------------------------------------------
+                base.Projects = normalizedProjects;
+
+                // Explicitly valid key is 'Projects'. Remove 'projects' to avoid duplicates/confusion.
+                delete base.projects;
+                // Remove 'certifications' if it exists in base to prevent collision since projects maps to certifications component
+                // (Only if it's the SAME data; if 'Certifications' is distinct in your app, be careful. 
+                // But schema says Projects uses certifications component. There is no Certifications attribute.)
+                // So better to remove it to be safe.
+                delete base.certifications;
+
+                // ---------------------------------------------------------------
+                // 5️⃣ Send the update request
+                // ---------------------------------------------------------------
+                let resp;
+                if (isNumericId) {
+                    let locale;
+                    try {
+                        const r = await GlobalApi.GetResumeById(paramId);
+                        locale = r?.data?.data?.attributes?.locale;
+                    } catch (e) { }
+
+                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
+                } else {
+                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
+                }
+
+                setLoading(false);
+                toast("Projects Updated Successfully ✅");
+
+                // Update context
+                setResumeInfo(prev => ({
+                    ...prev,
+                    Projects: normalizedProjects,
+                    projects: normalizedProjects,
+                }));
+
+                if (enableNext) enableNext(true);
+                resolve(resp);
+            } catch (err) {
+                console.error('Failed to update projects', {
+                    err,
+                    status: err?.response?.status,
+                    data: err?.response?.data,
+                });
+                setLoading(false);
+                toast("Projects Update Failed ❌");
+                reject(err);
             }
-
-            setLoading(false);
-            toast("Projects Updated Successfully ✅");
-
-            // Update global context immediately
-            setResumeInfo(prev => ({
-                ...prev,
-                Projects: normalizedProjects,
-                projects: normalizedProjects,
-            }));
-
-            if (enableNext) enableNext(true);
-        } catch (err) {
-            console.error('Failed to update projects', {
-                err,
-                status: err?.response?.status,
-                data: err?.response?.data,
-            });
-            setLoading(false);
-            toast("Projects Update Failed ❌");
-        }
+        });
     };
 
     useImperativeHandle(ref, () => ({

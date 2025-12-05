@@ -51,61 +51,116 @@ const Languages = forwardRef(({ enableNext }, ref) => {
     }, [languages, hasUserEdited, setResumeInfo]);
 
     const onSave = async () => {
-        setLoading(true);
-        const paramId = params.resumeId;
-        const isNumericId = /^\d+$/.test(String(paramId));
+        return new Promise(async (resolve, reject) => {
+            try {
+                setLoading(true);
+                const paramId = params.resumeId;
+                const isNumericId = /^\d+$/.test(String(paramId));
 
-        // Normalise Languages - strip stray `id` fields
-        const normalizedLanguages = languages
-            .map((l) => {
-                const { id, ...rest } = l;
-                return {
-                    name: rest.name?.trim() || '',
-                    proficiency: rest.proficiency?.trim() || '',
-                };
-            })
-            .filter((l) => l.name && l.name.trim() !== '');
+                // ---------------------------------------------------------------
+                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
+                // ---------------------------------------------------------------
+                let current = resumeInfo?.attributes || {};
 
-        // Construct payload - Partial Update to match confirmed schema key 'Languages'
-        const payload = {
-            Languages: normalizedLanguages
-        };
+                if (!resumeInfo?.attributes) {
+                    try {
+                        if (isNumericId) {
+                            const resp = await GlobalApi.GetResumeById(paramId);
+                            current = resp?.data?.data?.attributes || {};
+                        } else {
+                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
+                            current = resp?.data?.data || {};
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch current resume', err);
+                        current = {};
+                    }
+                }
 
-        try {
-            let resp;
-            if (isNumericId) {
-                // Try to get locale if needed
-                let locale;
-                try {
-                    const r = await GlobalApi.GetResumeById(paramId);
-                    locale = r?.data?.data?.attributes?.locale;
-                } catch (e) { }
+                // ---------------------------------------------------------------
+                // 2️⃣ Normalise Languages - strip stray `id` fields
+                // ---------------------------------------------------------------
+                const normalizedLanguages = languages
+                    .map((l) => {
+                        const { id, ...rest } = l;
+                        return {
+                            name: rest.name?.trim() || '',
+                            proficiency: rest.proficiency?.trim() || '',
+                        };
+                    })
+                    .filter((l) => l.name && l.name.trim() !== '');
 
-                resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: payload }, locale);
-            } else {
-                resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: payload });
+                // ---------------------------------------------------------------
+                // 3️⃣ Build a clean base object – remove system keys & strip ids from
+                //    *all* other repeatable component arrays
+                // ---------------------------------------------------------------
+                const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
+                const base = Object.fromEntries(
+                    Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
+                );
+
+                // Ensure a title exists
+                if (!base.title) base.title = 'My Resume';
+
+                const componentKeys = [
+                    'education', 'Education',
+                    'skills', 'Skills',
+                    'languages', 'Languages',
+                    'certifications', 'Certifications',
+                    'Projects', 'projects',
+                    'experience', 'Experience'
+                ];
+                componentKeys.forEach((key) => {
+                    if (Array.isArray(base[key])) {
+                        base[key] = base[key].map(({ id, ...rest }) => rest);
+                    }
+                });
+
+                // ---------------------------------------------------------------
+                // 4️⃣ Attach the cleaned languages data using the exact Strapi field name
+                // ---------------------------------------------------------------
+                base.Languages = normalizedLanguages;
+                delete base.languages;
+
+                // ---------------------------------------------------------------
+                // 5️⃣ Send the update request
+                // ---------------------------------------------------------------
+                let resp;
+                if (isNumericId) {
+                    let locale;
+                    try {
+                        const r = await GlobalApi.GetResumeById(paramId);
+                        locale = r?.data?.data?.attributes?.locale;
+                    } catch (e) { }
+
+                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
+                } else {
+                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
+                }
+
+                setLoading(false);
+                toast("Languages Updated Successfully ✅");
+
+                // Update global context immediately
+                setResumeInfo(prev => ({
+                    ...prev,
+                    Languages: normalizedLanguages,
+                    languages: normalizedLanguages,
+                }));
+
+                if (enableNext) enableNext(true);
+                resolve(resp);
+            } catch (err) {
+                console.error('Failed to update languages', {
+                    err,
+                    status: err?.response?.status,
+                    data: err?.response?.data,
+                });
+                setLoading(false);
+                toast("Languages Update Failed ❌");
+                reject(err);
             }
-
-            setLoading(false);
-            toast("Languages Updated Successfully ✅");
-
-            // Update global context immediately
-            setResumeInfo(prev => ({
-                ...prev,
-                Languages: normalizedLanguages,
-                languages: normalizedLanguages,
-            }));
-
-            if (enableNext) enableNext(true);
-        } catch (err) {
-            console.error('Failed to update languages', {
-                err,
-                status: err?.response?.status,
-                data: err?.response?.data,
-            });
-            setLoading(false);
-            toast("Languages Update Failed ❌");
-        }
+        });
     };
 
     useImperativeHandle(ref, () => ({
