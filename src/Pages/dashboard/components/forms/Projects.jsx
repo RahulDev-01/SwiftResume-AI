@@ -60,145 +60,63 @@ const Projects = forwardRef(({ enableNext }, ref) => {
     }, [projects, hasUserEdited, setResumeInfo]);
 
     const onSave = async () => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                setLoading(true);
-                const paramId = params.resumeId;
-                const isNumericId = /^\d+$/.test(String(paramId));
+        setLoading(true);
+        const paramId = params.resumeId;
+        const isNumericId = /^\d+$/.test(String(paramId));
 
-                // ---------------------------------------------------------------
-                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
-                // ---------------------------------------------------------------
-                let current = resumeInfo?.attributes || {};
-
-                console.log('[Projects] onSave - Context resumeInfo:', resumeInfo);
-
-                if (!resumeInfo?.attributes) {
-                    try {
-                        if (isNumericId) {
-                            const resp = await GlobalApi.GetResumeById(paramId);
-                            current = resp?.data?.data?.attributes || {};
-                        } else {
-                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
-                            current = resp?.data?.data || {};
-                        }
-                        console.log('[Projects] onSave - Fetched fresh current:', current);
-                    } catch (err) {
-                        console.warn('Could not fetch current resume', err);
-                        current = {};
-                    }
-                }
-
-                // ---------------------------------------------------------------
-                // 2️⃣ Normalise Projects - strip stray `id` fields
-                // ---------------------------------------------------------------
-                const normalizedProjects = projects
-                    .map((e) => {
-                        const { id, ...rest } = e;
-                        return {
-                            title: rest.title?.trim() || '',
-                            linkDisplay: rest.linkDisplay?.trim() || '',
-                            url: rest.url?.trim() || '',
-                            description: rest.description?.trim() || '',
-                        };
-                    })
-                    .filter((e) => e.title && e.title.trim() !== '');
-
-                // ---------------------------------------------------------------
-                // 3️⃣ Build a clean base object – remove system keys & strip ids from
-                //    *all* other repeatable component arrays
-                // ---------------------------------------------------------------
-                const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
-                const base = Object.fromEntries(
-                    Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
-                );
-
-                // Ensure a title exists (Strapi requires it)
-                if (!base.title) base.title = 'My Resume';
-
-                // Map of lowercase -> Capitalized schema keys
-                const keyMap = {
-                    'education': 'Education',
-                    'experience': 'Experience',
-                    'skills': 'Skills',
-                    'languages': 'Languages',
-                    'certifications': 'Projects', // Projects uses "certifications" component but key is "Projects"
-                    'projects': 'Projects'
+        // Normalise Projects - strip stray `id` fields
+        const normalizedProjects = projects
+            .map((e) => {
+                const { id, ...rest } = e;
+                return {
+                    title: rest.title?.trim() || '',
+                    linkDisplay: rest.linkDisplay?.trim() || '',
+                    url: rest.url?.trim() || '',
+                    description: rest.description?.trim() || '',
                 };
+            })
+            .filter((e) => e.title && e.title.trim() !== '');
 
-                // Strip IDs and Normalize Keys
-                const componentKeys = Object.keys(keyMap);
-                const allKeys = [...componentKeys, ...Object.values(keyMap)]; // include already capitalized ones
+        // Construct payload - Partial Update to match confirmed schema key 'Projects'
+        const payload = {
+            Projects: normalizedProjects
+        };
 
-                allKeys.forEach((key) => {
-                    if (Array.isArray(base[key])) {
-                        // Strip IDs
-                        base[key] = base[key].map(({ id, ...rest }) => rest);
-                    }
-                });
+        try {
+            let resp;
+            if (isNumericId) {
+                // Try to get locale if needed
+                let locale;
+                try {
+                    const r = await GlobalApi.GetResumeById(paramId);
+                    locale = r?.data?.data?.attributes?.locale;
+                } catch (e) { }
 
-                // Enforce Capitalized Keys (Move data from lowercase to Uppercase if needed)
-                Object.entries(keyMap).forEach(([lower, upper]) => {
-                    if (base[lower] && !base[upper]) {
-                        base[upper] = base[lower];
-                        delete base[lower];
-                    } else if (base[lower] && base[upper]) {
-                        // If both exist, keep Upper (schema correct) or merge? Usually duplication.
-                        // Safe to assume we want the cleaned version.
-                        delete base[lower];
-                    }
-                });
-
-                // ---------------------------------------------------------------
-                // 4️⃣ Attach the cleaned projects data using the exact Strapi field name
-                // ---------------------------------------------------------------
-                base.Projects = normalizedProjects;
-                // 'certifications' might have been mapped to Projects above, but we overwrite it with form data.
-
-                // Explicitly delete 'projects' and 'certifications' if they remain to avoid casing/schema conflicts
-                // (Note: 'certifications' in schema is the COMPONENT name, not attribute. 
-                // But if fetched data had 'certifications' attribute due to some past state, kill it.)
-                delete base.projects;
-                delete base.certifications;
-
-                // ---------------------------------------------------------------
-                // 5️⃣ Send the update request
-                // ---------------------------------------------------------------
-                let resp;
-                if (isNumericId) {
-                    let locale;
-                    try {
-                        const r = await GlobalApi.GetResumeById(paramId);
-                        locale = r?.data?.data?.attributes?.locale;
-                    } catch (e) { }
-
-                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
-                } else {
-                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
-                }
-
-                setLoading(false);
-                toast("Projects Updated Successfully ✅");
-
-                setResumeInfo(prev => ({
-                    ...prev,
-                    Projects: normalizedProjects,
-                    projects: normalizedProjects,
-                }));
-
-                if (enableNext) enableNext(true);
-                resolve(resp);
-            } catch (err) {
-                console.error('Failed to update projects', {
-                    err,
-                    status: err?.response?.status,
-                    data: err?.response?.data,
-                });
-                setLoading(false);
-                toast("Projects Update Failed ❌");
-                reject(err);
+                resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: payload }, locale);
+            } else {
+                resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: payload });
             }
-        });
+
+            setLoading(false);
+            toast("Projects Updated Successfully ✅");
+
+            // Update global context immediately
+            setResumeInfo(prev => ({
+                ...prev,
+                Projects: normalizedProjects,
+                projects: normalizedProjects,
+            }));
+
+            if (enableNext) enableNext(true);
+        } catch (err) {
+            console.error('Failed to update projects', {
+                err,
+                status: err?.response?.status,
+                data: err?.response?.data,
+            });
+            setLoading(false);
+            toast("Projects Update Failed ❌");
+        }
     };
 
     useImperativeHandle(ref, () => ({
