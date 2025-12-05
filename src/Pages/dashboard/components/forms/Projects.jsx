@@ -116,17 +116,36 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // Ensure a title exists (Strapi requires it)
                 if (!base.title) base.title = 'My Resume';
 
-                const componentKeys = [
-                    'education', 'Education',
-                    'skills', 'Skills',
-                    'languages', 'Languages',
-                    'certifications', 'Certifications',
-                    'Projects', 'projects',
-                    'experience', 'Experience'
-                ];
-                componentKeys.forEach((key) => {
+                // Map of lowercase -> Capitalized schema keys
+                const keyMap = {
+                    'education': 'Education',
+                    'experience': 'Experience',
+                    'skills': 'Skills',
+                    'languages': 'Languages',
+                    'certifications': 'Projects', // Projects uses "certifications" component but key is "Projects"
+                    'projects': 'Projects'
+                };
+
+                // Strip IDs and Normalize Keys
+                const componentKeys = Object.keys(keyMap);
+                const allKeys = [...componentKeys, ...Object.values(keyMap)]; // include already capitalized ones
+
+                allKeys.forEach((key) => {
                     if (Array.isArray(base[key])) {
+                        // Strip IDs
                         base[key] = base[key].map(({ id, ...rest }) => rest);
+                    }
+                });
+
+                // Enforce Capitalized Keys (Move data from lowercase to Uppercase if needed)
+                Object.entries(keyMap).forEach(([lower, upper]) => {
+                    if (base[lower] && !base[upper]) {
+                        base[upper] = base[lower];
+                        delete base[lower];
+                    } else if (base[lower] && base[upper]) {
+                        // If both exist, keep Upper (schema correct) or merge? Usually duplication.
+                        // Safe to assume we want the cleaned version.
+                        delete base[lower];
                     }
                 });
 
@@ -134,7 +153,13 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // 4️⃣ Attach the cleaned projects data using the exact Strapi field name
                 // ---------------------------------------------------------------
                 base.Projects = normalizedProjects;
-                delete base.projects; // Remove lowercase to force Capitalized key usage
+                // 'certifications' might have been mapped to Projects above, but we overwrite it with form data.
+
+                // Explicitly delete 'projects' and 'certifications' if they remain to avoid casing/schema conflicts
+                // (Note: 'certifications' in schema is the COMPONENT name, not attribute. 
+                // But if fetched data had 'certifications' attribute due to some past state, kill it.)
+                delete base.projects;
+                delete base.certifications;
 
                 // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
