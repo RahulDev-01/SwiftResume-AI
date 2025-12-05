@@ -58,22 +58,23 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 const isNumericId = /^\d+$/.test(String(paramId));
 
                 // ---------------------------------------------------------------
-                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
+                // 1️⃣ Always fetch fresh resume data to ensure we have latest state
                 // ---------------------------------------------------------------
-                let current = resumeInfo?.attributes || {};
-
-                if (!resumeInfo?.attributes) {
-                    try {
-                        if (isNumericId) {
-                            const resp = await GlobalApi.GetResumeById(paramId);
-                            current = resp?.data?.data?.attributes || {};
-                        } else {
-                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
-                            current = resp?.data?.data || {};
-                        }
-                    } catch (err) {
-                        console.warn('Could not fetch current resume', err);
-                        current = {};
+                let current = {};
+                try {
+                    if (isNumericId) {
+                        const resp = await GlobalApi.GetResumeById(paramId);
+                        current = resp?.data?.data?.attributes || resp?.data?.data || {};
+                    } else {
+                        const resp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        // Handle both Strapi v4 and v5 response structures
+                        current = resp?.data?.data?.attributes || resp?.data?.data || {};
+                    }
+                } catch (err) {
+                    // If fetch fails, try to use context data as fallback
+                    current = resumeInfo?.attributes || resumeInfo || {};
+                    if (import.meta.env.DEV) {
+                        console.warn('Could not fetch current resume, using context:', err);
                     }
                 }
 
@@ -119,23 +120,65 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 // ---------------------------------------------------------------
                 // 4️⃣ Attach the cleaned languages data using the exact Strapi field name
                 // ---------------------------------------------------------------
-                base.Languages = normalizedLanguages;
+                // Always set Languages as an array (even if empty) to ensure Strapi processes it
+                base.Languages = normalizedLanguages || [];
+
+                // Explicitly valid key is 'Languages'. Remove 'languages' to avoid duplicates/confusion.
                 delete base.languages;
+
+                // Ensure we're sending valid data structure
+                if (import.meta.env.DEV) {
+                    console.log('Saving Languages payload:', {
+                        Languages: base.Languages,
+                        LanguagesCount: base.Languages?.length,
+                        hasTitle: base.title,
+                        baseKeys: Object.keys(base)
+                    });
+                }
 
                 // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
                 // ---------------------------------------------------------------
-                let resp;
-                if (isNumericId) {
-                    // Use locale from current data if available, otherwise undefined
-                    const locale = current?.locale;
-                    resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
-                } else {
-                    resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
+                // Validate that we have data to send
+                if (!normalizedLanguages || normalizedLanguages.length === 0) {
+                    toast.warning("Please add at least one language with a name");
+                    setLoading(false);
+                    reject(new Error('No languages to save'));
+                    return;
                 }
 
-                setLoading(false);
-                toast("Languages Updated Successfully ✅");
+                let resp;
+                try {
+                    if (isNumericId) {
+                        // Use locale from current data if available, otherwise undefined
+                        const locale = current?.locale;
+                        resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
+                    } else {
+                        resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
+                    }
+
+                    // Verify the response contains the updated data
+                    if (!resp?.data) {
+                        throw new Error('Invalid response from server');
+                    }
+
+                    setLoading(false);
+                    toast("Languages Updated Successfully ✅");
+                } catch (updateErr) {
+                    setLoading(false);
+                    const errorMsg = updateErr?.response?.data?.error?.message || updateErr?.message || 'Failed to update languages';
+                    toast.error(`Languages Update Failed: ${errorMsg}`);
+                    if (import.meta.env.DEV) {
+                        console.error('Update error details:', {
+                            error: updateErr,
+                            payload: base,
+                            status: updateErr?.response?.status,
+                            data: updateErr?.response?.data
+                        });
+                    }
+                    reject(updateErr);
+                    return;
+                }
 
                 // Optimistically update context with saved data (no extra API call)
                 // The update response should contain the updated data
@@ -155,13 +198,16 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 if (enableNext) enableNext(true);
                 resolve(resp);
             } catch (err) {
-                console.error('Failed to update languages', {
-                    err,
-                    status: err?.response?.status,
-                    data: err?.response?.data,
-                });
                 setLoading(false);
-                toast("Languages Update Failed ❌");
+                const errorMsg = err?.response?.data?.error?.message || err?.message || 'Failed to update languages';
+                toast.error(`Languages Update Failed: ${errorMsg}`);
+                if (import.meta.env.DEV) {
+                    console.error('Failed to update languages', {
+                        err,
+                        status: err?.response?.status,
+                        data: err?.response?.data,
+                    });
+                }
                 reject(err);
             }
         });
