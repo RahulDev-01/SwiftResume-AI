@@ -168,14 +168,11 @@ const Experience = forwardRef(({ enableNext }, ref) => {
         if (!base.title) base.title = 'My Resume';
 
         const componentKeys = [
-          'education',
-          'Education',
-          'skills',
-          'Skills',
-          'languages',
-          'Languages',
-          'certifications',
-          'Certifications',
+          'education', 'Education',
+          'skills', 'Skills',
+          'languages', 'Languages',
+          'certifications', 'Certifications',
+          'Projects', 'projects'
         ];
         componentKeys.forEach((key) => {
           if (Array.isArray(base[key])) {

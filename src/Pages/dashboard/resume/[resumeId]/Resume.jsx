@@ -38,6 +38,7 @@ function Resume() {
           skills: pickArray(attrs, ['skills', 'Skills', 'skill', 'Skill']),
           languages: pickArray(attrs, ['languages', 'Languages']),
           certifications: pickArray(attrs, ['certifications', 'Certifications']),
+          Projects: pickArray(attrs, ['Projects', 'projects', 'Project', 'project']),
           templateId: attrs.templateId || '1'
         };
 

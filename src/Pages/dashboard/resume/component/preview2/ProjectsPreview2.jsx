@@ -5,9 +5,11 @@ import { ensureUrl } from '../../../../../utils/urlHelper';
 
 function ProjectsPreview2({ resumeInfo }) {
     const projects = (() => {
-        const raw = resumeInfo?.Projects || resumeInfo?.certifications;
-        if (raw === undefined || raw === null) return Dummy.Projects; // Fallback to dummy if needed, or create dummy projects
-        return raw.filter((c) => c?.title?.trim());
+        const raw = resumeInfo?.Projects || resumeInfo?.projects;
+        if (!raw || !Array.isArray(raw)) return Dummy.Projects;
+        
+        const filtered = raw.filter((c) => c?.title?.trim());
+        return filtered.length > 0 ? filtered : Dummy.Projects;
     })();
 
     if (!projects || projects.length === 0) return null;

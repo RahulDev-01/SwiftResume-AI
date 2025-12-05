@@ -3,9 +3,11 @@ import Dummy from '../../../../../Data/Dummy'
 
 function LanguagesPreview2({ resumeInfo }) {
     const languages = (() => {
-        const raw = resumeInfo?.languages;
-        if (raw === undefined || raw === null) return Dummy.languages;
-        return raw.filter((l) => l?.name?.trim());
+        const raw = resumeInfo?.Languages || resumeInfo?.languages;
+        if (!raw || !Array.isArray(raw)) return Dummy.languages;
+
+        const filtered = raw.filter((l) => l?.name?.trim());
+        return filtered.length > 0 ? filtered : Dummy.languages;
     })();
 
     if (!languages || languages.length === 0) return null;
