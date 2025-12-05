@@ -89,7 +89,8 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                             title: rest.title?.trim() || '',
                             linkDisplay: rest.linkDisplay?.trim() || '',
                             url: rest.url?.trim() || '',
-                            description: rest.description?.trim() || '',
+                            // description is richtext - convert to string like Experience does
+                            description: (rest.description ?? '').toString(),
                         };
                     })
                     .filter((e) => e.title && e.title.trim() !== '');
@@ -106,11 +107,11 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // Ensure a title exists (Strapi requires it)
                 if (!base.title) base.title = 'My Resume';
 
+                // Clean up OTHER component arrays (but NOT Projects since we're replacing it)
                 const componentKeys = [
                     'education', 'Education',
                     'skills', 'Skills',
                     'languages', 'Languages',
-                    'Projects', 'projects',
                     'experience', 'Experience'
                 ];
                 componentKeys.forEach((key) => {
@@ -118,6 +119,10 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                         base[key] = base[key].map(({ id, ...rest }) => rest);
                     }
                 });
+
+                // Remove old Projects before setting new ones
+                delete base.Projects;
+                delete base.projects;
 
                 // ---------------------------------------------------------------
                 // 4️⃣ Attach the cleaned projects data using the exact Strapi field name
@@ -146,14 +151,27 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     return;
                 }
 
-                // Log payload in production for debugging (remove sensitive data)
+                // Log payload in production for debugging
                 const payloadForLog = {
                     ProjectsCount: base.Projects?.length,
                     hasTitle: !!base.title,
                     baseKeys: Object.keys(base),
-                    firstProject: base.Projects?.[0] ? { title: base.Projects[0].title } : null
+                    firstProject: base.Projects?.[0] ? { 
+                        title: base.Projects[0].title,
+                        hasDescription: !!base.Projects[0].description,
+                        descriptionType: typeof base.Projects[0].description,
+                        descriptionLength: base.Projects[0].description?.length || 0
+                    } : null,
+                    ProjectsStructure: base.Projects?.map(p => ({
+                        hasTitle: !!p.title,
+                        hasLinkDisplay: !!p.linkDisplay,
+                        hasUrl: !!p.url,
+                        hasDescription: !!p.description,
+                        keys: Object.keys(p)
+                    }))
                 };
                 console.log('[Projects Save] Payload:', payloadForLog);
+                console.log('[Projects Save] Full Projects array:', JSON.stringify(base.Projects, null, 2));
 
                 let resp;
                 if (isNumericId) {
@@ -188,20 +206,32 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 // Refresh data from server to get the latest Projects (since update response might not populate them)
                 try {
                     let freshData;
+                    let freshResp;
                     if (isNumericId) {
-                        const freshResp = await GlobalApi.GetResumeById(paramId);
+                        freshResp = await GlobalApi.GetResumeById(paramId);
                         freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
                     } else {
-                        const freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
+                        freshResp = await GlobalApi.GetResumeByDocumentId(paramId);
                         freshData = freshResp?.data?.data?.attributes || freshResp?.data?.data || {};
                     }
+                    
+                    // Log what we got from refresh
+                    console.log('[Projects Save] Fresh data structure:', {
+                        hasAttributes: !!freshResp?.data?.data?.attributes,
+                        hasData: !!freshResp?.data?.data,
+                        freshDataKeys: Object.keys(freshData || {}),
+                        hasProjects: !!freshData?.Projects,
+                        ProjectsType: Array.isArray(freshData?.Projects) ? 'array' : typeof freshData?.Projects,
+                        ProjectsValue: freshData?.Projects
+                    });
                     
                     // Use fresh Projects from server if available, otherwise use normalizedProjects
                     const savedProjects = freshData?.Projects || normalizedProjects;
                     
                     console.log('[Projects Save] Refreshed data:', {
                         hasFreshProjects: !!freshData?.Projects,
-                        projectsCount: savedProjects?.length
+                        projectsCount: savedProjects?.length,
+                        usingFreshData: !!freshData?.Projects
                     });
 
                     setResumeInfo(prev => ({

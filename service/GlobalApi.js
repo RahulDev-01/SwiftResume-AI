@@ -102,12 +102,29 @@ const UpdateResumeByDocumentId = async (documentId, data) => {
         // In Strapi v5, documentId can be used directly in the URL
         const locale = data?.data?.locale;
         const config = locale ? { params: { locale } } : undefined;
+        
+        // Log the payload being sent (for debugging Projects/Languages issues)
+        if (data?.data?.Projects || data?.data?.Languages) {
+            console.log('[UpdateResumeByDocumentId] Sending payload with components:', {
+                hasProjects: !!data?.data?.Projects,
+                ProjectsCount: data?.data?.Projects?.length,
+                hasLanguages: !!data?.data?.Languages,
+                LanguagesCount: data?.data?.Languages?.length,
+                payloadKeys: Object.keys(data?.data || {}),
+                firstProject: data?.data?.Projects?.[0],
+                firstLanguage: data?.data?.Languages?.[0]
+            });
+        }
+        
         return await axiousClient.put('user-resumes/'+documentId, data, config);
     } catch (err) {
-        // Only log errors in development
-        if (import.meta.env.DEV) {
-            console.error('UpdateResumeByDocumentId failed:', err.response?.data || err.message);
-        }
+        // Always log errors for debugging
+        console.error('[UpdateResumeByDocumentId] Failed:', {
+            documentId,
+            error: err.response?.data || err.message,
+            status: err.response?.status,
+            statusText: err.response?.statusText
+        });
         throw err;
     }
 }

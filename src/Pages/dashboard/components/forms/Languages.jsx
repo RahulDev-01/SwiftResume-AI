@@ -103,10 +103,10 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 // Ensure a title exists
                 if (!base.title) base.title = 'My Resume';
 
+                // Clean up OTHER component arrays (but NOT Languages since we're replacing it)
                 const componentKeys = [
                     'education', 'Education',
                     'skills', 'Skills',
-                    'languages', 'Languages',
                     'certifications', 'Certifications',
                     'Projects', 'projects',
                     'experience', 'Experience'
@@ -116,6 +116,10 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                         base[key] = base[key].map(({ id, ...rest }) => rest);
                     }
                 });
+
+                // Remove old Languages before setting new ones
+                delete base.Languages;
+                delete base.languages;
 
                 // ---------------------------------------------------------------
                 // 4️⃣ Attach the cleaned languages data using the exact Strapi field name
