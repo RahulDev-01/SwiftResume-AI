@@ -4,35 +4,82 @@ import axios from "axios";
 const API_KEY = import.meta.env.VITE_STRAPI_API_KEY
 // Ensure trailing slash so axios concatenates correctly (avoids '/apiuser-resumes')
 const base = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "") + "/api/";
+
+// Check if backend is on Render (free tier has slow cold starts)
+const isRenderBackend = base.includes('render.com') || base.includes('onrender.com');
+
 const axiousClient = axios.create({
     baseURL : base,
     headers :{
         'Content-Type':'application/json',
         'Authorization':`Bearer ${API_KEY}`
     },
-    timeout: 30000, // 30 seconds timeout for Vercel serverless functions
+    timeout: isRenderBackend ? 60000 : 30000, // 60s for Render (cold starts), 30s for others
 })
 
-// Basic logging interceptors
+// Request interceptor - add retry logic for timeouts
+axiousClient.interceptors.request.use(
+    (config) => {
+        // Mark requests that should be retried
+        config._retryCount = config._retryCount || 0;
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// Response interceptor - handle errors gracefully
 axiousClient.interceptors.response.use(
     (resp)=>resp,
-    (error)=>{
-        try{
-            const cfg = error?.config || {};
-            console.error('API Error:', {
-                method: cfg.method,
-                url: cfg.baseURL + (cfg.url || ''),
-                status: error?.response?.status,
-                data: error?.response?.data
-            });
-        }catch{ /* noop */ }
+    async (error) => {
+        const cfg = error?.config || {};
+        const isTimeout = error.code === 'ECONNABORTED' || error.message?.includes('timeout');
+        const isNetworkError = !error.response && error.request;
+        
+        // Only log errors in development or if they're not timeouts
+        if (import.meta.env.DEV || (!isTimeout && !isNetworkError)) {
+            try {
+                console.error('API Error:', {
+                    method: cfg.method,
+                    url: cfg.baseURL + (cfg.url || ''),
+                    status: error?.response?.status,
+                    data: error?.response?.data
+                });
+            } catch { /* noop */ }
+        }
+        
+        // Retry timeout/network errors automatically (max 2 retries)
+        if ((isTimeout || isNetworkError) && cfg._retryCount < 2 && !cfg._skipRetry) {
+            cfg._retryCount = (cfg._retryCount || 0) + 1;
+            const delay = Math.pow(2, cfg._retryCount - 1) * 1000; // 1s, 2s
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return axiousClient(cfg);
+        }
+        
         return Promise.reject(error);
     }
 )
 
 const CreateNewResume =(data)=>axiousClient.post('user-resumes',data)
 
-const GetUserResumes =(userEmail)=>axiousClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail))
+const GetUserResumes = async (userEmail) => {
+    try {
+        return await axiousClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail));
+    } catch (error) {
+        // If timeout on Render, try once more with longer timeout
+        if (error.code === 'ECONNABORTED' && isRenderBackend && !error.config?._skipRetry) {
+            const retryClient = axios.create({
+                baseURL: base,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                timeout: 90000, // 90 seconds for retry
+            });
+            return await retryClient.get('user-resumes?filters[userEmail][$eq]='+encodeURIComponent(userEmail));
+        }
+        throw error;
+    }
+}
 const GetResumeById =(id)=>axiousClient.get('user-resumes/'+id+'?populate=*')
 const  UpdateResumeDetail =(id,data)=>axiousClient.put('user-resumes/'+id,data)
 const  UpdateResumeDetailWithLocale =(id,data,locale)=>{
@@ -72,9 +119,24 @@ const DeleteResumeByDocumentId = (documentId) => axiousClient.delete('user-resum
 
 /**
  * Simple ping to wake up the backend (e.g. Render/Heroku free tier).
- * We use a lightweight request (e.g. fetching 1 item or just the endpoint).
+ * Uses a lightweight request with shorter timeout and no retries.
  */
-const Ping = () => axiousClient.get('user-resumes?pagination[pageSize]=1');
+const Ping = async () => {
+    try {
+        // Use a shorter timeout for ping (10s) - if it times out, backend is waking up
+        const pingClient = axios.create({
+            ...axiousClient.defaults,
+            timeout: 10000,
+        });
+        await pingClient.get('user-resumes?pagination[pageSize]=1');
+    } catch (error) {
+        // Silently fail - ping is just to wake up the backend
+        // Timeout is expected on first request to Render free tier
+        if (import.meta.env.DEV) {
+            console.log('Backend ping timeout (expected on cold start)');
+        }
+    }
+};
 
 export default{
     CreateNewResume,

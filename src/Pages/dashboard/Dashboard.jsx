@@ -5,6 +5,7 @@ import GlobalApi from '../../../service/GlobalApi';
 import ResumeCardItem from './components/ResumeCardItem';
 import { Loader2 } from 'lucide-react';
 import Header from '../../components/custom/Header';
+import { toast } from 'sonner';
 
 // Cache key for localStorage
 const CACHE_KEY = 'dashboard_resumes_cache';
@@ -65,6 +66,29 @@ function Dashboard() {
         console.error('Cache write error:', e);
       }
     } catch (error) {
+      const isTimeout = error?.code === 'ECONNABORTED' || error?.message?.includes('timeout');
+      
+      // Show user-friendly error message
+      if (isTimeout) {
+        toast.error('Backend is waking up... Please wait a moment and refresh.', {
+          duration: 5000,
+        });
+        // Try to use cached data if available
+        try {
+          const cached = localStorage.getItem(CACHE_KEY);
+          if (cached) {
+            const { data, userEmail } = JSON.parse(cached);
+            if (userEmail === email && Array.isArray(data)) {
+              setResumeList(data);
+            }
+          }
+        } catch (e) {
+          // Ignore cache errors
+        }
+      } else {
+        toast.error('Failed to load resumes. Please try again.');
+      }
+      
       console.error('Failed to fetch resumes:', error);
       setResumeList([]);
     } finally {

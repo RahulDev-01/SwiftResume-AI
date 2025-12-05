@@ -7,15 +7,13 @@ import GlobalApi from "../service/GlobalApi"
 function App() {
   const { user, isLoaded, isSignedIn } = useUser()
 
-  // Wake up backend on initial load
+  // Wake up backend on initial load (non-blocking)
   useEffect(() => {
     const wakeUpBackend = async () => {
-      try {
-        await GlobalApi.Ping();
-        console.log("Backend pinged successfully");
-      } catch (error) {
-        console.error("Backend ping failed", error);
-      }
+      // Don't await - let it run in background
+      GlobalApi.Ping().catch(() => {
+        // Silently fail - ping is just to warm up Render
+      });
     };
     wakeUpBackend();
   }, []);
