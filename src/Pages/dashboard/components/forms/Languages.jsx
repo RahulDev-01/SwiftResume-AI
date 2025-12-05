@@ -34,16 +34,18 @@ const Languages = forwardRef(({ enableNext }, ref) => {
     };
 
     useEffect(() => {
-        const incoming = resumeInfo?.languages;
+        // Check for both 'Languages' and 'languages' casing
+        const incoming = resumeInfo?.Languages || resumeInfo?.languages;
         if (Array.isArray(incoming) && incoming.length) {
             setLanguages(incoming);
         }
-    }, [resumeInfo?.languages]);
+    }, [resumeInfo?.Languages, resumeInfo?.languages]);
 
     useEffect(() => {
         if (!hasUserEdited || typeof setResumeInfo !== 'function') return;
         setResumeInfo((prev) => ({
             ...prev,
+            Languages: languages,
             languages: languages,
         }));
     }, [languages, hasUserEdited, setResumeInfo]);
@@ -55,22 +57,28 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 const paramId = params.resumeId;
                 const isNumericId = /^\d+$/.test(String(paramId));
 
-                // 1️⃣ Fetch the freshest resume data
-                let current = {};
-                try {
-                    if (isNumericId) {
-                        const resp = await GlobalApi.GetResumeById(paramId);
-                        current = resp?.data?.data?.attributes || {};
-                    } else {
-                        const resp = await GlobalApi.GetResumeByDocumentId(paramId);
-                        current = resp?.data?.data || {};
+                // ---------------------------------------------------------------
+                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
+                // ---------------------------------------------------------------
+                let current = resumeInfo?.attributes || {};
+                if (!resumeInfo?.attributes) {
+                    try {
+                        if (isNumericId) {
+                            const resp = await GlobalApi.GetResumeById(paramId);
+                            current = resp?.data?.data?.attributes || {};
+                        } else {
+                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
+                            current = resp?.data?.data || {};
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch current resume', err);
+                        current = {};
                     }
-                } catch (err) {
-                    console.warn('Could not fetch current resume', err);
-                    current = {};
                 }
 
+                // ---------------------------------------------------------------
                 // 2️⃣ Normalise Languages - strip stray `id` fields
+                // ---------------------------------------------------------------
                 const normalizedLanguages = languages
                     .map((l) => {
                         const { id, ...rest } = l;
@@ -81,12 +89,16 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                     })
                     .filter((l) => l.name && l.name.trim() !== '');
 
-                // 3️⃣ Build a clean base object - remove system keys & strip ids from ALL repeatable components
+                // ---------------------------------------------------------------
+                // 3️⃣ Build a clean base object – remove system keys & strip ids from
+                //    *all* other repeatable component arrays
+                // ---------------------------------------------------------------
                 const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
                 const base = Object.fromEntries(
                     Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
                 );
 
+                // Ensure a title exists
                 if (!base.title) base.title = 'My Resume';
 
                 const componentKeys = [
@@ -94,29 +106,32 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                     'skills', 'Skills',
                     'languages', 'Languages',
                     'certifications', 'Certifications',
-                    'experience', 'Experience',
-                    'Projects', 'projects'
+                    'Projects', 'projects',
+                    'experience', 'Experience'
                 ];
-
                 componentKeys.forEach((key) => {
                     if (Array.isArray(base[key])) {
                         base[key] = base[key].map(({ id, ...rest }) => rest);
                     }
                 });
 
-                // 4️⃣ Attach the cleaned Languages data
-                // Detect the correct key (Languages or languages)
-                const languageKey = Object.keys(current).find(k => k.toLowerCase() === 'languages') || 'Languages';
-                base[languageKey] = normalizedLanguages;
+                // ---------------------------------------------------------------
+                // 4️⃣ Attach the cleaned languages data using the exact Strapi field name
+                // ---------------------------------------------------------------
+                base.Languages = normalizedLanguages;
+                delete base.languages;
 
-                // Remove the alternative key if it exists in base to avoid conflicts
-                if (languageKey === 'Languages' && base.languages) delete base.languages;
-                if (languageKey === 'languages' && base.Languages) delete base.Languages;
-
+                // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
+                // ---------------------------------------------------------------
                 let resp;
                 if (isNumericId) {
-                    const locale = current?.locale;
+                    let locale;
+                    try {
+                        const r = await GlobalApi.GetResumeById(paramId);
+                        locale = r?.data?.data?.attributes?.locale;
+                    } catch (e) { }
+
                     resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
                 } else {
                     resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
@@ -124,6 +139,13 @@ const Languages = forwardRef(({ enableNext }, ref) => {
 
                 setLoading(false);
                 toast("Languages Updated Successfully ✅");
+
+                setResumeInfo(prev => ({
+                    ...prev,
+                    Languages: normalizedLanguages,
+                    languages: normalizedLanguages,
+                }));
+
                 if (enableNext) enableNext(true);
                 resolve(resp);
             } catch (err) {

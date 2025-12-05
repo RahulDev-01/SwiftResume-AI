@@ -35,20 +35,19 @@ const Projects = forwardRef(({ enableNext }, ref) => {
     };
 
     useEffect(() => {
-        // Check for 'Projects' or fallback to 'certifications' if needed, but plan says 'Projects'
-        const incoming = resumeInfo?.Projects || resumeInfo?.certifications;
+        // Check for 'Projects' or 'projects'
+        const incoming = resumeInfo?.Projects || resumeInfo?.projects;
         if (Array.isArray(incoming) && incoming.length) {
-            // Map old certification fields to new project fields if necessary, or just load
-            // For now, assuming fresh start or compatible data structure
             setProjects(incoming);
         }
-    }, [resumeInfo]);
+    }, [resumeInfo?.Projects, resumeInfo?.projects]);
 
     useEffect(() => {
         if (!hasUserEdited || typeof setResumeInfo !== 'function') return;
         setResumeInfo((prev) => ({
             ...prev,
             Projects: projects,
+            projects: projects,
         }));
     }, [projects, hasUserEdited, setResumeInfo]);
 
@@ -59,22 +58,28 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 const paramId = params.resumeId;
                 const isNumericId = /^\d+$/.test(String(paramId));
 
-                // 1️⃣ Fetch the freshest resume data
-                let current = {};
-                try {
-                    if (isNumericId) {
-                        const resp = await GlobalApi.GetResumeById(paramId);
-                        current = resp?.data?.data?.attributes || {};
-                    } else {
-                        const resp = await GlobalApi.GetResumeByDocumentId(paramId);
-                        current = resp?.data?.data || {};
+                // ---------------------------------------------------------------
+                // 1️⃣ Fetch the freshest resume data (fallback to context if present)
+                // ---------------------------------------------------------------
+                let current = resumeInfo?.attributes || {};
+                if (!resumeInfo?.attributes) {
+                    try {
+                        if (isNumericId) {
+                            const resp = await GlobalApi.GetResumeById(paramId);
+                            current = resp?.data?.data?.attributes || {};
+                        } else {
+                            const resp = await GlobalApi.GetResumeByDocumentId(paramId);
+                            current = resp?.data?.data || {};
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch current resume', err);
+                        current = {};
                     }
-                } catch (err) {
-                    console.warn('Could not fetch current resume', err);
-                    current = {};
                 }
 
+                // ---------------------------------------------------------------
                 // 2️⃣ Normalise Projects - strip stray `id` fields
+                // ---------------------------------------------------------------
                 const normalizedProjects = projects
                     .map((e) => {
                         const { id, ...rest } = e;
@@ -87,12 +92,16 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     })
                     .filter((e) => e.title && e.title.trim() !== '');
 
-                // 3️⃣ Build a clean base object - remove system keys & strip ids from ALL repeatable components
+                // ---------------------------------------------------------------
+                // 3️⃣ Build a clean base object – remove system keys & strip ids from
+                //    *all* other repeatable component arrays
+                // ---------------------------------------------------------------
                 const systemKeys = ['id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt'];
                 const base = Object.fromEntries(
                     Object.entries(current || {}).filter(([k]) => !systemKeys.includes(k))
                 );
 
+                // Ensure a title exists (Strapi requires it)
                 if (!base.title) base.title = 'My Resume';
 
                 const componentKeys = [
@@ -100,29 +109,32 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     'skills', 'Skills',
                     'languages', 'Languages',
                     'certifications', 'Certifications',
-                    'experience', 'Experience',
-                    'Projects', 'projects' // Ensure we clean existing Projects too if needed
+                    'Projects', 'projects',
+                    'experience', 'Experience'
                 ];
-
                 componentKeys.forEach((key) => {
                     if (Array.isArray(base[key])) {
                         base[key] = base[key].map(({ id, ...rest }) => rest);
                     }
                 });
 
-                // 4️⃣ Attach the cleaned Projects data
-                // Detect the correct key (Projects or projects)
-                const projectKey = Object.keys(current).find(k => k.toLowerCase() === 'projects') || 'Projects';
-                base[projectKey] = normalizedProjects;
+                // ---------------------------------------------------------------
+                // 4️⃣ Attach the cleaned projects data using the exact Strapi field name
+                // ---------------------------------------------------------------
+                base.Projects = normalizedProjects;
+                delete base.projects; // Remove lowercase to force Capitalized key usage
 
-                // Remove the alternative key if it exists in base to avoid conflicts
-                if (projectKey === 'Projects' && base.projects) delete base.projects;
-                if (projectKey === 'projects' && base.Projects) delete base.Projects;
-
+                // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
+                // ---------------------------------------------------------------
                 let resp;
                 if (isNumericId) {
-                    const locale = current?.locale;
+                    let locale;
+                    try {
+                        const r = await GlobalApi.GetResumeById(paramId);
+                        locale = r?.data?.data?.attributes?.locale;
+                    } catch (e) { }
+
                     resp = await GlobalApi.UpdateResumeDetailWithLocale(paramId, { data: base }, locale);
                 } else {
                     resp = await GlobalApi.UpdateResumeByDocumentId(paramId, { data: base });
@@ -130,6 +142,13 @@ const Projects = forwardRef(({ enableNext }, ref) => {
 
                 setLoading(false);
                 toast("Projects Updated Successfully ✅");
+
+                setResumeInfo(prev => ({
+                    ...prev,
+                    Projects: normalizedProjects,
+                    projects: normalizedProjects,
+                }));
+
                 if (enableNext) enableNext(true);
                 resolve(resp);
             } catch (err) {
