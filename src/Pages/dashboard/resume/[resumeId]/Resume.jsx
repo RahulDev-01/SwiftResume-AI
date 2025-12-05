@@ -232,6 +232,16 @@ function Resume() {
             </div>
           </div>
         </div>
+
+        {/* Debug Section - Temporary */}
+        <div className="p-4 bg-gray-200 text-xs font-mono overflow-auto border-t border-gray-400">
+          <h3 className="font-bold">Debug Info</h3>
+          <p><strong>Resume ID:</strong> {resumeId}</p>
+          <p><strong>Keys in resumeInfo:</strong> {Object.keys(resumeInfo || {}).join(', ')}</p>
+          <p><strong>Projects Data:</strong> {JSON.stringify(resumeInfo?.Projects || 'N/A').substring(0, 100)}...</p>
+          <p><strong>Languages Data:</strong> {JSON.stringify(resumeInfo?.Languages || 'N/A').substring(0, 100)}...</p>
+          <p><strong>Experience Data:</strong> {JSON.stringify(resumeInfo?.Experience || 'N/A').substring(0, 100)}...</p>
+        </div>
       </div>
     </ResumeInfoContext.Provider>
   )

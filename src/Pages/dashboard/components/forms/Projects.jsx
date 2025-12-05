@@ -111,9 +111,13 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                 });
 
                 // 4️⃣ Attach the cleaned Projects data
-                base.Projects = normalizedProjects;
-                // Remove any accidental duplicates or old keys if necessary (though the loop above cleans them, we want to overwrite)
-                // delete base.projects; // Optional: if you want to enforce case
+                // Detect the correct key (Projects or projects)
+                const projectKey = Object.keys(current).find(k => k.toLowerCase() === 'projects') || 'Projects';
+                base[projectKey] = normalizedProjects;
+
+                // Remove the alternative key if it exists in base to avoid conflicts
+                if (projectKey === 'Projects' && base.projects) delete base.projects;
+                if (projectKey === 'projects' && base.Projects) delete base.Projects;
 
                 // 5️⃣ Send the update request
                 let resp;

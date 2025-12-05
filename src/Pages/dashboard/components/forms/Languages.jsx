@@ -105,8 +105,13 @@ const Languages = forwardRef(({ enableNext }, ref) => {
                 });
 
                 // 4️⃣ Attach the cleaned Languages data
-                base.Languages = normalizedLanguages;
-                // delete base.languages; // Optional
+                // Detect the correct key (Languages or languages)
+                const languageKey = Object.keys(current).find(k => k.toLowerCase() === 'languages') || 'Languages';
+                base[languageKey] = normalizedLanguages;
+
+                // Remove the alternative key if it exists in base to avoid conflicts
+                if (languageKey === 'Languages' && base.languages) delete base.languages;
+                if (languageKey === 'languages' && base.Languages) delete base.Languages;
 
                 // 5️⃣ Send the update request
                 let resp;
