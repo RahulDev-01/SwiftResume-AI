@@ -35,20 +35,20 @@ const Projects = forwardRef(({ enableNext }, ref) => {
     };
 
     useEffect(() => {
-        // Check for 'Projects' or 'projects' or fallback to 'certifications' (due to schema mapping)
-        const incoming = resumeInfo?.Projects || resumeInfo?.projects || resumeInfo?.certifications;
+        // Check for 'Projects' or 'projects'
+        // Removed 'certifications' fallback as per backend schema fix
+        const incoming = resumeInfo?.Projects || resumeInfo?.projects;
         console.log('[Projects] Incoming data check:', {
             resumeInfoKeys: Object.keys(resumeInfo || {}),
             Projects: resumeInfo?.Projects,
             projects: resumeInfo?.projects,
-            certifications: resumeInfo?.certifications,
             RESULT: incoming
         });
 
         if (Array.isArray(incoming) && incoming.length) {
             setProjects(incoming);
         }
-    }, [resumeInfo?.Projects, resumeInfo?.projects, resumeInfo?.certifications]);
+    }, [resumeInfo?.Projects, resumeInfo?.projects]);
 
     useEffect(() => {
         if (!hasUserEdited || typeof setResumeInfo !== 'function') return;
@@ -119,7 +119,6 @@ const Projects = forwardRef(({ enableNext }, ref) => {
                     'education', 'Education',
                     'skills', 'Skills',
                     'languages', 'Languages',
-                    'certifications', 'Certifications',
                     'Projects', 'projects',
                     'experience', 'Experience'
                 ];
@@ -136,11 +135,6 @@ const Projects = forwardRef(({ enableNext }, ref) => {
 
                 // Explicitly valid key is 'Projects'. Remove 'projects' to avoid duplicates/confusion.
                 delete base.projects;
-                // Remove 'certifications' if it exists in base to prevent collision since projects maps to certifications component
-                // (Only if it's the SAME data; if 'Certifications' is distinct in your app, be careful. 
-                // But schema says Projects uses certifications component. There is no Certifications attribute.)
-                // So better to remove it to be safe.
-                delete base.certifications;
 
                 // ---------------------------------------------------------------
                 // 5️⃣ Send the update request
