@@ -14,33 +14,43 @@ body {
 @media print {
   /* Print-only overrides */
   #no-print { display: none !important; }
-  #print-area { display: block !important; }
+  #print-area { 
+    display: block !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
   
   .resume-sheet {
     /* Exact A4 size with optimized padding */
     width: 210mm !important;           /* A4 width */
-    min-height: 297mm !important;      /* A4 height */
+    max-height: 297mm !important;      /* A4 height - STRICT */
     max-width: 210mm !important;
     margin: 0 auto !important;
-    padding: 8mm 12mm !important;      /* Optimized padding for better fit */
+    padding: 6mm 10mm !important;      /* Tighter padding for more space */
     box-sizing: border-box !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;       /* Hide overflow to prevent page breaks */
     border-top-width: 0 !important;    /* Remove top border to save space */
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
   }
   
   /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
   #print-area .screen-zoom-target {
     transform: none !important;
     width: 210mm !important;
-    min-height: 297mm !important;
+    max-height: 297mm !important;
     max-width: 210mm !important;
     margin: 0 auto !important;
+    overflow: hidden !important;
   }
   
   #print-area .screen-zoom-wrapper { 
     width: auto !important; 
-    margin: 0 auto !important; 
+    margin: 0 auto !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
   }
   
   html, body {
@@ -49,17 +59,38 @@ body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     color-adjust: exact;
+    overflow: hidden !important;
   }
   
-  /* Optimize spacing for print */
+  /* Tighter spacing for print */
   .resume-sheet * {
-    page-break-inside: avoid;
+    page-break-inside: avoid !important;
+  }
+  
+  /* Reduce spacing in print */
+  .resume-sheet h1,
+  .resume-sheet h2,
+  .resume-sheet h3,
+  .resume-sheet h4 {
+    margin-top: 0.3em !important;
+    margin-bottom: 0.3em !important;
+  }
+  
+  .resume-sheet p {
+    margin-top: 0.2em !important;
+    margin-bottom: 0.2em !important;
+  }
+  
+  .resume-sheet ul,
+  .resume-sheet ol {
+    margin-top: 0.2em !important;
+    margin-bottom: 0.2em !important;
   }
 
   /* Force links to be clickable and visible in PDF */
   a {
     text-decoration: underline !important;
-    color: inherit !important; /* Or specify a color if needed */
+    color: inherit !important;
     pointer-events: auto !important;
   }
 }

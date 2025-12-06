@@ -12,7 +12,7 @@ import { Download, Share2, FileCheck, Sparkles, CheckCircle2, Type } from 'lucid
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
-  const [fontSize, setFontSize] = useState(100); // Font size percentage (70-100)
+  const [fontSize, setFontSize] = useState(85); // Font size percentage (70-100), default 85% for better fit
   const { resumeId } = useParams()
 
   useEffect(() => {
