@@ -6,7 +6,7 @@ function SkillPreview({ resumeInfo }) {
     <div className='my-6 relative z-50'>
       <h2 className='text-center font-bold text-lg mb-2' style={{ color: resumeInfo?.themeColor }}>Skills</h2>
       <hr className='border-[2px]' style={{ borderColor: resumeInfo?.themeColor }} />
-      <div className='grid grid-cols-1 gap-3 my-4 w-full max-h-[150px] overflow-y-auto pr-2'>
+      <div className='grid grid-cols-1 gap-3 my-4 w-full'>
         {(() => {
           const raw = Array.isArray(resumeInfo?.skills) ? resumeInfo.skills : [];
           const meaningful = raw.filter((s) => (s?.name?.trim() || Number(s?.rating) > 0));
