@@ -13,10 +13,10 @@ function PersonalDetailPreview2({ resumeInfo }) {
     const email = resumeInfo?.email != null ? resumeInfo.email : Dummy.email;
 
     return (
-        <div className='flex gap-6 items-start mb-6'>
+        <div className='flex gap-6 items-start'>
             {/* Profile Photo */}
             <div className='flex-shrink-0'>
-                <div className='w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-4 border-gray-300'>
+                <div className='w-32 h-32 rounded-full overflow-hidden'>
                     {user?.imageUrl ? (
                         <img src={user.imageUrl} alt={`${firstName} ${lastName}`} className='w-full h-full object-cover' />
                     ) : (
