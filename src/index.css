@@ -1,14 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 @theme {
-  --font-sans: 'Outfit', sans-serif;
+  --font-sans: 'Calibri', 'Georgia', 'Times New Roman', serif;
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Calibri', 'Georgia', 'Times New Roman', serif;
   overflow-x: hidden;
 }
 @media print {

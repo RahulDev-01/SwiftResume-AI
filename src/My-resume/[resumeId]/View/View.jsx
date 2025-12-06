@@ -8,11 +8,14 @@ import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
 import { Download, Share2, FileCheck, Sparkles, CheckCircle2, Type } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
   const [fontSize, setFontSize] = useState(85); // Font size percentage (70-100), default 85% for better fit
+  const [fontFamily, setFontFamily] = useState('Calibri'); // Font family for resume
+  const [isDownloading, setIsDownloading] = useState(false);
   const { resumeId } = useParams()
 
   useEffect(() => {
@@ -52,8 +55,45 @@ function View() {
     GetResumeInfo();
   }, [resumeId])
 
-  const HandleDownload = () => {
-    window.print();
+  const HandleDownload = async () => {
+    setIsDownloading(true);
+
+    try {
+      const element = document.getElementById('print-area');
+
+      if (!element) {
+        console.error('Print area not found');
+        setIsDownloading(false);
+        return;
+      }
+
+      const opt = {
+        margin: [0.3, 0.3, 0.3, 0.3],
+        filename: `${resumeInfo?.firstName || 'Resume'}_${resumeInfo?.lastName || 'Download'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'a4',
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      setIsDownloading(false);
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      setIsDownloading(false);
+      // Fallback to print
+      window.print();
+    }
   }
 
   return (
@@ -87,11 +127,12 @@ function View() {
               <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
                 <Button
                   onClick={HandleDownload}
-                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group"
+                  disabled={isDownloading}
+                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <div className="flex items-center gap-3">
                     <Download className="w-5 h-5 group-hover:animate-bounce" />
-                    <span>Download Resume</span>
+                    <span>{isDownloading ? 'Generating PDF...' : 'Download Resume'}</span>
                   </div>
                 </Button>
 
