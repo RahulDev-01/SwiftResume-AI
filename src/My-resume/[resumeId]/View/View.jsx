@@ -7,11 +7,12 @@ import GlobalApi from '../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
-import { Download, Share2, FileCheck, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Download, Share2, FileCheck, Sparkles, CheckCircle2, Type } from 'lucide-react';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
   const [zoom] = useState(1.5);
+  const [fontSize, setFontSize] = useState(100); // Font size percentage (70-100)
   const { resumeId } = useParams()
 
   useEffect(() => {
@@ -111,6 +112,30 @@ function View() {
               </div>
             </div>
 
+            {/* Font Size Control */}
+            <div className='px-8 py-6 border-b border-gray-100 bg-gray-50'>
+              <h3 className='text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2'>
+                <Type className='w-4 h-4 text-purple-600' />
+                Adjust Font Size (for single-page fit)
+              </h3>
+              <div className='flex items-center gap-4'>
+                <span className='text-sm text-gray-600 min-w-[60px]'>Smaller</span>
+                <input
+                  type="range"
+                  min="70"
+                  max="100"
+                  value={fontSize}
+                  onChange={(e) => setFontSize(Number(e.target.value))}
+                  className='flex-1 h-2 bg-gradient-to-r from-purple-200 to-blue-200 rounded-lg appearance-none cursor-pointer slider'
+                />
+                <span className='text-sm text-gray-600 min-w-[60px]'>Larger</span>
+                <div className='min-w-[60px] text-center'>
+                  <span className='text-sm font-semibold text-purple-700'>{fontSize}%</span>
+                </div>
+              </div>
+              <p className='text-xs text-gray-500 mt-2'>Reduce font size if your resume spans multiple pages</p>
+            </div>
+
             {/* Quick Tips Section */}
             <div className='p-8 bg-gradient-to-br from-gray-50 to-blue-50'>
               <h3 className='text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2'>
@@ -160,7 +185,7 @@ function View() {
       </div>
 
       {/* Resume Preview - Unchanged */}
-      <div id='print-area' className='bg-gray-100 py-10'>
+      <div id='print-area' className='bg-gray-100 py-10' style={{ fontSize: `${fontSize}%` }}>
         <div className='screen-zoom-wrapper'>
           <div
             className='screen-zoom-target'

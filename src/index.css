@@ -26,7 +26,6 @@ body {
     box-sizing: border-box !important;
     box-shadow: none !important;
     overflow: visible !important;
-    font-size: 0.95em !important;      /* Slightly smaller font for better fit */
     border-top-width: 0 !important;    /* Remove top border to save space */
   }
   
