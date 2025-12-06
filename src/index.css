@@ -35,6 +35,7 @@ body {
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     background: white !important;
+    font-family: 'Outfit', Arial, Helvetica, sans-serif !important;
   }
   
   /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
@@ -62,6 +63,15 @@ body {
     color-adjust: exact !important;
     overflow: hidden !important;
     background: white !important;
+  }
+  
+  /* Fix font rendering for all text */
+  .resume-sheet,
+  .resume-sheet * {
+    font-family: 'Outfit', Arial, Helvetica, sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
   }
   
   /* Tighter spacing for print */
