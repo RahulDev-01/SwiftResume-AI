@@ -177,6 +177,61 @@ function View() {
               <p className='text-xs text-gray-500 mt-2'>Reduce font size if your resume spans multiple pages</p>
             </div>
 
+            {/* Font Family Selector */}
+            <div className='px-8 py-6 border-b border-gray-100 bg-gray-50'>
+              <h3 className='text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2'>
+                <Type className='w-4 h-4 text-blue-600' />
+                Choose Font Style
+              </h3>
+              <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                <Button
+                  onClick={() => setFontFamily('Calibri')}
+                  variant={fontFamily === 'Calibri' ? 'default' : 'outline'}
+                  className={`transition-all duration-300 ${fontFamily === 'Calibri'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                    : 'hover:bg-blue-50 hover:border-blue-300'
+                    }`}
+                  style={{ fontFamily: 'Calibri, sans-serif' }}
+                >
+                  Calibri
+                </Button>
+                <Button
+                  onClick={() => setFontFamily('Georgia')}
+                  variant={fontFamily === 'Georgia' ? 'default' : 'outline'}
+                  className={`transition-all duration-300 ${fontFamily === 'Georgia'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                    : 'hover:bg-blue-50 hover:border-blue-300'
+                    }`}
+                  style={{ fontFamily: 'Georgia, serif' }}
+                >
+                  Georgia
+                </Button>
+                <Button
+                  onClick={() => setFontFamily('Times New Roman')}
+                  variant={fontFamily === 'Times New Roman' ? 'default' : 'outline'}
+                  className={`transition-all duration-300 ${fontFamily === 'Times New Roman'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                    : 'hover:bg-blue-50 hover:border-blue-300'
+                    }`}
+                  style={{ fontFamily: '"Times New Roman", serif' }}
+                >
+                  Times
+                </Button>
+                <Button
+                  onClick={() => setFontFamily('Arial')}
+                  variant={fontFamily === 'Arial' ? 'default' : 'outline'}
+                  className={`transition-all duration-300 ${fontFamily === 'Arial'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                    : 'hover:bg-blue-50 hover:border-blue-300'
+                    }`}
+                  style={{ fontFamily: 'Arial, sans-serif' }}
+                >
+                  Arial
+                </Button>
+              </div>
+              <p className='text-xs text-gray-500 mt-2'>Choose a professional font for your resume</p>
+            </div>
+
             {/* Quick Tips Section */}
             <div className='p-8 bg-gradient-to-br from-gray-50 to-blue-50'>
               <h3 className='text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2'>
@@ -226,7 +281,7 @@ function View() {
       </div>
 
       {/* Resume Preview - Unchanged */}
-      <div id='print-area' className='bg-gray-100 py-10' style={{ fontSize: `${fontSize}%` }}>
+      <div id='print-area' className='bg-gray-100 py-10' style={{ fontSize: `${fontSize}%`, fontFamily: `${fontFamily}, sans-serif` }}>
         <div className='screen-zoom-wrapper'>
           <div
             className='screen-zoom-target'

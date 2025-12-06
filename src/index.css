@@ -63,16 +63,6 @@ body {
     background: white !important;
   }
   
-  /* Fix font rendering for all text - Use system fonts for reliable PDF rendering */
-  .resume-sheet,
-  .resume-sheet * {
-    font-family: Arial, Helvetica, 'Segoe UI', Tahoma, sans-serif !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-    letter-spacing: normal !important;
-  }
-  
   /* Tighter spacing for print */
   .resume-sheet * {
     page-break-inside: avoid !important;
