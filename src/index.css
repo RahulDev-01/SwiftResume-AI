@@ -35,7 +35,7 @@ body {
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     background: white !important;
-    font-family: 'Outfit', Arial, Helvetica, sans-serif !important;
+    font-family: Arial, Helvetica, 'Segoe UI', Tahoma, sans-serif !important;
   }
   
   /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
@@ -65,13 +65,14 @@ body {
     background: white !important;
   }
   
-  /* Fix font rendering for all text */
+  /* Fix font rendering for all text - Use system fonts for reliable PDF rendering */
   .resume-sheet,
   .resume-sheet * {
-    font-family: 'Outfit', Arial, Helvetica, sans-serif !important;
+    font-family: Arial, Helvetica, 'Segoe UI', Tahoma, sans-serif !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
+    letter-spacing: normal !important;
   }
   
   /* Tighter spacing for print */
