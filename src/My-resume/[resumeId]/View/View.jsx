@@ -65,18 +65,17 @@ function View() {
           <div className='bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden'>
 
             {/* Header Section with Gradient */}
-            <div className=' text-black p-8 text-white relative overflow-hidden'>
-              <div className='absolute inset-0 bg-grid-white opacity-10'></div>
+            <div className='p-8 text-black relative overflow-hidden'>
               <div className='relative z-10 text-center'>
                 <div className='mb-4 flex justify-center'>
-                  <div className='w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-bounce'>
-                    <Sparkles className='w-10 h-10 text-yellow-300' />
+                  <div className='w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center animate-bounce'>
+                    <Sparkles className='w-10 h-10 text-blue-600' />
                   </div>
                 </div>
-                <h2 className='text-3xl md:text-4xl font-bold mb-3'>
+                <h2 className='text-3xl md:text-4xl font-bold mb-3 text-black'>
                   🎉 Your Resume is Ready!
                 </h2>
-                <p className='text-white/90 text-lg max-w-2xl mx-auto'>
+                <p className='text-gray-700 text-lg max-w-2xl mx-auto'>
                   Your professional resume has been generated successfully. Download it now or share with recruiters.
                 </p>
               </div>
@@ -87,7 +86,7 @@ function View() {
               <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
                 <Button
                   onClick={HandleDownload}
-                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold  text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group"
+                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group"
                 >
                   <div className="flex items-center gap-3">
                     <Download className="w-5 h-5 group-hover:animate-bounce" />
