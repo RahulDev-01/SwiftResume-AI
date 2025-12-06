@@ -2,11 +2,11 @@
 @import "tw-animate-css";
 
 @theme {
-  --font-sans: 'Calibri', 'Georgia', 'Times New Roman', serif;
+  --font-sans: 'Calibri', 'Georgia', 'Times New Roman', Arial, sans-serif;
 }
 
 body {
-  font-family: 'Calibri', 'Georgia', 'Times New Roman', serif;
+  font-family: 'Calibri', 'Georgia', 'Times New Roman', Arial, sans-serif;
   overflow-x: hidden;
 }
 @media print {
@@ -99,6 +99,28 @@ body {
 @page { 
   size: A4 portrait; 
   margin: 0; 
+}
+
+/* Ensure font applies to all elements in print area - AGGRESSIVE */
+#print-area,
+#print-area *,
+#print-area .resume-sheet,
+#print-area .resume-sheet *,
+.resume-sheet,
+.resume-sheet *,
+.resume-sheet p,
+.resume-sheet span,
+.resume-sheet div,
+.resume-sheet h1,
+.resume-sheet h2,
+.resume-sheet h3,
+.resume-sheet h4,
+.resume-sheet h5,
+.resume-sheet h6,
+.resume-sheet li,
+.resume-sheet a {
+  font-family: inherit !important;
+  font-weight: inherit !important;
 }
 
 /* Screen layout: make the resume preview fit the viewport nicely */

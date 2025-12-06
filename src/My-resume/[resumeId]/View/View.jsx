@@ -281,7 +281,16 @@ function View() {
       </div>
 
       {/* Resume Preview - Unchanged */}
-      <div id='print-area' className='bg-gray-100 py-10' style={{ fontSize: `${fontSize}%`, fontFamily: `${fontFamily}, sans-serif` }}>
+      <div
+        id='print-area'
+        className='bg-gray-100 py-10'
+        style={{
+          fontSize: `${fontSize}%`,
+          fontFamily: `${fontFamily}, sans-serif`,
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale'
+        }}
+      >
         <div className='screen-zoom-wrapper'>
           <div
             className='screen-zoom-target'
@@ -289,7 +298,8 @@ function View() {
               transform: `scale(${zoom})`,
               transformOrigin: 'top center',
               width: 'min(900px, 100%)',
-              margin: '0 auto'
+              margin: '0 auto',
+              fontFamily: `${fontFamily}, sans-serif`
             }}
           >
             <ResumePreview />
