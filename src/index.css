@@ -19,7 +19,6 @@ body {
     background: white !important;
     padding: 0 !important;
     margin: 0 !important;
-    color: black !important;
   }
   
   .resume-sheet {
@@ -36,7 +35,6 @@ body {
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     background: white !important;
-    color: black !important;
   }
   
   /* Reset any screen zoom/scale wrappers to ensure true 1:1 print */
@@ -47,7 +45,6 @@ body {
     max-width: 210mm !important;
     margin: 0 auto !important;
     overflow: hidden !important;
-    color: black !important;
   }
   
   #print-area .screen-zoom-wrapper { 
@@ -60,30 +57,11 @@ body {
   html, body {
     margin: 0 !important;
     padding: 0 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
     overflow: hidden !important;
     background: white !important;
-    color: black !important;
-  }
-  
-  /* Force all text to be black and visible */
-  .resume-sheet *,
-  .resume-sheet h1,
-  .resume-sheet h2,
-  .resume-sheet h3,
-  .resume-sheet h4,
-  .resume-sheet h5,
-  .resume-sheet h6,
-  .resume-sheet p,
-  .resume-sheet span,
-  .resume-sheet div,
-  .resume-sheet li,
-  .resume-sheet td,
-  .resume-sheet th {
-    color: black !important;
-    background: transparent !important;
   }
   
   /* Tighter spacing for print */
@@ -98,13 +76,11 @@ body {
   .resume-sheet h4 {
     margin-top: 0.3em !important;
     margin-bottom: 0.3em !important;
-    color: black !important;
   }
   
   .resume-sheet p {
     margin-top: 0.2em !important;
     margin-bottom: 0.2em !important;
-    color: black !important;
   }
   
   .resume-sheet ul,
@@ -117,13 +93,7 @@ body {
   a,
   .resume-sheet a {
     text-decoration: underline !important;
-    color: #0066cc !important;  /* Blue color for links */
     pointer-events: auto !important;
-  }
-  
-  /* Ensure icons and special elements are visible */
-  svg, img {
-    color: black !important;
   }
 }
 
