@@ -7,7 +7,7 @@ import GlobalApi from '../../../../service/GlobalApi';
 import { useParams } from 'react-router-dom';
 import { RWebShare } from '../../../components/shared/RWebShare';
 import Dummy from '../../../Data/Dummy';
-import { toast } from 'sonner';
+import { Download, Share2, FileCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
 function View() {
   const [resumeInfo, setResumeInfo] = useState();
@@ -57,56 +57,111 @@ function View() {
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
-      <div id='no-print' className="min-h-screen bg-gray-50">
+      <div id='no-print' className="min-h-screen text-black">
         <Header />
-        <div className='my-10 mx-auto max-w-3xl px-6'>
-          <div className='bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center'>
-            <div className='mb-6 flex justify-center'>
-              <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center'>
-                <span className='text-3xl'>🎉</span>
+
+        {/* Main Success Card */}
+        <div className='my-10 mx-auto max-w-4xl px-6'>
+          <div className='bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden'>
+
+            {/* Header Section with Gradient */}
+            <div className=' text-black p-8 text-white relative overflow-hidden'>
+              <div className='absolute inset-0 bg-grid-white opacity-10'></div>
+              <div className='relative z-10 text-center'>
+                <div className='mb-4 flex justify-center'>
+                  <div className='w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-bounce'>
+                    <Sparkles className='w-10 h-10 text-yellow-300' />
+                  </div>
+                </div>
+                <h2 className='text-3xl md:text-4xl font-bold mb-3'>
+                  🎉 Your Resume is Ready!
+                </h2>
+                <p className='text-white/90 text-lg max-w-2xl mx-auto'>
+                  Your professional resume has been generated successfully. Download it now or share with recruiters.
+                </p>
               </div>
             </div>
-            <h2 className='text-2xl md:text-3xl font-bold text-gray-900 mb-3'>
-              Your Resume is Ready!
-            </h2>
-            <p className='text-gray-600 mb-8 max-w-lg mx-auto'>
-              Your professional resume has been generated successfully. You can now download it as a PDF or share the unique link with recruiters.
-            </p>
 
-            <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
-              <Button
-                onClick={HandleDownload}
-                className="w-full sm:w-auto px-8 py-6 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-xl"
-              >
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  <span>Download Resume</span>
-                </div>
-              </Button>
-
-              <RWebShare
-                data={{
-                  text: "Check out my professional resume created with SwiftResume AI!",
-                  url: `${import.meta.env.VITE_URL}/my-resume/${resumeId}/view`,
-                  title: `${(resumeInfo?.firstName || '').trim()} ${(resumeInfo?.lastName || '').trim()} - Resume`,
-                }}
-              >
-                <Button variant="outline" className='w-full sm:w-auto px-8 py-6 text-base font-medium border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition-all duration-200 rounded-xl'>
-                  <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    <span>Share Link</span>
+            {/* Action Buttons Section */}
+            <div className='p-8 border-b border-gray-100'>
+              <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
+                <Button
+                  onClick={HandleDownload}
+                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold  text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Download className="w-5 h-5 group-hover:animate-bounce" />
+                    <span>Download Resume</span>
                   </div>
                 </Button>
-              </RWebShare>
+
+                <RWebShare
+                  data={{
+                    text: "Check out my professional resume created with SwiftResume AI!",
+                    url: `${import.meta.env.VITE_URL}/my-resume/${resumeId}/view`,
+                    title: `${(resumeInfo?.firstName || '').trim()} ${(resumeInfo?.lastName || '').trim()} - Resume`,
+                  }}
+                >
+                  <Button variant="outline" className='w-full sm:w-auto px-8 py-6 text-base font-semibold border-2 text-black transition-all duration-300 rounded-xl group'>
+                    <div className="flex items-center gap-3">
+                      <Share2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                      <span>Share Link</span>
+                    </div>
+                  </Button>
+                </RWebShare>
+              </div>
+            </div>
+
+            {/* Quick Tips Section */}
+            <div className='p-8 bg-gradient-to-br from-gray-50 to-blue-50'>
+              <h3 className='text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2'>
+                <FileCheck className='w-5 h-5 text-blue-600' />
+                Next Steps
+              </h3>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                <div className='bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow'>
+                  <div className='flex items-start gap-3'>
+                    <div className='w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0'>
+                      <CheckCircle2 className='w-5 h-5 text-green-600' />
+                    </div>
+                    <div>
+                      <h4 className='font-semibold text-gray-900 mb-1'>Review Content</h4>
+                      <p className='text-sm text-gray-600'>Double-check all information before sharing</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow'>
+                  <div className='flex items-start gap-3'>
+                    <div className='w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0'>
+                      <Download className='w-5 h-5 text-blue-600' />
+                    </div>
+                    <div>
+                      <h4 className='font-semibold text-gray-900 mb-1'>Download PDF</h4>
+                      <p className='text-sm text-gray-600'>Save as PDF for easy sharing</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow'>
+                  <div className='flex items-start gap-3'>
+                    <div className='w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0'>
+                      <Share2 className='w-5 h-5 text-purple-600' />
+                    </div>
+                    <div>
+                      <h4 className='font-semibold text-gray-900 mb-1'>Share Online</h4>
+                      <p className='text-sm text-gray-600'>Send your unique link to recruiters</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div id='print-area'>
+
+      {/* Resume Preview - Unchanged */}
+      <div id='print-area' className='bg-gray-100 py-10'>
         <div className='screen-zoom-wrapper'>
           <div
             className='screen-zoom-target'
