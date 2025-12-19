@@ -158,7 +158,7 @@ const Summary = forwardRef(({ enableNext }, ref) => {
               .map((item, index) => (
                 <div
                   key={index}
-                  className='p-5 rounded-xl border border-white/30 bg-white/40 backdrop-blur-sm cursor-pointer hover:bg-white/60 hover:shadow-md transition-all duration-300'
+                  className='p-5 rounded-xl border-2 border-gray-300 bg-white/40 backdrop-blur-sm cursor-pointer hover:bg-white/60 hover:border-blue-500 hover:shadow-lg transition-all duration-300'
                   role='button'
                   tabIndex={0}
                   onClick={() => {
