@@ -75,7 +75,7 @@ const Experience = forwardRef(({ enableNext }, ref) => {
     }
 
     setAiGeneratingIndex(index);
-    const prompt = `Generate an ATS-optimized, professional work summary for the position "${position}"${company ? ` at ${company}` : ''}. The summary should score 10/10 for Applicant Tracking Systems, be keyword-rich, and include 3-5 bullet points highlighting key responsibilities and achievements. Format the output as HTML bullet points using <ul> and <li> tags. Focus on action verbs, quantifiable results, and industry-relevant keywords.`;
+    const prompt = `Generate a professional work summary for the position "${position}"${company ? ` at ${company}` : ''} that is BOTH ATS-optimized AND human-readable. The summary must: 1) Score 10/10 for Applicant Tracking Systems with relevant keywords, 2) Sound natural and engaging when read by humans (avoid robotic or keyword-stuffed language), 3) Include 3-5 bullet points highlighting key responsibilities and achievements with a conversational yet professional tone. Format the output as HTML bullet points using <ul> and <li> tags. Balance action verbs, quantifiable results, and industry-relevant keywords with natural, human-friendly language that tells a compelling story.`;
 
     try {
       const resultText = await sendMessage(prompt);
