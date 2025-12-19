@@ -29,7 +29,7 @@ function Resume() {
         setError(null);
         const resp = await GlobalApi.GetId(resumeId);
         const payload = resp?.data?.data;
-        
+
         if (!payload) {
           throw new Error('Resume not found');
         }
@@ -154,10 +154,10 @@ function Resume() {
         {/* Top Bar with Enhanced UI */}
         <div className='sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm'>
           <div className='mx-auto max-w-7xl px-4 lg:px-6 py-3'>
-            <div className='flex flex-wrap justify-between items-center gap-4'>
+            <div className='grid grid-cols-3 items-center gap-4'>
 
               {/* Left: Home Button */}
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center justify-start'>
                 <button
                   onClick={() => window.location.href = '/dashboard'}
                   className='flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 shadow-sm'
@@ -170,7 +170,7 @@ function Resume() {
               </div>
 
               {/* Center: Template & Theme Controls */}
-              <div className='flex items-center gap-4 flex-1 justify-center'>
+              <div className='flex items-end justify-center gap-4'>
                 {/* Template Selector */}
                 <div className='relative'>
                   <label className='text-xs font-semibold text-gray-500 mb-1 block'>Template</label>
@@ -199,79 +199,80 @@ function Resume() {
                 </div>
 
                 {/* Theme Color Picker - Horizontal Scroll with Buttons */}
-                <div className='relative flex items-center gap-3'>
-                  <label className='text-xs font-semibold text-gray-500 mb-1 block absolute -top-5 left-0'>Theme Color</label>
+                <div className='relative'>
+                  <label className='text-xs font-semibold text-gray-500 mb-1 block'>Theme Color</label>
+                  <div className='flex items-center gap-2'>
+                    {/* Left Scroll Button */}
+                    <button
+                      onClick={() => {
+                        const container = document.getElementById('theme-scroll-container');
+                        if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
+                      }}
+                      className='p-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm'
+                    >
+                      <svg className='w-4 h-4 text-gray-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
+                      </svg>
+                    </button>
 
-                  {/* Left Scroll Button */}
-                  <button
-                    onClick={() => {
-                      const container = document.getElementById('theme-scroll-container');
-                      if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
-                    }}
-                    className='p-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm z-10'
-                  >
-                    <svg className='w-4 h-4 text-gray-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
-                    </svg>
-                  </button>
+                    {/* Scrollable Container */}
+                    <div
+                      id='theme-scroll-container'
+                      className='flex gap-3 overflow-x-auto px-1 py-2 scroll-smooth'
+                      style={{
+                        maxWidth: '300px',
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                      }}
+                    >
+                      <style>{`
+                        #theme-scroll-container::-webkit-scrollbar {
+                          display: none;
+                        }
+                      `}</style>
+                      {themeColors.map((color, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            const previousColor = resumeInfo?.themeColor;
+                            setResumeInfo({ ...resumeInfo, themeColor: color });
+                            GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } })
+                              .catch(err => {
+                                toast.error('Failed to update theme color. Please try again.');
+                                // Revert on error
+                                setResumeInfo({ ...resumeInfo, themeColor: previousColor });
+                              });
+                            toast.success('Theme color updated!');
+                          }}
+                          className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 flex-shrink-0 border border-gray-100 shadow-sm ${resumeInfo?.themeColor === color
+                            ? 'ring-2 ring-blue-500 ring-offset-2 scale-110'
+                            : 'hover:ring-2 hover:ring-gray-200'
+                            }`}
+                          style={{ backgroundColor: color }}
+                          title={color}
+                          disabled={!resumeInfo || loading}
+                        />
+                      ))}
+                    </div>
 
-                  {/* Scrollable Container */}
-                  <div
-                    id='theme-scroll-container'
-                    className='flex gap-3 overflow-x-auto px-1 py-2 scroll-smooth'
-                    style={{
-                      maxWidth: '300px',
-                      scrollbarWidth: 'none',
-                      msOverflowStyle: 'none'
-                    }}
-                  >
-                    <style>{`
-                      #theme-scroll-container::-webkit-scrollbar {
-                        display: none;
-                      }
-                    `}</style>
-                    {themeColors.map((color, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          const previousColor = resumeInfo?.themeColor;
-                          setResumeInfo({ ...resumeInfo, themeColor: color });
-                          GlobalApi.UpdateResumeDetail(resumeId, { data: { themeColor: color } })
-                            .catch(err => {
-                              toast.error('Failed to update theme color. Please try again.');
-                              // Revert on error
-                              setResumeInfo({ ...resumeInfo, themeColor: previousColor });
-                            });
-                          toast.success('Theme color updated!');
-                        }}
-                        className={`w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 flex-shrink-0 border border-gray-100 shadow-sm ${resumeInfo?.themeColor === color
-                          ? 'ring-2 ring-blue-500 ring-offset-2 scale-110'
-                          : 'hover:ring-2 hover:ring-gray-200'
-                          }`}
-                        style={{ backgroundColor: color }}
-                        title={color}
-                        disabled={!resumeInfo || loading}
-                      />
-                    ))}
+                    {/* Right Scroll Button */}
+                    <button
+                      onClick={() => {
+                        const container = document.getElementById('theme-scroll-container');
+                        if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
+                      }}
+                      className='p-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm'
+                    >
+                      <svg className='w-4 h-4 text-gray-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
+                      </svg>
+                    </button>
                   </div>
-
-                  {/* Right Scroll Button */}
-                  <button
-                    onClick={() => {
-                      const container = document.getElementById('theme-scroll-container');
-                      if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
-                    }}
-                    className='p-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm z-10'
-                  >
-                    <svg className='w-4 h-4 text-gray-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
-                    </svg>
-                  </button>
                 </div>
               </div>
 
               {/* Right: View & Download Buttons */}
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center justify-end gap-3'>
                 <button
                   onClick={() => window.location.href = `/my-resume/${resumeId}/view`}
                   className='flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 transition-all duration-200 shadow-sm font-medium text-sm'
