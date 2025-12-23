@@ -96,6 +96,17 @@ function View() {
     }
   }
 
+  // Helper function to get proper font family string with fallback
+  const getFontFamilyString = (font) => {
+    const fontMap = {
+      'Calibri': 'Calibri, Arial, sans-serif',
+      'Georgia': 'Georgia, "Times New Roman", serif',
+      'Times New Roman': '"Times New Roman", Times, serif',
+      'Arial': 'Arial, Helvetica, sans-serif'
+    };
+    return fontMap[font] || 'Calibri, Arial, sans-serif';
+  };
+
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
       <div id='no-print' className="min-h-screen text-black">
@@ -286,7 +297,7 @@ function View() {
         className='bg-gray-100 py-10'
         style={{
           fontSize: `${fontSize}%`,
-          fontFamily: `${fontFamily}, sans-serif`,
+          fontFamily: getFontFamilyString(fontFamily),
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale'
         }}
@@ -299,7 +310,7 @@ function View() {
               transformOrigin: 'top center',
               width: 'min(900px, 100%)',
               margin: '0 auto',
-              fontFamily: `${fontFamily}, sans-serif`
+              fontFamily: getFontFamilyString(fontFamily)
             }}
           >
             <ResumePreview />
